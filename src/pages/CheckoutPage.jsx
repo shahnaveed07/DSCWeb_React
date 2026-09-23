@@ -226,7 +226,7 @@ export function CheckoutPage() {
                   <div className="payment-qr-container" style={{ margin: '16px auto 0', display: 'block' }}>
                     {qrLoading ? (
                       <div id="qrLoading" className="qr-placeholder">
-                        <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Generating QR...</span>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>Generating QR...</span>
                       </div>
                     ) : null}
                     <img
