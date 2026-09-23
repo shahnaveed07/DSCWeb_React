@@ -1,48 +1,74 @@
 import { NavLink } from 'react-router-dom'
-import { footerGroups } from '../../content/siteContent'
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer">
-      <div className="footer-brand">
-        <span className="brand-badge">DSC</span>
-        <div>
-          <strong>DSCWeb</strong>
-          <p>Software, applications, and digital products from DarkSkullCorporation.</p>
-        </div>
-      </div>
-
-      <div className="footer-columns">
-        {footerGroups.map((group) => (
-          <div key={group.title}>
-            <h3>{group.title}</h3>
-            <ul>
-              {group.links.map((link) => (
-                <li key={link.to}>
-                  <NavLink to={link.to}>{link.label}</NavLink>
-                </li>
-              ))}
+    <footer id="dsc-footer" className="developer-footer">
+      <div className="footer-container">
+        <div className="footer-grid">
+          <div className="footer-col footer-brand-col">
+            <NavLink className="logo-mark" to="/">
+              <img
+                src="/images/dsclogo.png"
+                alt="Dark Skull Corporation"
+                className="header-logo-img"
+              />
+              <span className="logo-text">Dark Skull Corporation</span>
+            </NavLink>
+            <p className="footer-desc mt-10">
+              Professional software studio crafting secure utilities, desktop tools, and future-ready digital experiences.
+            </p>
+          </div>
+          <div className="footer-col">
+            <h4 className="footer-col-title">Explore</h4>
+            <ul className="footer-links">
+              <li>
+                <NavLink to="/pages/apps">Applications</NavLink>
+              </li>
+              <li>
+                <NavLink to="/pages/products">Products</NavLink>
+              </li>
+              <li>
+                <NavLink to="/pages/downloads">Downloads</NavLink>
+              </li>
             </ul>
           </div>
-        ))}
-      </div>
-
-      <div className="footer-bottom">
-        <p className="footer-copyright">
-          &copy; 2026 Dark Skull Corporation. All rights reserved.
-        </p>
-        <p className="footer-credit">
-          Developed By{' '}
-          <a
-            className="footer-name"
-            href="https://naveedmushtaq.tech/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Naveed Mushtaq
-          </a>
-        </p>
+          <div className="footer-col">
+            <h4 className="footer-col-title">Company</h4>
+            <ul className="footer-links">
+              <li>
+                <NavLink to="/pages/about">About Us</NavLink>
+              </li>
+              <li>
+                <NavLink to="/pages/contact">Contact</NavLink>
+              </li>
+              <li>
+                <NavLink to="/pages/privacy-policy">Privacy Policy</NavLink>
+              </li>
+              <li>
+                <NavLink to="/pages/terms">Terms of Use</NavLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p className="footer-copyright">
+            &copy; {new Date().getFullYear()} DARK SKULL CORPORATION. ALL RIGHTS RESERVED.
+          </p>
+          <p className="footer-credit">
+            Developer{' '}
+            <a
+              href="https://naveedmushtaq.tech/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-name tooltip-trigger"
+              data-tooltip="Visit Portfolio"
+            >
+              Naveed Mushtaq
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   )
 }
+

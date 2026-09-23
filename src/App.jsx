@@ -89,6 +89,9 @@ export default function App() {
   return (
     <MaintenanceGate systemStatus={systemStatus}>
       <Routes>
+        <Route path="/pages/status" element={<StatusPage />} />
+        <Route path="/pages/status.html" element={<Navigate replace to="/pages/status" />} />
+
         <Route
           element={
             <SiteLayout
@@ -122,8 +125,6 @@ export default function App() {
           <Route path="/pages/contact" element={<ContactPage />} />
           <Route path="/pages/contact.html" element={<Navigate replace to="/pages/contact" />} />
 
-          <Route path="/pages/status" element={<StatusPage />} />
-          <Route path="/pages/status.html" element={<Navigate replace to="/pages/status" />} />
 
           <Route
             path="/pages/privacy-policy"

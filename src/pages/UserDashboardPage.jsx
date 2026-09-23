@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { useRemoteResource } from '../hooks/useRemoteResource'
 import {
-  ApiError,
   extractApiMessage,
   getCurrentOrder,
   getSecureDownload,
@@ -10,9 +10,10 @@ import {
 import { formatDateTime } from '../utils/format'
 
 export function UserDashboardPage({ session, onSessionInvalid }) {
-  const [copyLabel, setCopyLabel] = useState('Copy Key')
+  const [copiedKey, setCopiedKey] = useState(false)
   const [downloadError, setDownloadError] = useState('')
   const [downloadLoading, setDownloadLoading] = useState(false)
+
   const { data, error, loading } = useRemoteResource(
     (signal) => getCurrentOrder(session.token, signal),
     [session?.token],
@@ -25,52 +26,33 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
   if (loading) {
     return (
-      <section className="dashboard-shell">
-        <div className="panel-card">
-          <h1>Loading dashboard</h1>
-          <p className="hero-copy">Fetching current order details from the live API.</p>
-        </div>
-      </section>
+      <div className="center-wrap" style={{ maxWidth: '960px', margin: '0 auto', padding: '20px' }}>
+        <section className="panel" style={{ padding: '28px', borderRadius: '12px', textAlign: 'center' }}>
+          <div className="skeleton-line" style={{ height: '24px', width: '200px', margin: '0 auto 16px', borderRadius: '4px' }} />
+          <div className="skeleton-line" style={{ height: '40px', width: '320px', margin: '0 auto 20px', borderRadius: '8px' }} />
+          <p style={{ color: 'var(--muted)' }}>Retrieving your order and subscription status...</p>
+        </section>
+      </div>
     )
   }
 
-  if (error instanceof ApiError && error.status === 404) {
-    return (
-      <section className="dashboard-shell">
-        <div className="panel-card">
-          <h1>No active orders</h1>
-          <p className="hero-copy">
-            Your session is valid, but the backend did not return an active order yet.
-          </p>
-        </div>
-      </section>
-    )
-  }
+  const liveStatus = String(data?.status || 'Pending').trim()
+  const isApproved = liveStatus.toLowerCase() === 'approved'
+  const isRejected = liveStatus.toLowerCase() === 'rejected'
+  const isPending = !isApproved && !isRejected
 
-  if (error) {
-    return (
-      <section className="dashboard-shell">
-        <div className="panel-card">
-          <h1>Dashboard unavailable</h1>
-          <p className="hero-copy">
-            {extractApiMessage(error.payload, error.message || 'Unable to load your order.')}
-          </p>
-        </div>
-      </section>
-    )
-  }
-
-  const liveStatus = String(data?.status || 'Pending').toUpperCase()
-  const livePlan = String(data?.plan || session.plan || 'Temp').toUpperCase()
-  const liveExpiry = data?.expiry || data?.expiryTime || session.expiry
-  const orderKey = String(data?.key || '')
-  const isApproved = String(data?.status || '').trim().toLowerCase() === 'approved'
+  const livePlan = String(data?.plan || session?.plan || 'Temp').trim()
+  const isFreePlan = livePlan.toLowerCase() === 'free'
+  const liveExpiry = data?.expiry || data?.expiryTime || session?.expiry
+  const isExpired = Boolean(data?.isExpired || session?.isExpired)
+  const orderKey = String(data?.key || '').trim()
   const keyUsed = Boolean(data?.isKeyUsed)
 
-  async function handleCopy() {
+  async function handleCopyKey() {
+    if (!orderKey) return
     await navigator.clipboard.writeText(orderKey)
-    setCopyLabel('Copied')
-    window.setTimeout(() => setCopyLabel('Copy Key'), 1400)
+    setCopiedKey(true)
+    setTimeout(() => setCopiedKey(false), 1500)
   }
 
   async function handleDownload() {
@@ -80,17 +62,20 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
     try {
       const payload = await getSecureDownload(
         session.token,
-        String(data?.plan || session.plan || '').trim().toLowerCase(),
+        livePlan.toLowerCase(),
       )
 
       if (!payload?.url) {
-        throw new Error('Download is unavailable for this account.')
+        throw new Error('Download URL could not be retrieved.')
       }
 
       window.open(payload.url, '_blank', 'noopener,noreferrer')
     } catch (downloadIssue) {
       setDownloadError(
-        extractApiMessage(downloadIssue.payload, downloadIssue.message || 'Download failed.'),
+        extractApiMessage(
+          downloadIssue.payload,
+          downloadIssue.message || 'Download failed. Please try again.',
+        ),
       )
     } finally {
       setDownloadLoading(false)
@@ -98,61 +83,174 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
   }
 
   return (
-    <section className="dashboard-shell">
-      <div className="dashboard-grid">
-        <article className="panel-card">
-          <span className="micro-label">Account</span>
-          <h1>{String(session.username || 'user').toUpperCase()}</h1>
-          <div className="detail-list">
-            <div>
-              <span>Plan</span>
-              <strong>{livePlan}</strong>
-            </div>
-            <div>
-              <span>Status</span>
-              <strong>{liveStatus}</strong>
-            </div>
-            <div>
-              <span>Expiry</span>
-              <strong>{formatDateTime(liveExpiry)}</strong>
+    <div className="center-wrap" style={{ maxWidth: '960px', margin: '0 auto', padding: '20px' }}>
+      <section className="panel" style={{ padding: '28px', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '24px' }}>
+          <div>
+            <span className="hero-eyebrow">Client Portal</span>
+            <h1 className="auth-title mt-6">Welcome, {String(session.username || 'User').toUpperCase()}</h1>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {!isFreePlan ? (
+              <NavLink to="/pages/change" className="btn btn-secondary btn-sm">
+                Change Password
+              </NavLink>
+            ) : null}
+            <NavLink to="/pages/products" className="btn btn-outline btn-sm">
+              Upgrade / Renew
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Status Alerts */}
+        {isPending ? (
+          <div className="alert-box alert-warning mb-20" style={{ padding: '14px 18px', borderRadius: '8px' }}>
+            <div className="alert-content">
+              <div>
+                <strong className="text-warning">⚠️ Order Pending Review</strong>
+                <p className="mb-0 mt-4" style={{ fontSize: '0.92rem' }}>
+                  Your order is currently awaiting admin verification. Access keys and downloads will be enabled once approved.
+                </p>
+              </div>
             </div>
           </div>
-        </article>
+        ) : null}
 
-        <article className="panel-card">
-          <span className="micro-label">Issued Key</span>
-          <h2>{orderKey || 'Pending approval'}</h2>
-          <p>
-            {keyUsed
-              ? 'The backend marks this key as used.'
-              : 'The backend currently marks this key as unused or pending.'}
-          </p>
+        {isExpired ? (
+          <div className="alert-box alert-danger mb-20" style={{ padding: '14px 18px', borderRadius: '8px' }}>
+            <div className="alert-content">
+              <div>
+                <strong className="text-danger">⛔ Subscription Expired</strong>
+                <p className="mb-0 mt-4" style={{ fontSize: '0.92rem' }}>
+                  Your access has expired. Please renew your plan from the products catalog to restore access.
+                </p>
+              </div>
+              <NavLink to="/pages/products" className="btn btn-primary btn-sm">
+                Renew Access
+              </NavLink>
+            </div>
+          </div>
+        ) : null}
+
+        {isRejected ? (
+          <div className="alert-box alert-danger mb-20" style={{ padding: '14px 18px', borderRadius: '8px' }}>
+            <strong className="text-danger">❌ Order Not Approved</strong>
+            <p className="mb-0 mt-4" style={{ fontSize: '0.92rem' }}>
+              Your order could not be verified. Please contact support on Discord or submit a valid payment proof.
+            </p>
+          </div>
+        ) : null}
+
+        {/* Stats Grid */}
+        <div className="stats-grid" style={{ marginBottom: '24px' }}>
+          <div className="stat-card">
+            <p className="stat-label">Username</p>
+            <div id="dashUsername" className="stat-value text-xl">
+              {String(session.username || 'User').toUpperCase()}
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <p className="stat-label">Active Plan</p>
+            <div id="dashPlan" className="stat-value text-xl text-secondary">
+              {livePlan.toUpperCase()}
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <p className="stat-label">
+              <span id="expiryIcon">{isExpired ? '🔴' : '🟢'}</span> Expiry
+            </p>
+            <div
+              id="dashExpiry"
+              className={`stat-value text-md ${isExpired ? 'text-danger' : 'text-success'}`}
+              style={{ fontSize: '1.05rem', marginTop: '6px' }}
+            >
+              {liveExpiry ? formatDateTime(liveExpiry) : 'No active expiry'}
+            </div>
+          </div>
+
+          <div className="stat-card" id="status-card">
+            <p className="stat-label">
+              <span id="statusIcon">{isApproved ? '✅' : isRejected ? '❌' : '⏳'}</span> Order Status
+            </p>
+            <div
+              id="dashOrderStatus"
+              className={`stat-value text-xl ${
+                isApproved ? 'text-success' : isRejected ? 'text-danger' : 'text-warning'
+              }`}
+            >
+              {liveStatus.toUpperCase()}
+            </div>
+          </div>
+        </div>
+
+        {/* License Key Card */}
+        <div className="card mb-24" id="key-card" style={{ background: 'var(--surface-strong)', padding: '20px', borderRadius: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span className="micro-label">LICENSE KEY</span>
+            <span className={`badge ${isApproved ? (keyUsed ? 'warning' : 'good') : 'warning'}`}>
+              {isApproved ? (keyUsed ? 'Used' : 'Active') : 'Pending'}
+            </span>
+          </div>
+
+          <div
+            id="dashOrderKey"
+            className="key-display-box"
+            style={{
+              padding: '12px 16px',
+              fontFamily: 'monospace',
+              fontSize: '1.15rem',
+              letterSpacing: '0.05em',
+              wordBreak: 'break-all',
+              color: orderKey ? 'var(--text)' : 'var(--muted)',
+            }}
+          >
+            {orderKey || 'Key will be issued upon admin approval'}
+          </div>
+
           {orderKey ? (
-            <button className="button button-secondary" onClick={handleCopy} type="button">
-              {copyLabel}
-            </button>
+            <div className="mt-12">
+              <button
+                id="copyDashKeyBtn"
+                className="btn btn-secondary btn-sm"
+                onClick={handleCopyKey}
+                type="button"
+              >
+                {copiedKey ? 'Key Copied!' : 'Copy License Key'}
+              </button>
+            </div>
           ) : null}
-        </article>
-      </div>
+        </div>
 
-      {isApproved ? (
-        <div className="panel-card">
-          <h3>Download access</h3>
-          <p>Your order is approved. Request the secure download URL from the current API.</p>
-          {downloadError ? <p className="form-error">{downloadError}</p> : null}
-          <button className="button button-primary" disabled={downloadLoading} onClick={handleDownload} type="button">
-            {downloadLoading ? 'Preparing download...' : 'Fetch Secure Download'}
-          </button>
-        </div>
-      ) : (
-        <div className="panel-card">
-          <h3>Approval pending</h3>
-          <p>
-            The legacy business rule is preserved: downloads remain locked until the
-            order status becomes approved.
-          </p>
-        </div>
-      )}
-    </section>
+        {/* Download Section */}
+        {isApproved ? (
+          <div className="card" style={{ background: 'var(--surface-strong)', padding: '20px', borderRadius: '10px' }}>
+            <span className="micro-label">SOFTWARE DOWNLOAD</span>
+            <h3 className="mt-4 mb-8">Verified Panel Package</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', marginBottom: '16px' }}>
+              Your account is approved. Fetch your secure binary build for {livePlan.toUpperCase()} directly.
+            </p>
+
+            {downloadError ? (
+              <div className="alert-box alert-danger mb-12">
+                <p className="mb-0 text-danger">{downloadError}</p>
+              </div>
+            ) : null}
+
+            <button
+              id="downloadPanelBtn"
+              className="btn btn-primary btn-large btn-download"
+              disabled={downloadLoading}
+              onClick={handleDownload}
+              type="button"
+            >
+              <span aria-hidden="true">📥 </span>
+              {downloadLoading ? 'Retrieving Secure Package...' : `Download ${livePlan.toUpperCase()} Panel`}
+            </button>
+          </div>
+        ) : null}
+      </section>
+    </div>
   )
 }

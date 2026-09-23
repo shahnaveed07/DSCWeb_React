@@ -1,35 +1,105 @@
-import { contactChannels } from '../content/siteContent'
+const contactChannels = [
+  {
+    tag: 'Community & Instant Help',
+    title: 'Discord Community Server',
+    description:
+      'Join our active server for real-time support, update announcements, and direct interaction with the DSC team and users.',
+    actionLabel: 'Join Discord Server ↗',
+    href: 'https://discord.gg/XB2Zjmsb7K',
+    primary: true,
+  },
+  {
+    tag: 'Formal Inquiries',
+    title: 'Official Email Support',
+    description:
+      'Reach out directly for partnership opportunities, licensing questions, business proposals, or account issues.',
+    actionLabel: 'Send an Email ↗',
+    href: 'mailto:darkskullcorporation@gmail.com',
+    primary: false,
+  },
+  {
+    tag: 'Open Source',
+    title: 'GitHub Organization',
+    description:
+      'Explore public code repositories, report bugs, review open source tools, and follow developer contributions.',
+    actionLabel: 'Visit GitHub Profile ↗',
+    href: 'https://github.com/shahnaveed07',
+    primary: false,
+  },
+  {
+    tag: 'Leadership',
+    title: 'Developer Portfolio',
+    description:
+      'Learn more about lead engineer Naveed Mushtaq, view past engineering work, and explore technical credentials.',
+    actionLabel: 'View Portfolio ↗',
+    href: 'https://naveedmushtaq.tech/',
+    primary: false,
+  },
+]
 
 export function ContactPage() {
   return (
-    <div className="page-stack">
-      <section className="hero-block">
-        <span className="hero-eyebrow">Contact and Support</span>
-        <h1>Reach out for product, business, or support conversations.</h1>
-        <p className="hero-copy">
-          The live DSCWeb already exposes email, Discord, and GitHub surfaces.
-          This page keeps those channels but turns them into a clearer contact
-          structure.
+    <div className="center-wrap" style={{ maxWidth: '1060px', margin: '0 auto', padding: '24px 20px' }}>
+      <section className="mb-32" style={{ textAlign: 'center' }}>
+        <span className="hero-eyebrow">Direct Communication</span>
+        <h1 className="mt-10" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800 }}>
+          Contact & Support Channels
+        </h1>
+        <p style={{ maxWidth: '640px', margin: '12px auto 0', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+          Have questions about your order, need technical assistance, or want to discuss a custom build?
+          Connect with the Dark Skull Corporation team through any of our official channels.
         </p>
       </section>
 
-      <section className="panel">
-        <div className="card-grid columns-3">
-          {contactChannels.map((channel) => (
-            <article className="contact-card" key={channel.label}>
-              <span className="card-label">{channel.label}</span>
-              <h3>{channel.title}</h3>
-              <p>{channel.body}</p>
+      {/* Channels Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+        {contactChannels.map((c) => (
+          <article
+            key={c.title}
+            className="card"
+            style={{
+              background: 'var(--surface-strong)',
+              border: '1px solid var(--surface-border)',
+              borderRadius: '12px',
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <span className="badge warning" style={{ marginBottom: '8px' }}>
+                {c.tag}
+              </span>
+              <h2 style={{ fontSize: '1.25rem', margin: '6px 0 10px', fontWeight: 700 }}>
+                {c.title}
+              </h2>
+              <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6, margin: 0 }}>
+                {c.description}
+              </p>
+            </div>
+
+            <div style={{ marginTop: '20px' }}>
               <a
-                className="button button-secondary"
-                href={channel.action.href}
-                rel={channel.action.href.startsWith('http') ? 'noreferrer' : undefined}
-                target={channel.action.href.startsWith('http') ? '_blank' : undefined}
+                className={`btn ${c.primary ? 'btn-primary' : 'btn-secondary'} w-100`}
+                href={c.href}
+                target="_blank"
+                rel="noreferrer"
               >
-                {channel.action.label}
+                {c.actionLabel}
               </a>
-            </article>
-          ))}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* Support FAQ */}
+      <section className="seo-section">
+        <div className="seo-container">
+          <h2>Order & Licensing Support Notice</h2>
+          <p>
+            Orders placed via the checkout system undergo verification of screenshot payment proofs. Once confirmed by our administrators, your access key is available immediately on your User Dashboard. If you experience delays over 24 hours, post your order ID or transaction reference in our Discord support channel for priority review.
+          </p>
         </div>
       </section>
     </div>
