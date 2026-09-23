@@ -47,9 +47,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
       <div className="auth-card">
         <span className="hero-eyebrow">Control Center</span>
         <h1>Admin Portal</h1>
-        <p className="hero-copy">
-          Authorized personnel only. Review order submissions, manage customer licenses, configure system maintenance, and adjust broadcast notices.
-        </p>
+        <p className="hero-copy">Authorized administrators only.</p>
 
         <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">
@@ -59,7 +57,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
               onChange={(event) =>
                 !loading && setForm((current) => ({ ...current, username: event.target.value }))
               }
-              placeholder="Enter admin username"
+              placeholder="Enter username"
               readOnly={loading}
               required
               type="text"
@@ -74,7 +72,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
               onChange={(event) =>
                 !loading && setForm((current) => ({ ...current, password: event.target.value }))
               }
-              placeholder="Enter admin password"
+              placeholder="Enter password"
               readOnly={loading}
               required
               type="password"
@@ -95,7 +93,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
                 <span>Authenticating...</span>
               </span>
             ) : (
-              <span>Sign In as Admin</span>
+              <span>Admin Login</span>
             )}
           </button>
         </form>

@@ -43,3 +43,18 @@ export function toBase64DataUrl(file) {
     reader.readAsDataURL(file)
   })
 }
+
+export function toDatetimeLocal(iso) {
+  if (!iso) return ''
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ''
+  const offsetMs = date.getTimezoneOffset() * 60 * 1000
+  const local = new Date(date.getTime() - offsetMs)
+  return local.toISOString().slice(0, 16)
+}
+
+export function toIsoOrNullFromDatetimeLocal(localStr) {
+  if (!localStr) return null
+  const date = new Date(localStr)
+  return Number.isNaN(date.getTime()) ? null : date.toISOString()
+}

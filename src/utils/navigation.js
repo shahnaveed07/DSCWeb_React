@@ -17,14 +17,15 @@ export function getContextualMenu({ pathname = '/', session = null, isOwner = fa
   // 1. ADMIN LOGGED-IN CONTEXT
   // ---------------------------------------------------------------------------
   if (role === 'Admin') {
-    const adminSuiteItems = [
+    const adminItems = [
       { label: 'Admin Dashboard', to: '/pages/adash', isCurrent: path === '/pages/adash' },
       { label: 'Generate Key', to: '/pages/generatekey', isCurrent: path === '/pages/generatekey' },
     ]
 
+    // Only expose OwnerDB if verified owner
     if (isOwner) {
-      adminSuiteItems.push({
-        label: 'Owner Workspace',
+      adminItems.push({
+        label: 'OwnerDB',
         to: '/pages/ownerdb',
         isCurrent: path === '/pages/ownerdb',
         badge: 'Owner',
@@ -32,27 +33,28 @@ export function getContextualMenu({ pathname = '/', session = null, isOwner = fa
     }
 
     const operationsItems = [
-      { label: 'Panel Downloads', to: '/pages/downloads', isCurrent: path === '/pages/downloads' },
+      { label: 'Download Panel', to: '/pages/downloads', isCurrent: path === '/pages/downloads' },
       { label: 'System Status', to: '/pages/status', isCurrent: path === '/pages/status' },
     ]
 
-    // Contextual site links if navigating public pages as admin
-    const isPublicPage = !['/pages/adash', '/pages/generatekey', '/pages/ownerdb'].includes(path)
     const groups = [
-      { title: 'Admin Controls', items: adminSuiteItems },
-      { title: 'System & Downloads', items: operationsItems },
+      { title: 'Admin Controls', items: adminItems },
+      { title: 'Operations', items: operationsItems },
     ]
 
-    if (isPublicPage) {
-      groups.push({
-        title: 'Public Site',
-        items: [
-          { label: 'Home', to: '/', isCurrent: path === '/' || path === '' },
-          { label: 'Apps', to: '/pages/apps', isCurrent: path === '/pages/apps' },
-          { label: 'Products', to: '/pages/products', isCurrent: path === '/pages/products' },
-          { label: 'Contact', to: '/pages/contact', isCurrent: path === '/pages/contact' },
-        ].filter((i) => !i.isCurrent),
-      })
+    // If browsing public pages while logged in as admin, show concise contextual public links
+    const isAdminTool = ['/pages/adash', '/pages/generatekey', '/pages/ownerdb'].includes(path)
+    if (!isAdminTool) {
+      const publicItems = [
+        { label: 'Home', to: '/', isCurrent: path === '/' || path === '' },
+        { label: 'Apps', to: '/pages/apps', isCurrent: path === '/pages/apps' },
+        { label: 'Products', to: '/pages/products', isCurrent: path === '/pages/products' },
+        { label: 'Contact', to: '/pages/contact', isCurrent: path === '/pages/contact' },
+      ].filter((item) => !item.isCurrent)
+
+      if (publicItems.length > 0) {
+        groups.push({ title: 'Public Site', items: publicItems })
+      }
     }
 
     groups.push({
@@ -74,31 +76,31 @@ export function getContextualMenu({ pathname = '/', session = null, isOwner = fa
   // 2. USER LOGGED-IN CONTEXT
   // ---------------------------------------------------------------------------
   if (role === 'User') {
-    const userPortalItems = [
-      { label: 'Client Dashboard', to: '/pages/udash', isCurrent: path === '/pages/udash' },
-      { label: 'Software Downloads', to: '/pages/downloads', isCurrent: path === '/pages/downloads' },
-      { label: 'Products & Renewals', to: '/pages/products', isCurrent: path === '/pages/products' },
+    const userItems = [
+      { label: 'Dashboard', to: '/pages/udash', isCurrent: path === '/pages/udash' },
+      { label: 'Downloads', to: '/pages/downloads', isCurrent: path === '/pages/downloads' },
+      { label: 'Products / Store', to: '/pages/products', isCurrent: path === '/pages/products' },
       { label: 'Change Password', to: '/pages/change', isCurrent: path === '/pages/change' },
     ]
 
-    const groups = [{ title: 'Client Portal', items: userPortalItems }]
+    const groups = [{ title: 'User Account', items: userItems }]
 
+    // Secondary contextual exploration
     if (path === '/pages/udash' || path === '/pages/change') {
       groups.push({
         title: 'Explore',
         items: [
           { label: 'Home', to: '/' },
-          { label: 'Applications', to: '/pages/apps' },
-          { label: 'Contact & Support', to: '/pages/contact' },
+          { label: 'Apps', to: '/pages/apps' },
+          { label: 'Contact', to: '/pages/contact' },
         ],
       })
     } else {
-      // On public page as logged-in user
       const publicLinks = [
         { label: 'Home', to: '/', isCurrent: path === '/' || path === '' },
         { label: 'Apps', to: '/pages/apps', isCurrent: path === '/pages/apps' },
         { label: 'Contact', to: '/pages/contact', isCurrent: path === '/pages/contact' },
-      ].filter((i) => !i.isCurrent)
+      ].filter((item) => !item.isCurrent)
 
       if (publicLinks.length > 0) {
         groups.push({ title: 'Navigation', items: publicLinks })
@@ -124,231 +126,253 @@ export function getContextualMenu({ pathname = '/', session = null, isOwner = fa
   // 3. PUBLIC / GUEST CONTEXT (BY CURRENT PAGE)
   // ---------------------------------------------------------------------------
 
-  // Products Page
-  if (path === '/pages/products') {
+  // HOME (/)
+  if (path === '/' || path === '' || path === '/index.html') {
     return [
-      {
-        title: 'Catalog & Store',
-        items: [
-          { label: 'Products Catalog', to: '/pages/products', isCurrent: true },
-          { label: 'Checkout & Order', to: '/pages/checkout' },
-          { label: 'Free Panel Tier', to: '/pages/freepanel' },
-        ],
-      },
       {
         title: 'Navigation',
         items: [
-          { label: 'Home', to: '/' },
-          { label: 'Applications', to: '/pages/apps' },
-          { label: 'Downloads Center', to: '/pages/downloads' },
-          { label: 'Contact & Support', to: '/pages/contact' },
-        ],
-      },
-      {
-        title: 'Account',
-        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
-      },
-    ]
-  }
-
-  // Checkout Page
-  if (path === '/pages/checkout') {
-    return [
-      {
-        title: 'Order Processing',
-        items: [
-          { label: 'Checkout', to: '/pages/checkout', isCurrent: true },
-          { label: 'Products Catalog', to: '/pages/products' },
-          { label: 'Free Panel Tier', to: '/pages/freepanel' },
-        ],
-      },
-      {
-        title: 'Navigation',
-        items: [
-          { label: 'Home', to: '/' },
-          { label: 'Downloads Center', to: '/pages/downloads' },
-          { label: 'Contact & Support', to: '/pages/contact' },
-        ],
-      },
-      {
-        title: 'Account',
-        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
-      },
-    ]
-  }
-
-  // Free Panel Page
-  if (path === '/pages/freepanel') {
-    return [
-      {
-        title: 'Free Panel',
-        items: [
-          { label: 'Free Panel Credentials', to: '/pages/freepanel', isCurrent: true },
-          { label: 'Downloads Center', to: '/pages/downloads' },
-          { label: 'Products Catalog', to: '/pages/products' },
-        ],
-      },
-      {
-        title: 'Navigation',
-        items: [
-          { label: 'Home', to: '/' },
-          { label: 'Contact & Support', to: '/pages/contact' },
-        ],
-      },
-      {
-        title: 'Account',
-        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
-      },
-    ]
-  }
-
-  // Downloads Page
-  if (path === '/pages/downloads') {
-    return [
-      {
-        title: 'Downloads Center',
-        items: [
-          { label: 'Downloads', to: '/pages/downloads', isCurrent: true },
-          { label: 'Free Panel Tier', to: '/pages/freepanel' },
-          { label: 'Products Catalog', to: '/pages/products' },
-        ],
-      },
-      {
-        title: 'Navigation',
-        items: [
-          { label: 'Home', to: '/' },
-          { label: 'Applications', to: '/pages/apps' },
-          { label: 'System Status', to: '/pages/status' },
-          { label: 'Contact & Support', to: '/pages/contact' },
-        ],
-      },
-      {
-        title: 'Account',
-        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
-      },
-    ]
-  }
-
-  // Apps Page
-  if (path === '/pages/apps') {
-    return [
-      {
-        title: 'Software Suite',
-        items: [
-          { label: 'Applications', to: '/pages/apps', isCurrent: true },
-          { label: 'Downloads Center', to: '/pages/downloads' },
-          { label: 'Products Catalog', to: '/pages/products' },
-        ],
-      },
-      {
-        title: 'Navigation',
-        items: [
-          { label: 'Home', to: '/' },
-          { label: 'About Studio', to: '/pages/about' },
-          { label: 'Contact & Support', to: '/pages/contact' },
-          { label: 'System Status', to: '/pages/status' },
+          { label: 'Apps', to: '/pages/apps' },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'About', to: '/pages/about' },
+          { label: 'Contact', to: '/pages/contact' },
+          { label: 'Status', to: '/pages/status' },
         ],
       },
       {
         title: 'Community',
-        items: [{ label: 'Discord Server', href: 'https://discord.gg/XB2Zjmsb7K' }],
+        items: [{ label: 'Discord', href: 'https://discord.gg/XB2Zjmsb7K' }],
       },
-    ]
-  }
-
-  // About Page
-  if (path === '/pages/about') {
-    return [
-      {
-        title: 'Company',
-        items: [
-          { label: 'About Dark Skull', to: '/pages/about', isCurrent: true },
-          { label: 'Contact Channels', to: '/pages/contact' },
-          { label: 'Discord Server', href: 'https://discord.gg/XB2Zjmsb7K' },
-        ],
-      },
-      {
-        title: 'Software',
-        items: [
-          { label: 'Home', to: '/' },
-          { label: 'Applications', to: '/pages/apps' },
-          { label: 'Products Catalog', to: '/pages/products' },
-          { label: 'Downloads', to: '/pages/downloads' },
-        ],
-      },
-    ]
-  }
-
-  // Contact Page
-  if (path === '/pages/contact') {
-    return [
-      {
-        title: 'Support & Inquiries',
-        items: [
-          { label: 'Contact Channels', to: '/pages/contact', isCurrent: true },
-          { label: 'Discord Server', href: 'https://discord.gg/XB2Zjmsb7K' },
-          { label: 'System Status', to: '/pages/status' },
-        ],
-      },
-      {
-        title: 'Navigation',
-        items: [
-          { label: 'Home', to: '/' },
-          { label: 'About Studio', to: '/pages/about' },
-          { label: 'Products Catalog', to: '/pages/products' },
-        ],
-      },
-    ]
-  }
-
-  // User Login Page
-  if (path === '/pages/ulogin') {
-    return [
       {
         title: 'Access Portals',
         items: [
-          { label: 'Client Login', to: '/pages/ulogin', isCurrent: true },
+          { label: 'Client Login', to: '/pages/ulogin' },
           { label: 'Admin Portal', to: '/pages/alogin' },
         ],
       },
+    ]
+  }
+
+  // APPS (/pages/apps)
+  if (path === '/pages/apps') {
+    return [
       {
         title: 'Navigation',
         items: [
           { label: 'Home', to: '/' },
-          { label: 'Products Catalog', to: '/pages/products' },
-          { label: 'Downloads Center', to: '/pages/downloads' },
-          { label: 'Contact & Support', to: '/pages/contact' },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'About', to: '/pages/about' },
+          { label: 'Contact', to: '/pages/contact' },
+          { label: 'Status', to: '/pages/status' },
         ],
+      },
+      {
+        title: 'Community',
+        items: [{ label: 'Discord', href: 'https://discord.gg/XB2Zjmsb7K' }],
+      },
+      {
+        title: 'Access',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
       },
     ]
   }
 
-  // Admin Login Page
+  // PRODUCTS (/pages/products)
+  if (path === '/pages/products') {
+    return [
+      {
+        title: 'Store & Catalog',
+        items: [
+          { label: 'Products', to: '/pages/products', isCurrent: true },
+          { label: 'Checkout', to: '/pages/checkout' },
+          { label: 'Free Panel', to: '/pages/freepanel' },
+        ],
+      },
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Home', to: '/' },
+          { label: 'Apps', to: '/pages/apps' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'About', to: '/pages/about' },
+          { label: 'Contact', to: '/pages/contact' },
+        ],
+      },
+      {
+        title: 'Access',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
+      },
+    ]
+  }
+
+  // DOWNLOADS (/pages/downloads)
+  if (path === '/pages/downloads') {
+    return [
+      {
+        title: 'Downloads',
+        items: [
+          { label: 'Downloads', to: '/pages/downloads', isCurrent: true },
+          { label: 'Free Panel', to: '/pages/freepanel' },
+        ],
+      },
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Home', to: '/' },
+          { label: 'Apps', to: '/pages/apps' },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Status', to: '/pages/status' },
+          { label: 'Contact', to: '/pages/contact' },
+        ],
+      },
+      {
+        title: 'Access',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
+      },
+    ]
+  }
+
+  // ABOUT (/pages/about)
+  if (path === '/pages/about') {
+    return [
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Home', to: '/' },
+          { label: 'Apps', to: '/pages/apps' },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Contact', to: '/pages/contact' },
+        ],
+      },
+      {
+        title: 'Community',
+        items: [{ label: 'Discord', href: 'https://discord.gg/XB2Zjmsb7K' }],
+      },
+    ]
+  }
+
+  // CONTACT (/pages/contact)
+  if (path === '/pages/contact') {
+    return [
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Home', to: '/' },
+          { label: 'About', to: '/pages/about' },
+          { label: 'Status', to: '/pages/status' },
+        ],
+      },
+      {
+        title: 'Community',
+        items: [{ label: 'Discord', href: 'https://discord.gg/XB2Zjmsb7K' }],
+      },
+    ]
+  }
+
+  // STATUS (/pages/status)
+  if (path === '/pages/status') {
+    return [
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Home', to: '/' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'Contact', to: '/pages/contact' },
+        ],
+      },
+      {
+        title: 'Access',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
+      },
+    ]
+  }
+
+  // CHECKOUT (/pages/checkout)
+  if (path === '/pages/checkout') {
+    return [
+      {
+        title: 'Checkout Navigation',
+        items: [
+          { label: 'Checkout', to: '/pages/checkout', isCurrent: true },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'Home', to: '/' },
+          { label: 'Free Panel', to: '/pages/freepanel' },
+        ],
+      },
+      {
+        title: 'Account',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
+      },
+    ]
+  }
+
+  // FREE PANEL (/pages/freepanel)
+  if (path === '/pages/freepanel') {
+    return [
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Free Panel', to: '/pages/freepanel', isCurrent: true },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Home', to: '/' },
+          { label: 'Contact', to: '/pages/contact' },
+        ],
+      },
+      {
+        title: 'Account',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
+      },
+    ]
+  }
+
+  // USER LOGIN (/pages/ulogin)
+  if (path === '/pages/ulogin') {
+    return [
+      {
+        title: 'Navigation',
+        items: [
+          { label: 'Home', to: '/' },
+          { label: 'Apps', to: '/pages/apps' },
+          { label: 'Products', to: '/pages/products' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'Contact', to: '/pages/contact' },
+        ],
+      },
+      {
+        title: 'Admin Access',
+        items: [{ label: 'Admin Portal', to: '/pages/alogin' }],
+      },
+    ]
+  }
+
+  // ADMIN LOGIN (/pages/alogin)
   if (path === '/pages/alogin') {
     return [
       {
-        title: 'Access Portals',
-        items: [
-          { label: 'Admin Portal', to: '/pages/alogin', isCurrent: true },
-          { label: 'Client Login', to: '/pages/ulogin' },
-        ],
-      },
-      {
         title: 'Navigation',
         items: [
           { label: 'Home', to: '/' },
-          { label: 'Downloads Center', to: '/pages/downloads' },
-          { label: 'System Status', to: '/pages/status' },
+          { label: 'Downloads', to: '/pages/downloads' },
+          { label: 'Status', to: '/pages/status' },
+          { label: 'Contact', to: '/pages/contact' },
         ],
+      },
+      {
+        title: 'Client Access',
+        items: [{ label: 'Client Login', to: '/pages/ulogin' }],
       },
     ]
   }
 
-  // Legal Pages (Privacy Policy, Terms)
+  // LEGAL PAGES (/pages/privacy-policy, /pages/terms, /pages/policy)
   if (path === '/pages/privacy-policy' || path === '/pages/terms' || path === '/pages/policy') {
     return [
       {
-        title: 'Legal & Policies',
+        title: 'Policies',
         items: [
           { label: 'Privacy Policy', to: '/pages/privacy-policy', isCurrent: path === '/pages/privacy-policy' || path === '/pages/policy' },
           { label: 'Terms of Service', to: '/pages/terms', isCurrent: path === '/pages/terms' },
@@ -358,36 +382,30 @@ export function getContextualMenu({ pathname = '/', session = null, isOwner = fa
         title: 'Navigation',
         items: [
           { label: 'Home', to: '/' },
-          { label: 'About Studio', to: '/pages/about' },
-          { label: 'Contact & Support', to: '/pages/contact' },
+          { label: 'About', to: '/pages/about' },
+          { label: 'Contact', to: '/pages/contact' },
         ],
       },
     ]
   }
 
-  // Default / Home Page (`/`)
+  // Fallback
   return [
     {
       title: 'Navigation',
       items: [
-        { label: 'Applications', to: '/pages/apps' },
-        { label: 'Products Catalog', to: '/pages/products' },
-        { label: 'Downloads Center', to: '/pages/downloads' },
-        { label: 'About Studio', to: '/pages/about' },
-        { label: 'Contact & Support', to: '/pages/contact' },
-        { label: 'System Status', to: '/pages/status' },
+        { label: 'Home', to: '/' },
+        { label: 'Apps', to: '/pages/apps' },
+        { label: 'Products', to: '/pages/products' },
+        { label: 'Downloads', to: '/pages/downloads' },
+        { label: 'About', to: '/pages/about' },
+        { label: 'Contact', to: '/pages/contact' },
+        { label: 'Status', to: '/pages/status' },
       ],
     },
     {
-      title: 'Community',
-      items: [{ label: 'Discord Server', href: 'https://discord.gg/XB2Zjmsb7K' }],
-    },
-    {
-      title: 'Access Portals',
-      items: [
-        { label: 'Client Login', to: '/pages/ulogin' },
-        { label: 'Admin Portal', to: '/pages/alogin' },
-      ],
+      title: 'Access',
+      items: [{ label: 'Client Login', to: '/pages/ulogin' }],
     },
   ]
 }

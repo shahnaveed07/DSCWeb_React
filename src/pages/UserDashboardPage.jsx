@@ -202,7 +202,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
                 onClick={handleCopyKey}
                 type="button"
               >
-                {copiedKey ? 'Key Copied!' : 'Copy License Key'}
+                {copiedKey ? 'Copied!' : 'Copy License Key'}
               </button>
             </div>
           ) : null}
@@ -231,7 +231,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
               type="button"
             >
               <span aria-hidden="true">📥 </span>
-              {downloadLoading ? 'Retrieving Secure Package...' : `Download ${livePlan.toUpperCase()} Panel`}
+              {downloadLoading ? 'Retrieving Package...' : `Download ${livePlan.toUpperCase()} Panel`}
             </button>
           </div>
         ) : null}

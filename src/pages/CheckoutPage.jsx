@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { extractApiMessage, submitCheckout } from '../services/dscApi'
 
 const BASE_PRICES = {
@@ -152,9 +152,9 @@ export function CheckoutPage() {
           <h1 className="auth-title">Invalid Selection</h1>
           <p className="auth-subtitle">No valid panel was selected for checkout.</p>
           <div className="mt-20">
-            <a className="btn btn-primary" href="/pages/products">
-              View Available Products
-            </a>
+            <NavLink className="button button-primary" to="/pages/products">
+              View Products
+            </NavLink>
           </div>
         </section>
       </main>
@@ -331,9 +331,9 @@ export function CheckoutPage() {
               >
                 {loading
                   ? requiresProof
-                    ? 'Uploading Proof & Processing...'
+                    ? 'Submitting Order...'
                     : 'Processing...'
-                  : 'Submit Order for Approval'}
+                  : 'Submit Order'}
               </button>
             </div>
           </div>

@@ -159,21 +159,6 @@ export function ProductsPage() {
           </article>
         ))}
       </div>
-
-      {/* SEO Section */}
-      <section className="seo-section">
-        <div className="seo-container">
-          <h2>Why Choose Dark Skull Corporation Software?</h2>
-          <p>
-            Dark Skull Corporation delivers robust, reliable software solutions designed for high performance, ease of use, and security. Whether you are looking for free lightweight utilities or specialized software access, our products undergo continuous optimization and testing to ensure an exceptional experience.
-          </p>
-
-          <h2>Approval-Based Licensing & Security</h2>
-          <p>
-            All premium panels use an approval-based licensing mechanism with verified payment proofs and direct administrator review. This guarantees that your access keys are unique, verified, and secure. Need assistance or have questions? Our community on Discord is always ready to support you.
-          </p>
-        </div>
-      </section>
     </div>
   )
 }

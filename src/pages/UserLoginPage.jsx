@@ -46,9 +46,6 @@ export function UserLoginPage({ session, onSessionChange }) {
       <div className="auth-card">
         <span className="hero-eyebrow">Client Portal</span>
         <h1>Account Login</h1>
-        <p className="hero-copy">
-          Sign in to manage your active panel subscriptions, view your verified license key, and download authorized software builds.
-        </p>
 
         <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">
@@ -58,7 +55,7 @@ export function UserLoginPage({ session, onSessionChange }) {
               onChange={(event) =>
                 !loading && setForm((current) => ({ ...current, username: event.target.value }))
               }
-              placeholder="Enter your username"
+              placeholder="Enter username"
               readOnly={loading}
               required
               type="text"
@@ -73,7 +70,7 @@ export function UserLoginPage({ session, onSessionChange }) {
               onChange={(event) =>
                 !loading && setForm((current) => ({ ...current, password: event.target.value }))
               }
-              placeholder="Enter your password"
+              placeholder="Enter password"
               readOnly={loading}
               required
               type="password"

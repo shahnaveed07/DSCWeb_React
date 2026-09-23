@@ -13,7 +13,7 @@ const appsList = [
       'Clean interface with zero intrusive ads',
       'Low memory consumption',
     ],
-    action: { label: 'Download Application', to: '/pages/downloads' },
+    action: { label: 'Download', to: '/pages/downloads' },
   },
   {
     badge: 'Android App',
@@ -28,7 +28,7 @@ const appsList = [
       'No telemetry or background data mining',
     ],
     action: {
-      label: 'Google Play Store',
+      label: 'Google Play',
       href: 'https://play.google.com/store/apps/details?id=com.dsc.qrscanner',
     },
   },
@@ -45,7 +45,7 @@ const appsList = [
       'Smooth animations & intuitive touch controls',
     ],
     action: {
-      label: 'Google Play Store',
+      label: 'Google Play',
       href: 'https://play.google.com/store/apps/details?id=com.dsc.mindmatrix',
     },
   },
@@ -104,21 +104,6 @@ export function AppsPage() {
           </article>
         ))}
       </div>
-
-      {/* Engineering Philosophy Section */}
-      <section className="seo-section">
-        <div className="seo-container">
-          <h2>Application Development Philosophy</h2>
-          <p>
-            At Dark Skull Corporation, we build our software around clear everyday use cases. We believe applications should load in milliseconds, consume minimal system memory, and require zero complex setup.
-          </p>
-
-          <h2>Multi-Platform Roadmap</h2>
-          <p>
-            Our software engineering pipeline targets Windows Desktop, native Android runtime, and cross-platform web utilities. All releases are continuously updated and monitored for performance.
-          </p>
-        </div>
-      </section>
     </div>
   )
 }

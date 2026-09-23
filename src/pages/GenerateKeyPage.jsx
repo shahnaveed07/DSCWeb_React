@@ -45,9 +45,6 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
       <div className="auth-card">
         <span className="hero-eyebrow">Licensing Authority</span>
         <h1>Generate Access Key</h1>
-        <p className="hero-copy">
-          Provision an authorized software license key with a custom duration for any available panel product.
-        </p>
 
         <form className="form-stack" onSubmit={submit}>
           <label className="field">
@@ -81,7 +78,7 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
           {error ? <p className="form-error" role="alert">{error}</p> : null}
 
           <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Generating Key...' : 'Generate License Key'}
+            {loading ? 'Generating...' : 'Generate License Key'}
           </button>
         </form>
 
@@ -102,13 +99,13 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
               {key}
             </div>
             <button className="button button-secondary button-sm" onClick={copyKey} type="button">
-              {copied ? 'Copied to Clipboard!' : 'Copy Key'}
+              {copied ? 'Copied!' : 'Copy Key'}
             </button>
           </article>
         ) : null}
 
         <div className="link-row">
-          <Link to="/pages/adash">← Back to Admin Dashboard</Link>
+          <Link to="/pages/adash">Back to Dashboard</Link>
         </div>
       </div>
     </section>

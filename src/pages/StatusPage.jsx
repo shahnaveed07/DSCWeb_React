@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 const statusStates = {
   update: {
@@ -35,9 +35,9 @@ export function StatusPage() {
   return (
     <section className="status-layout">
       <div className="panel status-panel">
-        <a className="status-brand" href="/" aria-label="DSCWeb home">
+        <Link className="status-brand" to="/" aria-label="DSCWeb home">
           <img src="/images/dsclogo.png" alt="" className="status-logo" />
-        </a>
+        </Link>
 
         <div className="status-content">
           <span className="card-badge status-badge">{state.label}</span>
@@ -49,9 +49,9 @@ export function StatusPage() {
           <button className="button button-primary" type="button" onClick={() => window.location.reload()}>
             Try Again
           </button>
-          <a className="button button-ghost" href="/">
+          <Link className="button button-ghost" to="/">
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </section>

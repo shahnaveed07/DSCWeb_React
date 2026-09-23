@@ -40,22 +40,24 @@ export function DownloadsPage({ systemStatus }) {
 
           <div className="download-card-actions">
             {freeLink ? (
-              <a
-                className="button button-primary w-100"
-                href={freeLink}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span aria-hidden="true">📥 </span>Download Free Panel
-              </a>
+              <>
+                <a
+                  className="button button-primary w-100"
+                  href={freeLink}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span aria-hidden="true">📥 </span>Download Free Panel
+                </a>
+                <NavLink to="/pages/freepanel" className="button button-secondary w-100">
+                  View Credentials
+                </NavLink>
+              </>
             ) : (
               <NavLink to="/pages/freepanel" className="button button-primary w-100">
                 Check Availability & Credentials
               </NavLink>
             )}
-            <NavLink to="/pages/freepanel" className="button button-secondary w-100">
-              View Free Credentials
-            </NavLink>
           </div>
         </article>
 
@@ -75,7 +77,7 @@ export function DownloadsPage({ systemStatus }) {
 
           <div className="download-card-actions">
             <NavLink to="/pages/apps" className="button button-secondary w-100">
-              Application Details & Overview
+              App Details
             </NavLink>
           </div>
         </article>
@@ -101,7 +103,7 @@ export function DownloadsPage({ systemStatus }) {
               target="_blank"
               rel="noreferrer"
             >
-              Google Play Store ↗
+              Google Play ↗
             </a>
           </div>
         </article>
@@ -127,26 +129,11 @@ export function DownloadsPage({ systemStatus }) {
               target="_blank"
               rel="noreferrer"
             >
-              Google Play Store ↗
+              Google Play ↗
             </a>
           </div>
         </article>
       </div>
-
-      {/* Security & Verification Notice */}
-      <section className="seo-section">
-        <div className="seo-container">
-          <h2>Package Integrity & Security</h2>
-          <p>
-            Every software distribution package provided by Dark Skull Corporation is compiled directly from our source repository and checked for integrity. For safety, always ensure you are downloading packages directly from official DSCWeb pages or our verified Google Play store links.
-          </p>
-
-          <h2>Need Help with an Installation?</h2>
-          <p>
-            If you encounter any difficulty running or installing any DSC application, please visit our Discord community server or contact our team for assistance.
-          </p>
-        </div>
-      </section>
     </div>
   )
 }

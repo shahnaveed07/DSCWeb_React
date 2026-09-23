@@ -27,7 +27,7 @@ const principles = [
   {
     number: '02',
     title: 'Clean Interfaces',
-    desc: 'Software should be straightforward to understand. We prioritize clarity, high readability, and responsive responsiveness.',
+    desc: 'Software should be straightforward to understand. We prioritize clarity, high readability, and responsive design.',
   },
   {
     number: '03',
@@ -100,10 +100,10 @@ export function AboutPage() {
         </p>
         <div className="about-cta-actions">
           <NavLink to="/pages/products" className="button button-primary">
-            View Products Catalog
+            View Products
           </NavLink>
           <NavLink to="/pages/contact" className="button button-secondary">
-            Get in Touch
+            Contact Us
           </NavLink>
         </div>
       </section>

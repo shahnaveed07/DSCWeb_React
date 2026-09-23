@@ -273,7 +273,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                         <div className="row-actions">
                           <button
                             type="button"
-                            className="btn btn-primary btn-sm"
+                            className="button button-primary button-sm"
                             disabled={busy}
                             onClick={() =>
                               setOrderModal({
@@ -287,7 +287,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                           </button>
                           <button
                             type="button"
-                            className="btn btn-danger btn-sm"
+                            className="button button-danger button-sm"
                             disabled={busy}
                             onClick={() =>
                               setOrderModal({
@@ -358,7 +358,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                         <div className="row-actions">
                           <button
                             type="button"
-                            className="btn btn-secondary btn-sm"
+                            className="button button-secondary button-sm"
                             onClick={() => setEditUser({ ...user })}
                           >
                             Edit
@@ -366,7 +366,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                           {ownerAccess ? (
                             <button
                               type="button"
-                              className="btn btn-danger btn-sm"
+                              className="button button-danger button-sm"
                               disabled={busy}
                               onClick={() =>
                                 setDeleteModal({
@@ -427,7 +427,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 type="button"
-                className={orderModal.mode === 'approve' ? 'btn btn-success' : 'btn btn-danger'}
+                className={orderModal.mode === 'approve' ? 'button button-success' : 'button button-danger'}
                 onClick={handleOrderConfirm}
                 disabled={busy}
               >
@@ -435,7 +435,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               </button>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="button button-secondary"
                 onClick={() => setOrderModal(null)}
                 disabled={busy}
               >
@@ -462,7 +462,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 type="button"
-                className="btn btn-danger"
+                className="button button-danger"
                 onClick={handleDeleteConfirm}
                 disabled={busy}
               >
@@ -470,7 +470,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               </button>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="button button-secondary"
                 onClick={() => setDeleteModal(null)}
                 disabled={busy}
               >
@@ -527,11 +527,11 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="btn btn-primary" disabled={busy} type="submit">
+              <button className="button button-primary" disabled={busy} type="submit">
                 Save Changes
               </button>
               <button
-                className="btn btn-secondary"
+                className="button button-secondary"
                 type="button"
                 onClick={() => setEditUser(null)}
               >
@@ -574,11 +574,11 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="btn btn-primary" disabled={busy} type="submit">
+              <button className="button button-primary" disabled={busy} type="submit">
                 Create Admin
               </button>
               <button
-                className="btn btn-secondary"
+                className="button button-secondary"
                 type="button"
                 onClick={() => setShowCreateAdmin(false)}
               >
@@ -620,11 +620,11 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="btn btn-primary" disabled={busy} type="submit">
+              <button className="button button-primary" disabled={busy} type="submit">
                 Update Password
               </button>
               <button
-                className="btn btn-secondary"
+                className="button button-secondary"
                 type="button"
                 onClick={() => setShowPassModal(false)}
               >

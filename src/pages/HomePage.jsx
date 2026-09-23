@@ -219,7 +219,7 @@ export function HomePage() {
             Dark Skull Corporation is an independent software studio focused on applications, desktop tools, and games. Our software evolves through practical testing, community feedback, and steady refinement.
           </p>
           <div className="highlight-action">
-            <ButtonLink action={{ label: 'Learn More About DSC', to: '/pages/about' }} className="button button-secondary" />
+            <ButtonLink action={{ label: 'About Studio', to: '/pages/about' }} className="button button-secondary" />
           </div>
         </article>
 
@@ -230,7 +230,7 @@ export function HomePage() {
             Have questions about an active order, need technical assistance, or want to discuss custom utility development? We maintain active community and support channels.
           </p>
           <div className="highlight-action">
-            <ButtonLink action={{ label: 'Contact Support Team', to: '/pages/contact' }} className="button button-primary" />
+            <ButtonLink action={{ label: 'Contact Support', to: '/pages/contact' }} className="button button-primary" />
           </div>
         </article>
       </section>

@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function useRemoteResource(loader, deps = [], options = {}) {
   const { enabled = true, initialData = null } = options
   const [data, setData] = useState(initialData)
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(enabled)
+  const [loading, setLoading] = useState(Boolean(enabled))
+  const loaderRef = useRef(loader)
+  loaderRef.current = loader
 
   useEffect(() => {
     if (!enabled) {
-      setLoading(false)
       return undefined
     }
 
@@ -18,7 +19,7 @@ export function useRemoteResource(loader, deps = [], options = {}) {
     setLoading(true)
     setError(null)
 
-    Promise.resolve(loader(controller.signal))
+    Promise.resolve(loaderRef.current(controller.signal))
       .then((result) => {
         if (!active) return
         setData(result)
@@ -36,7 +37,8 @@ export function useRemoteResource(loader, deps = [], options = {}) {
       active = false
       controller.abort()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, ...deps])
 
-  return { data, error, loading, setData }
+  return { data, error, loading: enabled ? loading : false, setData }
 }

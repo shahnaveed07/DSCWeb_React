@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="footer-container">
         <div className="footer-grid">
           <div className="footer-col footer-brand-col">
-            <NavLink className="logo-mark" to="/" aria-label="Dark Skull Corporation">
+            <NavLink className="logo-mark" to="/">
               <img
                 src="/images/dsclogo.png"
                 alt="Dark Skull Corporation"
@@ -15,28 +15,23 @@ export function SiteFooter() {
               <span className="logo-text">Dark Skull Corporation</span>
             </NavLink>
             <p className="footer-desc mt-10">
-              Independent software studio crafting specialized desktop utilities, high-performance security panels, and purposeful digital applications.
+              Professional software studio crafting secure utilities, desktop tools, and future-ready digital experiences.
             </p>
           </div>
-
           <div className="footer-col">
-            <h4 className="footer-col-title">Products</h4>
+            <h4 className="footer-col-title">Explore</h4>
             <ul className="footer-links">
               <li>
                 <NavLink to="/pages/apps">Applications</NavLink>
               </li>
               <li>
-                <NavLink to="/pages/products">Software Panels</NavLink>
+                <NavLink to="/pages/products">Products</NavLink>
               </li>
               <li>
-                <NavLink to="/pages/downloads">Download Center</NavLink>
-              </li>
-              <li>
-                <NavLink to="/pages/freepanel">Free Panel Access</NavLink>
+                <NavLink to="/pages/downloads">Downloads</NavLink>
               </li>
             </ul>
           </div>
-
           <div className="footer-col">
             <h4 className="footer-col-title">Company</h4>
             <ul className="footer-links">
@@ -44,7 +39,7 @@ export function SiteFooter() {
                 <NavLink to="/pages/about">About Us</NavLink>
               </li>
               <li>
-                <NavLink to="/pages/contact">Contact Support</NavLink>
+                <NavLink to="/pages/contact">Contact</NavLink>
               </li>
               <li>
                 <NavLink to="/pages/privacy-policy">Privacy Policy</NavLink>
@@ -54,38 +49,13 @@ export function SiteFooter() {
               </li>
             </ul>
           </div>
-
-          <div className="footer-col">
-            <h4 className="footer-col-title">Connect</h4>
-            <ul className="footer-links">
-              <li>
-                <a href="https://discord.gg/XB2Zjmsb7K" target="_blank" rel="noopener noreferrer">
-                  Discord Community ↗
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/shahnaveed07" target="_blank" rel="noopener noreferrer">
-                  GitHub Profile ↗
-                </a>
-              </li>
-              <li>
-                <NavLink to="/pages/status">System Status</NavLink>
-              </li>
-              <li>
-                <a href="mailto:darkskullcorporation@gmail.com">
-                  Email Support ↗
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
-
         <div className="footer-bottom">
           <p className="footer-copyright">
-            &copy; 2026 Dark Skull Corporation. All rights reserved.
+            &copy; 2026 DARK SKULL CORPORATION. ALL RIGHTS RESERVED.
           </p>
           <p className="footer-credit">
-            Developed by{' '}
+            Developer{' '}
             <a
               href="https://naveedmushtaq.tech/"
               target="_blank"
@@ -101,4 +71,3 @@ export function SiteFooter() {
     </footer>
   )
 }
-

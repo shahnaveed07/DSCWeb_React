@@ -397,8 +397,11 @@ button, a {
   font-weight: 600;
   letter-spacing: 0.02em;
   padding-right: 10px;
-  border-right: 1px solid var(--surface-border);
+  border-right: 1px solid var(--border);
   white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .current-page-label:empty {
@@ -407,6 +410,10 @@ button, a {
 
 .theme-toggle {
   min-width: auto;
+}
+
+.theme-toggle-compact {
+  display: none;
 }
 
 .menu-container {
@@ -427,9 +434,9 @@ button, a {
   min-width: 230px;
   max-width: min(320px, calc(100vw - 24px));
   padding: 6px;
-  border: 1px solid var(--surface-border-strong);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
-  background: var(--surface-strong);
+  background: var(--surface-elevated);
   box-shadow: var(--shadow);
   animation: fadeIn 0.15s ease-out;
 }
@@ -448,7 +455,7 @@ button, a {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--muted);
+  color: var(--text-muted);
   padding: 6px 10px 4px;
 }
 
@@ -460,7 +467,7 @@ button, a {
 
 .menu-divider {
   height: 1px;
-  background: var(--surface-border);
+  background: var(--border);
   margin: 6px 4px;
 }
 
@@ -469,9 +476,10 @@ button, a {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  min-height: 36px;
   padding: 7px 10px;
   border-radius: var(--radius-sm);
-  color: var(--muted);
+  color: var(--text-secondary);
   font-size: 0.88rem;
   font-weight: 500;
   text-align: left;
@@ -500,6 +508,13 @@ button, a {
 .nav-link-active {
   color: var(--primary);
   font-weight: 600;
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+  background: var(--surface-hover);
+  color: var(--text);
 }
 
 .nav-link-btn {
@@ -2420,7 +2435,9 @@ tbody tr:hover {
   }
 
   .current-page-label {
-    display: none;
+    max-width: 120px;
+    font-size: 0.82rem;
+    padding-right: 8px;
   }
 
   .footer-grid {
@@ -2482,6 +2499,19 @@ tbody tr:hover {
     font-size: 0.82rem !important;
   }
 
+  .theme-toggle-full {
+    display: none;
+  }
+
+  .theme-toggle-compact {
+    display: inline;
+  }
+
+  .current-page-label {
+    max-width: 90px;
+    font-size: 0.78rem;
+  }
+
   .header-actions {
     gap: 6px;
   }
@@ -2489,8 +2519,12 @@ tbody tr:hover {
 
 /* Mobile: Small (320px–374px) */
 @media (max-width: 374px) {
+  .current-page-label {
+    display: none;
+  }
+
   .logo-text {
-    font-size: 0.86rem;
+    font-size: 0.82rem;
   }
 
   .theme-toggle {

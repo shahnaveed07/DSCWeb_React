@@ -147,7 +147,7 @@ export function FreePanelPage() {
             ) : null}
 
             {isOffline || error ? (
-              <div id="freeFullMsg" className="form-error" style={{ marginTop: '16px' }}>
+              <div id="freeOfflineMsg" className="form-error" style={{ marginTop: '16px' }}>
                 <strong style={{ display: 'block', marginBottom: '4px' }}>Free Panel Not Available</strong>
                 <span style={{ fontSize: '0.92rem' }}>The free panel is currently offline. Please check back later.</span>
               </div>

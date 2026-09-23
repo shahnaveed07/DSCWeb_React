@@ -116,7 +116,8 @@ export function SiteHeader({ session, _systemStatus, onLogout, compact = false }
           aria-label={`Switch to ${theme === 'dark' ? 'light mode' : 'dark mode'}`}
           onClick={toggleTheme}
         >
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          <span className="theme-toggle-full">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          <span className="theme-toggle-compact">{theme === 'dark' ? 'Light' : 'Dark'}</span>
         </button>
 
         {session ? (
@@ -139,6 +140,7 @@ export function SiteHeader({ session, _systemStatus, onLogout, compact = false }
             type="button"
             className="button button-secondary menu-toggle"
             aria-expanded={menuOpen}
+            aria-haspopup="true"
             aria-controls="primary-menu"
             onClick={() => setMenuOpen((isOpen) => !isOpen)}
           >

@@ -4,7 +4,7 @@ const contactChannels = [
     title: 'Discord Community Server',
     description:
       'Join our active server for real-time support, update announcements, and direct interaction with the DSC team and users.',
-    actionLabel: 'Join Discord Server ↗',
+    actionLabel: 'Join Discord ↗',
     href: 'https://discord.gg/XB2Zjmsb7K',
     primary: true,
   },
@@ -13,7 +13,7 @@ const contactChannels = [
     title: 'Official Email Support',
     description:
       'Reach out directly for partnership opportunities, licensing questions, business proposals, or account issues.',
-    actionLabel: 'Send an Email ↗',
+    actionLabel: 'Email Support ↗',
     href: 'mailto:darkskullcorporation@gmail.com',
     primary: false,
   },
@@ -22,7 +22,7 @@ const contactChannels = [
     title: 'GitHub Organization',
     description:
       'Explore public code repositories, report bugs, review open source tools, and follow developer contributions.',
-    actionLabel: 'Visit GitHub Profile ↗',
+    actionLabel: 'GitHub Profile ↗',
     href: 'https://github.com/shahnaveed07',
     primary: false,
   },
