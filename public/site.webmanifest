@@ -1,0 +1,21 @@
+{
+  "name": "Dark Skull Corporation",
+  "short_name": "DSC",
+  "icons": [
+    {
+      "src": "images/dsclogo.png",
+      "sizes": "1280x1280",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/dsclogo.png",
+      "sizes": "1280x1280",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "display": "standalone"
+}
