@@ -2071,41 +2071,79 @@ tbody tr:hover {
   border-top: 1px solid var(--surface-border);
   background-color: var(--footer-bg);
   margin-top: auto;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .footer-container {
   width: var(--content-width);
   margin: 0 auto;
-  padding: 48px 0 28px;
+  padding: 44px 0 24px;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 40px;
-  padding-bottom: 40px;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 36px;
+  padding-bottom: 32px;
   border-bottom: 1px solid var(--surface-border);
 }
 
 .footer-brand-col {
-  max-width: 380px;
+  max-width: 280px;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  transition: opacity 0.15s ease;
+}
+
+.footer-brand:hover {
+  opacity: 0.88;
+}
+
+.footer-brand:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.footer-brand-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--surface-border);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.footer-brand-name {
+  font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  white-space: nowrap;
 }
 
 .footer-desc {
-  font-size: 0.9rem;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-top: 14px;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
 .footer-col-title {
-  font-size: 0.82rem;
-  font-weight: 700;
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text);
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .footer-links {
@@ -2114,19 +2152,30 @@ tbody tr:hover {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 .footer-links li a {
-  font-size: 0.9rem;
-  color: var(--muted);
-  transition: color 0.15s ease, transform 0.15s ease;
-  display: inline-block;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s ease;
 }
 
 .footer-links li a:hover {
   color: var(--primary);
-  transform: translateX(2px);
+}
+
+.footer-links li a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.footer-links li a.active {
+  color: var(--primary);
 }
 
 .footer-bottom {
@@ -2134,24 +2183,42 @@ tbody tr:hover {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 14px;
-  padding-top: 24px;
+  gap: 12px;
+  padding-top: 20px;
 }
 
 .footer-copyright {
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
 }
 
 .footer-credit {
-  font-size: 0.88rem;
-  color: var(--text);
-  font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
 }
 
+.footer-developer-link,
 .footer-name {
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footer-developer-link:hover,
+.footer-name:hover {
+  text-decoration: underline;
+}
+
+.footer-developer-link:focus-visible,
+.footer-name:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* Tooltip */
@@ -2360,8 +2427,8 @@ tbody tr:hover {
   }
 
   .footer-grid {
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    gap: 30px;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 28px;
   }
 }
 
@@ -2375,8 +2442,8 @@ tbody tr:hover {
   }
 
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 36px;
   }
 
   .footer-brand-col {
@@ -2440,9 +2507,14 @@ tbody tr:hover {
     padding-right: 8px;
   }
 
+  .footer-container {
+    padding: 36px 0 20px;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 24px;
+    padding-bottom: 24px;
   }
 
   .footer-brand-col {
@@ -2451,8 +2523,9 @@ tbody tr:hover {
 
   .footer-bottom {
     flex-direction: column;
-    text-align: center;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: 16px;
   }
 
   .home-hero-v2 {
