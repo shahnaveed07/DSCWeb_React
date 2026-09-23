@@ -1,15 +1,17 @@
+import { Link } from 'react-router-dom'
+
 export function NotFoundPage() {
   return (
     <section className="auth-shell">
       <div className="auth-card">
         <span className="hero-eyebrow">404</span>
-        <h1>Page not found.</h1>
+        <h1>Page Not Found</h1>
         <p className="hero-copy">
-          The requested route does not exist in the new DSCWeb surface.
+          The requested page or endpoint does not exist on Dark Skull Corporation.
         </p>
-        <a className="button button-primary" href="/">
-          Return home
-        </a>
+        <Link className="button button-primary" to="/">
+          Return to Home
+        </Link>
       </div>
     </section>
   )

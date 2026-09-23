@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { changePassword, extractApiMessage, isAuthError } from '../services/dscApi'
 
 export function ChangePasswordPage({ session, onSessionInvalid }) {
+  const isFree = String(session?.plan || '').trim().toLowerCase() === 'free'
   const [form, setForm] = useState({ currentPassword: '', newPassword: '' })
-  const [error, setError] = useState('')
+  const [error, setError] = useState(isFree ? 'Free users cannot change password.' : '')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (String(session?.plan || '').trim().toLowerCase() === 'free') {
+    if (isFree) {
       setError('Free users cannot change password.')
     }
-  }, [session?.plan])
+  }, [isFree])
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -53,20 +55,20 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
   return (
     <section className="auth-shell">
       <div className="auth-card">
-        <span className="hero-eyebrow">Password</span>
-        <h1>Change account password.</h1>
+        <span className="hero-eyebrow">Security Settings</span>
+        <h1>Change Password</h1>
         <p className="hero-copy">
-          This form preserves the current authenticated password-change contract
-          exposed by the live backend.
+          Update your client account credentials to keep your access keys and active panel subscriptions secure.
         </p>
 
         <form className="form-stack" onSubmit={handleSubmit}>
           <label className="field">
-            <span>Current password</span>
+            <span>Current Password</span>
             <input
               onChange={(event) =>
                 setForm((current) => ({ ...current, currentPassword: event.target.value }))
               }
+              placeholder="Enter current password"
               required
               type="password"
               value={form.currentPassword}
@@ -74,12 +76,13 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
           </label>
 
           <label className="field">
-            <span>New password</span>
+            <span>New Password</span>
             <input
               minLength={3}
               onChange={(event) =>
                 setForm((current) => ({ ...current, newPassword: event.target.value }))
               }
+              placeholder="Enter new password (min. 3 characters)"
               required
               type="password"
               value={form.newPassword}
@@ -93,6 +96,10 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
             {loading ? 'Saving...' : 'Update Password'}
           </button>
         </form>
+
+        <div className="link-row">
+          <Link to="/pages/udash">← Back to Client Portal</Link>
+        </div>
       </div>
     </section>
   )

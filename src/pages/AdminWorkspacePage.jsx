@@ -175,9 +175,9 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   const isDeletableTable = ['users', 'keys', 'admins', 'orders', 'freeusers'].includes(table)
 
   return (
-    <div className="center-wrap" style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-      <section className="panel" style={{ padding: '28px', borderRadius: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '20px' }}>
+    <div className="center-wrap">
+      <section className="panel">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
           <div>
             <span className="hero-eyebrow">Database Console</span>
             <h1 className="auth-title mt-6">Owner Database Manager</h1>
@@ -187,7 +187,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
           <div style={{ display: 'flex', gap: '10px' }}>
             <button
               type="button"
-              className={`btn btn-sm ${settings?.isMaintenanceMode ? 'btn-danger' : 'btn-secondary'}`}
+              className={`button button-sm ${settings?.isMaintenanceMode ? 'button-danger' : 'button-secondary'}`}
               disabled={busy}
               onClick={toggleMaint}
             >
@@ -195,7 +195,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             </button>
             <button
               type="button"
-              className="btn btn-secondary btn-sm"
+              className="button button-secondary button-sm"
               disabled={loading || busy}
               onClick={load}
             >
@@ -205,7 +205,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         </div>
 
         {/* Toolbar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
             <label className="field" style={{ margin: 0 }}>
               <span className="micro-label">SELECT TABLE</span>
@@ -240,7 +240,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {isDeletableTable && selectedIds.size > 0 ? (
               <button
                 type="button"
-                className="btn btn-danger btn-sm"
+                className="button button-danger button-sm"
                 onClick={handleBulkDelete}
                 disabled={busy}
               >
@@ -250,7 +250,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
             <button
               type="button"
-              className="btn btn-secondary btn-sm"
+              className="button button-secondary button-sm"
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
@@ -261,7 +261,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             </span>
             <button
               type="button"
-              className="btn btn-secondary btn-sm"
+              className="button button-secondary button-sm"
               disabled={page >= pageCount}
               onClick={() => setPage((p) => p + 1)}
             >
@@ -271,14 +271,14 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         </div>
 
         {message ? (
-          <div className="alert-box alert-success mb-16">
-            <p className="mb-0 text-success">{message}</p>
+          <div className="form-success" style={{ marginBottom: '16px' }}>
+            {message}
           </div>
         ) : null}
 
         {error ? (
-          <div className="alert-box alert-danger mb-16">
-            <p className="mb-0 text-danger">{error}</p>
+          <div className="form-error" style={{ marginBottom: '16px' }}>
+            {error}
           </div>
         ) : null}
 
@@ -334,7 +334,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                       <div className="row-actions">
                         <button
                           type="button"
-                          className="btn btn-secondary btn-sm"
+                          className="button button-secondary button-sm"
                           onClick={() => openEdit(row)}
                         >
                           Edit
@@ -342,7 +342,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                         {isDeletableTable ? (
                           <button
                             type="button"
-                            className="btn btn-danger btn-sm"
+                            className="button button-danger button-sm"
                             disabled={busy}
                             onClick={() =>
                               setDeleteModal({
@@ -393,10 +393,10 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="btn btn-primary" disabled={busy} type="submit">
+              <button className="button button-primary" disabled={busy} type="submit">
                 Save Database Changes
               </button>
-              <button className="btn btn-secondary" type="button" onClick={() => setEditRecord(null)}>
+              <button className="button button-secondary" type="button" onClick={() => setEditRecord(null)}>
                 Cancel
               </button>
             </div>
@@ -420,7 +420,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 type="button"
-                className="btn btn-danger"
+                className="button button-danger"
                 disabled={busy}
                 onClick={async () => {
                   const action = deleteModal.action
@@ -432,7 +432,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
               </button>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="button button-secondary"
                 disabled={busy}
                 onClick={() => setDeleteModal(null)}
               >

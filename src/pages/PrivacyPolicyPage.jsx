@@ -8,8 +8,7 @@ export function PrivacyPolicyPage() {
         <span className="hero-eyebrow">Privacy Policy</span>
         <h1>Your privacy matters to us.</h1>
         <p className="hero-copy">
-          This policy page preserves the intent of the live version dated August
-          2026, but presents it through a cleaner content hierarchy.
+          Clear standards governing how Dark Skull Corporation protects client account information, license verification tokens, and transaction details.
         </p>
       </section>
 

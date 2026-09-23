@@ -38,13 +38,13 @@ const principles = [
 
 export function AboutPage() {
   return (
-    <div className="center-wrap" style={{ maxWidth: '1060px', margin: '0 auto', padding: '24px 20px' }}>
-      <section className="mb-32" style={{ textAlign: 'center' }}>
+    <div className="center-wrap">
+      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
         <span className="hero-eyebrow">Dark Skull Corporation</span>
-        <h1 className="mt-10" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800 }}>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
           Independent Software Studio
         </h1>
-        <p style={{ maxWidth: '680px', margin: '12px auto 0', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <p style={{ maxWidth: '680px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
           Dark Skull Corporation is an independent software studio focused on creating focused desktop utilities, specialized software panels, Android applications, and interactive puzzle experiences.
         </p>
       </section>
@@ -56,9 +56,6 @@ export function AboutPage() {
             key={area.title}
             className="card"
             style={{
-              background: 'var(--surface-strong)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: '12px',
               padding: '24px',
             }}
           >
@@ -81,8 +78,8 @@ export function AboutPage() {
           <h2>Our Core Principles</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginTop: '20px' }}>
             {principles.map((pr) => (
-              <div key={pr.number} style={{ padding: '16px', background: 'var(--surface-hover)', borderRadius: '8px' }}>
-                <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--secondary)' }}>
+              <div key={pr.number} style={{ padding: '20px', background: 'var(--surface-hover)', borderRadius: '8px' }}>
+                <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--primary)', fontFamily: 'monospace' }}>
                   {pr.number}
                 </span>
                 <h3 style={{ fontSize: '1.1rem', margin: '8px 0 6px', color: 'var(--text)' }}>
@@ -102,9 +99,9 @@ export function AboutPage() {
               href="https://naveedmushtaq.tech/"
               target="_blank"
               rel="noreferrer"
-              style={{ color: 'var(--secondary)', fontWeight: 600 }}
+              style={{ color: 'var(--primary)', fontWeight: 600 }}
             >
-              Naveed Mushtaq
+              Naveed Mushtaq ↗
             </a>
             . Our projects undergo active refinement based on feedback from our global community.
           </p>
@@ -112,18 +109,18 @@ export function AboutPage() {
       </section>
 
       {/* Call to action */}
-      <section className="card" style={{ background: 'var(--surface-strong)', padding: '28px', borderRadius: '12px', textAlign: 'center' }}>
+      <section className="card" style={{ padding: '32px', textAlign: 'center' }}>
         <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 8px' }}>
           Explore Our Products & Ecosystem
         </h2>
-        <p style={{ color: 'var(--muted)', maxWidth: '500px', margin: '0 auto 18px', fontSize: '0.95rem' }}>
+        <p style={{ color: 'var(--muted)', maxWidth: '500px', margin: '0 auto 20px', fontSize: '0.95rem' }}>
           Discover what we have built or connect directly with our engineering team on Discord.
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <NavLink to="/pages/products" className="btn btn-primary">
+          <NavLink to="/pages/products" className="button button-primary">
             View Products Catalog
           </NavLink>
-          <NavLink to="/pages/contact" className="btn btn-secondary">
+          <NavLink to="/pages/contact" className="button button-secondary">
             Get in Touch
           </NavLink>
         </div>

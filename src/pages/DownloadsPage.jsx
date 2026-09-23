@@ -10,13 +10,13 @@ export function DownloadsPage({ systemStatus }) {
   const maxSlots = Number(data?.maxSlots || data?.MaxSlots || 20)
 
   return (
-    <div className="center-wrap" style={{ maxWidth: '1060px', margin: '0 auto', padding: '24px 20px' }}>
-      <section className="mb-32" style={{ textAlign: 'center' }}>
+    <div className="center-wrap">
+      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
         <span className="hero-eyebrow">Download Center</span>
-        <h1 className="mt-10" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800 }}>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
           Official Software & Utility Downloads
         </h1>
-        <p style={{ maxWidth: '640px', margin: '12px auto 0', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
           Download verified binaries, public releases, and free packages provided by Dark Skull Corporation.
           All builds are scanned for security and maintained for compatibility.
         </p>
@@ -28,10 +28,6 @@ export function DownloadsPage({ systemStatus }) {
         <article
           className="card"
           style={{
-            background: 'var(--surface-strong)',
-            border: '1px solid var(--surface-border)',
-            borderRadius: '12px',
-            padding: '24px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -56,7 +52,7 @@ export function DownloadsPage({ systemStatus }) {
           <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {freeLink ? (
               <a
-                className="btn btn-primary btn-download w-100"
+                className="button button-primary w-100"
                 href={freeLink}
                 target="_blank"
                 rel="noreferrer"
@@ -64,11 +60,11 @@ export function DownloadsPage({ systemStatus }) {
                 <span aria-hidden="true">📥 </span>Download Free Panel
               </a>
             ) : (
-              <NavLink to="/pages/freepanel" className="btn btn-primary w-100">
+              <NavLink to="/pages/freepanel" className="button button-primary w-100">
                 Check Availability & Credentials
               </NavLink>
             )}
-            <NavLink to="/pages/freepanel" className="btn btn-secondary w-100">
+            <NavLink to="/pages/freepanel" className="button button-secondary w-100">
               View Free Credentials
             </NavLink>
           </div>
@@ -78,10 +74,6 @@ export function DownloadsPage({ systemStatus }) {
         <article
           className="card"
           style={{
-            background: 'var(--surface-strong)',
-            border: '1px solid var(--surface-border)',
-            borderRadius: '12px',
-            padding: '24px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -102,7 +94,7 @@ export function DownloadsPage({ systemStatus }) {
           </div>
 
           <div style={{ marginTop: '20px' }}>
-            <NavLink to="/pages/apps" className="btn btn-secondary w-100">
+            <NavLink to="/pages/apps" className="button button-secondary w-100">
               Application Details & Overview
             </NavLink>
           </div>
@@ -112,10 +104,6 @@ export function DownloadsPage({ systemStatus }) {
         <article
           className="card"
           style={{
-            background: 'var(--surface-strong)',
-            border: '1px solid var(--surface-border)',
-            borderRadius: '12px',
-            padding: '24px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -137,7 +125,7 @@ export function DownloadsPage({ systemStatus }) {
 
           <div style={{ marginTop: '20px' }}>
             <a
-              className="btn btn-secondary w-100"
+              className="button button-secondary w-100"
               href="https://play.google.com/store/apps/details?id=com.dsc.qrscanner"
               target="_blank"
               rel="noreferrer"
@@ -151,10 +139,6 @@ export function DownloadsPage({ systemStatus }) {
         <article
           className="card"
           style={{
-            background: 'var(--surface-strong)',
-            border: '1px solid var(--surface-border)',
-            borderRadius: '12px',
-            padding: '24px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -176,7 +160,7 @@ export function DownloadsPage({ systemStatus }) {
 
           <div style={{ marginTop: '20px' }}>
             <a
-              className="btn btn-secondary w-100"
+              className="button button-secondary w-100"
               href="https://play.google.com/store/apps/details?id=com.dsc.mindmatrix"
               target="_blank"
               rel="noreferrer"
@@ -188,7 +172,7 @@ export function DownloadsPage({ systemStatus }) {
       </div>
 
       {/* Security & Verification Notice */}
-      <section className="seo-section mt-30">
+      <section className="seo-section">
         <div className="seo-container">
           <h2>Package Integrity & Security</h2>
           <p>

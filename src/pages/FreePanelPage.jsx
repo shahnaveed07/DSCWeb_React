@@ -44,7 +44,7 @@ export function FreePanelPage() {
 
   return (
     <main className="center-wrap">
-      <section className="panel auth-card free-panel-card">
+      <section className="panel auth-card free-panel-card" style={{ maxWidth: '540px', margin: '0 auto' }}>
         <div className="logo-mark free-panel-icon-60 mb-15">
           <img
             src="/images/dsclogo.png"
@@ -56,7 +56,7 @@ export function FreePanelPage() {
         <p className="auth-subtitle">Public test credentials and direct download access.</p>
 
         {loading ? (
-          <div id="freePanelLoader" className="skeleton-anim" style={{ padding: '30px 0' }}>
+          <div id="freePanelLoader" style={{ padding: '30px 0' }}>
             <div className="skeleton-line" style={{ height: '40px', marginBottom: '12px', borderRadius: '8px' }} />
             <div className="skeleton-line" style={{ height: '40px', marginBottom: '12px', borderRadius: '8px' }} />
             <div className="skeleton-line" style={{ height: '14px', width: '60%', margin: '0 auto', borderRadius: '4px' }} />
@@ -67,17 +67,17 @@ export function FreePanelPage() {
           <div id="freePanelContent">
             {hasCredentials ? (
               <div id="freeAvailableBox">
-                <div className="credentials-box">
-                  <div className="credential-row mb-10">
+                <div className="card" style={{ padding: '18px', marginBottom: '20px', background: 'var(--surface-hover)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                     <div>
                       <span className="micro-label">USERNAME</span>
-                      <h3 id="displayFreeUser" className="free-panel-select-all free-panel-text-left">
+                      <h3 id="displayFreeUser" style={{ margin: '4px 0 0', fontFamily: 'monospace', fontSize: '1.15rem' }}>
                         {freeUser}
                       </h3>
                     </div>
                     <button
                       id="copyUserBtn"
-                      className="btn btn-secondary btn-sm"
+                      className="button button-secondary button-sm"
                       onClick={handleCopyUser}
                       type="button"
                     >
@@ -85,16 +85,16 @@ export function FreePanelPage() {
                     </button>
                   </div>
 
-                  <div className="credential-row">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '14px', borderTop: '1px solid var(--surface-border)' }}>
                     <div>
                       <span className="micro-label">PASSWORD</span>
-                      <h3 id="displayFreePass" className="free-panel-select-all free-panel-text-left">
+                      <h3 id="displayFreePass" style={{ margin: '4px 0 0', fontFamily: 'monospace', fontSize: '1.15rem' }}>
                         {freePass}
                       </h3>
                     </div>
                     <button
                       id="copyPassBtn"
-                      className="btn btn-secondary btn-sm"
+                      className="button button-secondary button-sm"
                       onClick={handleCopyPass}
                       type="button"
                     >
@@ -104,13 +104,13 @@ export function FreePanelPage() {
                 </div>
 
                 <div className="progress-container">
-                  <div className="progress-header">
+                  <div className="progress-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.86rem', color: 'var(--muted)' }}>
                     <span>Slots Availability</span>
-                    <span id="displayRemainingText">
+                    <span id="displayRemainingText" style={{ fontWeight: 600, color: 'var(--text)' }}>
                       {usedSlots} / {maxSlots} Slots Used
                     </span>
                   </div>
-                  <div className="progress-track">
+                  <div className="progress-track" style={{ height: '8px', background: 'var(--surface-border)', borderRadius: '999px', overflow: 'hidden' }}>
                     <div
                       id="slotProgressBar"
                       className="progress-fill"
@@ -125,10 +125,10 @@ export function FreePanelPage() {
                   </div>
                 </div>
 
-                <div className="mt-20">
+                <div style={{ marginTop: '24px' }}>
                   <a
                     id="freePanelDownloadBtn"
-                    className="btn btn-primary btn-large btn-download w-100"
+                    className="button button-primary button-lg w-100"
                     href={freeLink || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -140,16 +140,16 @@ export function FreePanelPage() {
             ) : null}
 
             {isFull ? (
-              <div id="freeFullMsg" className="alert-box alert-warning mt-15">
-                <h3 className="mb-5 text-warning">Slots Full</h3>
-                <p className="mb-0">No Slot is Available . Existing users can still download.</p>
+              <div id="freeFullMsg" className="form-error" style={{ background: 'var(--warning-soft)', borderColor: 'var(--warning-border)', color: 'var(--warning)', marginTop: '16px' }}>
+                <strong style={{ display: 'block', marginBottom: '4px' }}>Slots Full</strong>
+                <span style={{ color: 'var(--text)', fontSize: '0.92rem' }}>No Slot is Available. Existing users can still download.</span>
               </div>
             ) : null}
 
             {isOffline || error ? (
-              <div id="freeFullMsg" className="alert-box alert-danger mt-15">
-                <h3 className="mb-5 text-danger">Free Panel Not Available</h3>
-                <p className="mb-0">The free panel is currently offline. Please check back later.</p>
+              <div id="freeFullMsg" className="form-error" style={{ marginTop: '16px' }}>
+                <strong style={{ display: 'block', marginBottom: '4px' }}>Free Panel Not Available</strong>
+                <span style={{ fontSize: '0.92rem' }}>The free panel is currently offline. Please check back later.</span>
               </div>
             ) : null}
           </div>

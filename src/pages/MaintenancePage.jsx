@@ -30,18 +30,18 @@ export function MaintenancePage({ systemStatus }) {
       <div className="maintenance-buttons">
         <button
           type="button"
-          className="btn btn-primary"
+          className="button button-primary"
           onClick={() => window.location.reload()}
         >
           Refresh Page
         </button>
         <a
-          className="btn btn-secondary"
+          className="button button-secondary"
           href="https://discord.gg/XB2Zjmsb7K"
           target="_blank"
           rel="noreferrer"
         >
-          Discord Support
+          Discord Support ↗
         </a>
       </div>
     </div>

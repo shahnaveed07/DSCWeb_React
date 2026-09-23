@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { extractApiMessage, loginAdmin } from '../services/dscApi'
 import { clearStoredSession, persistSessionFromResponse } from '../utils/auth'
 
@@ -44,23 +44,21 @@ export function AdminLoginPage({ session, onSessionChange }) {
   return (
     <section className="auth-shell">
       <div className="auth-card">
-        <span className="hero-eyebrow">Admin Login</span>
-        <h1>Restricted control panel access.</h1>
+        <span className="hero-eyebrow">Control Center</span>
+        <h1>Admin Portal</h1>
         <p className="hero-copy">
-          The admin surface is intentionally conservative in Phase 1: role-based
-          authentication is preserved, and deeper CRUD workflows remain a separate
-          follow-up once authenticated response contracts are fully captured.
+          Authorized personnel only. Review order submissions, manage customer licenses, configure system maintenance, and adjust broadcast notices.
         </p>
 
         <form className="form-stack" onSubmit={handleSubmit}>
           <label className="field">
-            <span>Username</span>
+            <span>Admin Username</span>
             <input
               autoComplete="username"
               onChange={(event) =>
                 setForm((current) => ({ ...current, username: event.target.value }))
               }
-              placeholder="Admin username"
+              placeholder="Enter admin username"
               required
               type="text"
               value={form.username}
@@ -68,13 +66,13 @@ export function AdminLoginPage({ session, onSessionChange }) {
           </label>
 
           <label className="field">
-            <span>Password</span>
+            <span>Admin Password</span>
             <input
               autoComplete="current-password"
               onChange={(event) =>
                 setForm((current) => ({ ...current, password: event.target.value }))
               }
-              placeholder="Admin password"
+              placeholder="Enter admin password"
               required
               type="password"
               value={form.password}
@@ -84,13 +82,13 @@ export function AdminLoginPage({ session, onSessionChange }) {
           {error ? <p className="form-error">{error}</p> : null}
 
           <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Signing in...' : 'Admin Login'}
+            {loading ? 'Authenticating...' : 'Sign In as Admin'}
           </button>
         </form>
 
         <div className="link-row">
-          <a href="/pages/ulogin">User Login</a>
-          <a href="/">Back to home</a>
+          <Link to="/pages/ulogin">Client Login</Link>
+          <Link to="/">Back to Home</Link>
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { extractApiMessage, loginUser } from '../services/dscApi'
 import { clearStoredSession, persistSessionFromResponse } from '../utils/auth'
 
@@ -43,11 +43,10 @@ export function UserLoginPage({ session, onSessionChange }) {
   return (
     <section className="auth-shell">
       <div className="auth-card">
-        <span className="hero-eyebrow">User Login</span>
-        <h1>Access your premium dashboard.</h1>
+        <span className="hero-eyebrow">Client Portal</span>
+        <h1>Account Login</h1>
         <p className="hero-copy">
-          The login flow preserves the current `/api/auth/login` contract and JWT
-          role checks, but presents them in a cleaner React form.
+          Sign in to manage your active panel subscriptions, view your verified license key, and download authorized software builds.
         </p>
 
         <form className="form-stack" onSubmit={handleSubmit}>
@@ -58,7 +57,7 @@ export function UserLoginPage({ session, onSessionChange }) {
               onChange={(event) =>
                 setForm((current) => ({ ...current, username: event.target.value }))
               }
-              placeholder="Enter username"
+              placeholder="Enter your username"
               required
               type="text"
               value={form.username}
@@ -72,7 +71,7 @@ export function UserLoginPage({ session, onSessionChange }) {
               onChange={(event) =>
                 setForm((current) => ({ ...current, password: event.target.value }))
               }
-              placeholder="Enter password"
+              placeholder="Enter your password"
               required
               type="password"
               value={form.password}
@@ -82,13 +81,13 @@ export function UserLoginPage({ session, onSessionChange }) {
           {error ? <p className="form-error">{error}</p> : null}
 
           <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Signing in...' : 'Login'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         <div className="link-row">
-          <a href="/pages/alogin">Admin Login</a>
-          <a href="/">Back to home</a>
+          <Link to="/pages/products">Order a License</Link>
+          <Link to="/pages/alogin">Admin Portal</Link>
         </div>
       </div>
     </section>

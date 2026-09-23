@@ -105,13 +105,13 @@ const products = [
 
 export function ProductsPage() {
   return (
-    <div className="center-wrap" style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px' }}>
-      <section className="mb-30" style={{ textAlign: 'center' }}>
+    <div className="center-wrap">
+      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
         <span className="hero-eyebrow">Product Catalog</span>
-        <h1 className="mt-10" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800 }}>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
           Software & Panel Products
         </h1>
-        <p style={{ maxWidth: '640px', margin: '12px auto 0', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
           Choose from our range of high-performance utilities and software panels.
           Enjoy transparent base pricing, multiple duration options, and verified access.
         </p>
@@ -140,20 +140,19 @@ export function ProductsPage() {
               </ul>
             </div>
 
-            <div className="mt-15">
+            <div style={{ marginTop: '16px' }}>
               {p.action.disabled ? (
                 <button
                   type="button"
-                  className="btn btn-outline w-100"
+                  className="button button-ghost w-100 disabled-btn"
                   disabled
-                  style={{ opacity: 0.6, cursor: 'not-allowed' }}
                 >
                   {p.action.label}
                 </button>
               ) : (
                 <NavLink
                   to={p.action.to}
-                  className={`btn ${p.action.elite ? 'btn-primary' : 'btn-primary'} w-100`}
+                  className="button button-primary w-100"
                 >
                   {p.action.label}
                 </NavLink>

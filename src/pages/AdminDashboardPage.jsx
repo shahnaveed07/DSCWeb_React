@@ -138,32 +138,32 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
   }
 
   return (
-    <div className="center-wrap" style={{ maxWidth: '1100px', margin: '0 auto', padding: '20px' }}>
-      <section className="panel" style={{ padding: '28px', borderRadius: '12px' }}>
+    <div className="center-wrap">
+      <section className="panel">
         {/* Header Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
           <div>
             <span className="hero-eyebrow">Control Center</span>
             <h1 className="auth-title mt-6">Admin Dashboard</h1>
             <p className="auth-subtitle mb-0">
-              Active admin: <strong className="text-secondary">{String(session.username || 'admin').toUpperCase()}</strong>
+              Active admin: <strong style={{ color: 'var(--primary)' }}>{String(session.username || 'admin').toUpperCase()}</strong>
               {ownerAccess ? ' • (Owner Access Verified)' : ''}
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <NavLink to="/pages/generatekey" className="btn btn-primary btn-sm">
+            <NavLink to="/pages/generatekey" className="button button-primary button-sm">
               Generate Key
             </NavLink>
             {ownerAccess ? (
-              <NavLink to="/pages/ownerdb" className="btn btn-secondary btn-sm">
+              <NavLink to="/pages/ownerdb" className="button button-secondary button-sm">
                 Owner DB
               </NavLink>
             ) : null}
             {ownerAccess ? (
               <button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                className="button button-secondary button-sm"
                 onClick={() => setShowCreateAdmin(true)}
               >
                 + Create Admin
@@ -171,14 +171,14 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             ) : null}
             <button
               type="button"
-              className="btn btn-outline btn-sm"
+              className="button button-ghost button-sm"
               onClick={() => setShowPassModal(true)}
             >
               Password
             </button>
             <button
               type="button"
-              className={`btn btn-sm ${isMaintenance ? 'btn-danger' : 'btn-secondary'}`}
+              className={`button button-sm ${isMaintenance ? 'button-danger' : 'button-secondary'}`}
               disabled={busy}
               onClick={() =>
                 runAction(
@@ -191,7 +191,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </button>
             <button
               type="button"
-              className="btn btn-secondary btn-sm"
+              className="button button-secondary button-sm"
               disabled={busy || loading}
               onClick={() => setRevision((v) => v + 1)}
             >

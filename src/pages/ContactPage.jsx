@@ -39,13 +39,13 @@ const contactChannels = [
 
 export function ContactPage() {
   return (
-    <div className="center-wrap" style={{ maxWidth: '1060px', margin: '0 auto', padding: '24px 20px' }}>
-      <section className="mb-32" style={{ textAlign: 'center' }}>
+    <div className="center-wrap">
+      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
         <span className="hero-eyebrow">Direct Communication</span>
-        <h1 className="mt-10" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800 }}>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
           Contact & Support Channels
         </h1>
-        <p style={{ maxWidth: '640px', margin: '12px auto 0', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
           Have questions about your order, need technical assistance, or want to discuss a custom build?
           Connect with the Dark Skull Corporation team through any of our official channels.
         </p>
@@ -58,17 +58,14 @@ export function ContactPage() {
             key={c.title}
             className="card"
             style={{
-              background: 'var(--surface-strong)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: '12px',
-              padding: '24px',
+              padding: '26px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
             }}
           >
             <div>
-              <span className="badge warning" style={{ marginBottom: '8px' }}>
+              <span className="badge warning" style={{ marginBottom: '10px' }}>
                 {c.tag}
               </span>
               <h2 style={{ fontSize: '1.25rem', margin: '6px 0 10px', fontWeight: 700 }}>
@@ -79,9 +76,9 @@ export function ContactPage() {
               </p>
             </div>
 
-            <div style={{ marginTop: '20px' }}>
+            <div style={{ marginTop: '24px' }}>
               <a
-                className={`btn ${c.primary ? 'btn-primary' : 'btn-secondary'} w-100`}
+                className={`button ${c.primary ? 'button-primary' : 'button-secondary'} w-100`}
                 href={c.href}
                 target="_blank"
                 rel="noreferrer"

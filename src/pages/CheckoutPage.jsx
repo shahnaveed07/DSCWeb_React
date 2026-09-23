@@ -163,7 +163,7 @@ export function CheckoutPage() {
 
   return (
     <main className="center-wrap">
-      <section className="panel auth-card checkout-card" style={{ maxWidth: '800px', width: '100%' }}>
+      <section className="panel auth-card checkout-card" style={{ maxWidth: '880px', margin: '0 auto' }}>
         <div className="logo-mark free-panel-icon-60 mb-15">
           <img
             src="/images/dsclogo.png"
@@ -173,14 +173,14 @@ export function CheckoutPage() {
         </div>
         <h1 className="auth-title">Complete Order</h1>
         <p className="auth-subtitle">
-          Selected: <strong id="displayPanelName" className="text-secondary">{panel.toUpperCase()} PANEL</strong>
+          Selected: <strong id="displayPanelName" style={{ color: 'var(--primary)' }}>{panel.toUpperCase()} PANEL</strong>
         </p>
 
         <form id="checkoutForm" onSubmit={handleSubmit}>
-          <div className="checkout-container">
+          <div className="checkout-grid" style={{ marginTop: '24px' }}>
             {/* Left Column: Plan, Duration, Pricing & Payment Info */}
-            <div style={{ flex: '1 1 320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="card" style={{ padding: '16px', background: 'var(--surface-strong)', borderRadius: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="card" style={{ padding: '20px' }}>
                 <label className="field" htmlFor="selectDays">
                   <span className="micro-label">DURATION & PLAN</span>
                   <select
@@ -197,12 +197,11 @@ export function CheckoutPage() {
                   </select>
                 </label>
 
-                <div className="mt-15">
+                <div style={{ marginTop: '16px' }}>
                   <span className="micro-label">TOTAL AMOUNT</span>
                   <div
                     id="displayPrice"
-                    className="text-secondary"
-                    style={{ fontSize: '1.4rem', fontWeight: '700', marginTop: '4px' }}
+                    style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--primary)', marginTop: '4px' }}
                   >
                     {priceDisplayText}
                   </div>
@@ -210,21 +209,21 @@ export function CheckoutPage() {
               </div>
 
               {requiresProof ? (
-                <div className="instruction-box" style={{ background: 'var(--surface-strong)', padding: '16px', borderRadius: '10px' }}>
+                <div className="card" style={{ padding: '20px' }}>
                   <span className="micro-label">UPI PAYMENT</span>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--muted)', marginTop: '4px', marginBottom: '12px' }}>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--muted)', marginTop: '4px', marginBottom: '14px' }}>
                     Pay via any UPI application or scan the QR code below.
                   </p>
 
                   <a
                     id="upiPayBtn"
-                    className="btn btn-primary pay-now-btn"
+                    className="button button-primary w-100"
                     href={upiUrl}
                   >
                     Pay with UPI App ({totalInr} INR)
                   </a>
 
-                  <div className="payment-qr-container" style={{ margin: '14px auto', display: 'block' }}>
+                  <div className="payment-qr-container" style={{ margin: '16px auto 0', display: 'block' }}>
                     {qrLoading ? (
                       <div id="qrLoading" className="qr-placeholder">
                         <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Generating QR...</span>
@@ -247,13 +246,12 @@ export function CheckoutPage() {
             </div>
 
             {/* Right Column: Account Details & Screenshot Proof */}
-            <div style={{ flex: '1 1 320px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div className="card" style={{ padding: '16px', background: 'var(--surface-strong)', borderRadius: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="card" style={{ padding: '20px' }}>
                 <label className="field" htmlFor="regUsername">
                   <span className="micro-label">DESIRED USERNAME</span>
                   <input
                     id="regUsername"
-                    className="input-field"
                     type="text"
                     placeholder="Must match game username"
                     value={form.username}
@@ -263,11 +261,10 @@ export function CheckoutPage() {
                   />
                 </label>
 
-                <label className="field mt-12" htmlFor="regPassword">
+                <label className="field" htmlFor="regPassword">
                   <span className="micro-label">ACCOUNT PASSWORD</span>
                   <input
                     id="regPassword"
-                    className="input-field"
                     type="password"
                     placeholder="Minimum 3 characters"
                     minLength={3}
@@ -278,11 +275,10 @@ export function CheckoutPage() {
                   />
                 </label>
 
-                <label className="field mt-12" htmlFor="regDiscord">
+                <label className="field" htmlFor="regDiscord">
                   <span className="micro-label">DISCORD USERNAME / ID (OPTIONAL)</span>
                   <input
                     id="regDiscord"
-                    className="input-field"
                     type="text"
                     placeholder="e.g. username#1234"
                     value={form.discordId}
@@ -291,15 +287,15 @@ export function CheckoutPage() {
                 </label>
 
                 {requiresProof ? (
-                  <div id="paymentProofGroup" className="mt-15">
+                  <div id="paymentProofGroup" style={{ marginTop: '16px' }}>
                     <label className="field" htmlFor="paymentProofImg">
                       <span className="micro-label">UPLOAD PAYMENT PROOF SCREENSHOT</span>
                       <input
                         id="paymentProofImg"
                         type="file"
+                        className="custom-file-input"
                         accept=".png,.jpg,.jpeg,image/png,image/jpeg"
                         onChange={handleFileChange}
-                        style={{ marginTop: '6px' }}
                       />
                     </label>
 
@@ -317,20 +313,20 @@ export function CheckoutPage() {
               </div>
 
               {error ? (
-                <div className="alert-box alert-danger">
-                  <p className="mb-0 text-danger">{error}</p>
+                <div className="form-error">
+                  {error}
                 </div>
               ) : null}
 
               {success ? (
-                <div className="alert-box alert-success">
-                  <p className="mb-0 text-success">{success}</p>
+                <div className="form-success">
+                  {success}
                 </div>
               ) : null}
 
               <button
                 type="submit"
-                className="btn btn-primary btn-large w-100"
+                className="button button-primary button-lg w-100"
                 disabled={loading}
               >
                 {loading

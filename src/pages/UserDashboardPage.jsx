@@ -26,8 +26,8 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
   if (loading) {
     return (
-      <div className="center-wrap" style={{ maxWidth: '960px', margin: '0 auto', padding: '20px' }}>
-        <section className="panel" style={{ padding: '28px', borderRadius: '12px', textAlign: 'center' }}>
+      <div className="center-wrap">
+        <section className="panel" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <div className="skeleton-line" style={{ height: '24px', width: '200px', margin: '0 auto 16px', borderRadius: '4px' }} />
           <div className="skeleton-line" style={{ height: '40px', width: '320px', margin: '0 auto 20px', borderRadius: '8px' }} />
           <p style={{ color: 'var(--muted)' }}>Retrieving your order and subscription status...</p>
@@ -83,20 +83,20 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
   }
 
   return (
-    <div className="center-wrap" style={{ maxWidth: '960px', margin: '0 auto', padding: '20px' }}>
-      <section className="panel" style={{ padding: '28px', borderRadius: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '24px' }}>
+    <div className="center-wrap">
+      <section className="panel">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
           <div>
             <span className="hero-eyebrow">Client Portal</span>
             <h1 className="auth-title mt-6">Welcome, {String(session.username || 'User').toUpperCase()}</h1>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             {!isFreePlan ? (
-              <NavLink to="/pages/change" className="btn btn-secondary btn-sm">
+              <NavLink to="/pages/change" className="button button-secondary button-sm">
                 Change Password
               </NavLink>
             ) : null}
-            <NavLink to="/pages/products" className="btn btn-outline btn-sm">
+            <NavLink to="/pages/products" className="button button-ghost button-sm">
               Upgrade / Renew
             </NavLink>
           </div>
@@ -104,55 +104,51 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
         {/* Status Alerts */}
         {isPending ? (
-          <div className="alert-box alert-warning mb-20" style={{ padding: '14px 18px', borderRadius: '8px' }}>
-            <div className="alert-content">
-              <div>
-                <strong className="text-warning">⚠️ Order Pending Review</strong>
-                <p className="mb-0 mt-4" style={{ fontSize: '0.92rem' }}>
-                  Your order is currently awaiting admin verification. Access keys and downloads will be enabled once approved.
-                </p>
-              </div>
+          <div className="form-error" style={{ background: 'var(--warning-soft)', borderColor: 'var(--warning-border)', color: 'var(--warning)', marginBottom: '24px' }}>
+            <div>
+              <strong>⚠️ Order Pending Review</strong>
+              <p style={{ margin: '4px 0 0', fontSize: '0.92rem', color: 'var(--text)' }}>
+                Your order is currently awaiting admin verification. Access keys and downloads will be enabled once approved.
+              </p>
             </div>
           </div>
         ) : null}
 
         {isExpired ? (
-          <div className="alert-box alert-danger mb-20" style={{ padding: '14px 18px', borderRadius: '8px' }}>
-            <div className="alert-content">
-              <div>
-                <strong className="text-danger">⛔ Subscription Expired</strong>
-                <p className="mb-0 mt-4" style={{ fontSize: '0.92rem' }}>
-                  Your access has expired. Please renew your plan from the products catalog to restore access.
-                </p>
-              </div>
-              <NavLink to="/pages/products" className="btn btn-primary btn-sm">
-                Renew Access
-              </NavLink>
+          <div className="form-error" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <strong>⛔ Subscription Expired</strong>
+              <p style={{ margin: '4px 0 0', fontSize: '0.92rem', color: 'var(--text)' }}>
+                Your access has expired. Please renew your plan from the products catalog to restore access.
+              </p>
             </div>
+            <NavLink to="/pages/products" className="button button-primary button-sm">
+              Renew Access
+            </NavLink>
           </div>
         ) : null}
 
         {isRejected ? (
-          <div className="alert-box alert-danger mb-20" style={{ padding: '14px 18px', borderRadius: '8px' }}>
-            <strong className="text-danger">❌ Order Not Approved</strong>
-            <p className="mb-0 mt-4" style={{ fontSize: '0.92rem' }}>
+          <div className="form-error" style={{ marginBottom: '24px' }}>
+            <strong>❌ Order Not Approved</strong>
+            <p style={{ margin: '4px 0 0', fontSize: '0.92rem', color: 'var(--text)' }}>
               Your order could not be verified. Please contact support on Discord or submit a valid payment proof.
             </p>
           </div>
         ) : null}
 
         {/* Stats Grid */}
-        <div className="stats-grid" style={{ marginBottom: '24px' }}>
+        <div className="stats-grid">
           <div className="stat-card">
             <p className="stat-label">Username</p>
-            <div id="dashUsername" className="stat-value text-xl">
+            <div id="dashUsername" className="stat-value">
               {String(session.username || 'User').toUpperCase()}
             </div>
           </div>
 
           <div className="stat-card">
             <p className="stat-label">Active Plan</p>
-            <div id="dashPlan" className="stat-value text-xl text-secondary">
+            <div id="dashPlan" className="stat-value" style={{ color: 'var(--primary)' }}>
               {livePlan.toUpperCase()}
             </div>
           </div>
@@ -163,8 +159,8 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
             </p>
             <div
               id="dashExpiry"
-              className={`stat-value text-md ${isExpired ? 'text-danger' : 'text-success'}`}
-              style={{ fontSize: '1.05rem', marginTop: '6px' }}
+              className="stat-value"
+              style={{ fontSize: '1.05rem', color: isExpired ? 'var(--danger)' : 'var(--success)' }}
             >
               {liveExpiry ? formatDateTime(liveExpiry) : 'No active expiry'}
             </div>
@@ -176,9 +172,10 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
             </p>
             <div
               id="dashOrderStatus"
-              className={`stat-value text-xl ${
-                isApproved ? 'text-success' : isRejected ? 'text-danger' : 'text-warning'
-              }`}
+              className="stat-value"
+              style={{
+                color: isApproved ? 'var(--success)' : isRejected ? 'var(--danger)' : 'var(--warning)',
+              }}
             >
               {liveStatus.toUpperCase()}
             </div>
@@ -186,8 +183,8 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
         </div>
 
         {/* License Key Card */}
-        <div className="card mb-24" id="key-card" style={{ background: 'var(--surface-strong)', padding: '20px', borderRadius: '10px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div className="card" id="key-card" style={{ padding: '20px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span className="micro-label">LICENSE KEY</span>
             <span className={`badge ${isApproved ? (keyUsed ? 'warning' : 'good') : 'warning'}`}>
               {isApproved ? (keyUsed ? 'Used' : 'Active') : 'Pending'}
@@ -196,13 +193,15 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
           <div
             id="dashOrderKey"
-            className="key-display-box"
             style={{
-              padding: '12px 16px',
+              padding: '14px 16px',
               fontFamily: 'monospace',
-              fontSize: '1.15rem',
+              fontSize: '1.1rem',
               letterSpacing: '0.05em',
               wordBreak: 'break-all',
+              background: 'var(--surface-hover)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--surface-border)',
               color: orderKey ? 'var(--text)' : 'var(--muted)',
             }}
           >
@@ -210,10 +209,10 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
           </div>
 
           {orderKey ? (
-            <div className="mt-12">
+            <div style={{ marginTop: '14px' }}>
               <button
                 id="copyDashKeyBtn"
-                className="btn btn-secondary btn-sm"
+                className="button button-secondary button-sm"
                 onClick={handleCopyKey}
                 type="button"
               >
@@ -225,22 +224,22 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
         {/* Download Section */}
         {isApproved ? (
-          <div className="card" style={{ background: 'var(--surface-strong)', padding: '20px', borderRadius: '10px' }}>
+          <div className="card" style={{ padding: '20px' }}>
             <span className="micro-label">SOFTWARE DOWNLOAD</span>
-            <h3 className="mt-4 mb-8">Verified Panel Package</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', marginBottom: '16px' }}>
+            <h3 style={{ margin: '6px 0 8px', fontSize: '1.25rem' }}>Verified Panel Package</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', marginBottom: '18px' }}>
               Your account is approved. Fetch your secure binary build for {livePlan.toUpperCase()} directly.
             </p>
 
             {downloadError ? (
-              <div className="alert-box alert-danger mb-12">
-                <p className="mb-0 text-danger">{downloadError}</p>
+              <div className="form-error" style={{ marginBottom: '14px' }}>
+                {downloadError}
               </div>
             ) : null}
 
             <button
               id="downloadPanelBtn"
-              className="btn btn-primary btn-large btn-download"
+              className="button button-primary button-lg btn-download"
               disabled={downloadLoading}
               onClick={handleDownload}
               type="button"
