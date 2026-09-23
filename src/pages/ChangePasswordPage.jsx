@@ -83,8 +83,19 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
           {error ? <p className="form-error">{error}</p> : null}
           {success ? <p className="form-success">{success}</p> : null}
 
-          <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Saving...' : 'Update Password'}
+          <button
+            className={`button button-primary ${loading ? 'is-loading' : ''}`}
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? (
+              <span className="button-loading-content">
+                <span className="spinner-inline" aria-hidden="true" />
+                <span>Updating...</span>
+              </span>
+            ) : (
+              <span>Update Password</span>
+            )}
           </button>
         </form>
 

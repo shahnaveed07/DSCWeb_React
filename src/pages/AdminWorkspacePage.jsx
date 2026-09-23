@@ -191,7 +191,8 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   const [editForm, setEditForm] = useState({})
   const [deleteModal, setDeleteModal] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [busy, setBusy] = useState(false)
+  const [busyAction, setBusyAction] = useState('')
+  const busy = Boolean(busyAction)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [reloadKey, setReloadKey] = useState(0)
@@ -249,8 +250,8 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
   const isDeletableTable = ['users', 'keys', 'admins', 'orders', 'freeusers'].includes(table)
 
-  async function run(operation, successMsg) {
-    setBusy(true)
+  async function run(operation, successMsg, actionId = 'action') {
+    setBusyAction(actionId)
     setError('')
     setMessage('')
     try {
@@ -261,7 +262,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       if (isAuthError(issue)) onSessionInvalid()
       else setError(extractApiMessage(issue?.payload, issue?.message || 'The request failed.'))
     } finally {
-      setBusy(false)
+      setBusyAction('')
     }
   }
 
@@ -457,7 +458,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         setCachedSettings((prev) => ({ ...prev, ...payload }))
       }
       setEditRecord(null)
-    }, 'Record updated successfully.')
+    }, 'Record updated successfully.', 'save')
   }
 
   async function toggleMaint() {
@@ -468,7 +469,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         ...cur,
         isMaintenanceMode: Boolean(res?.isMaintenanceMode ?? res?.IsMaintenanceMode ?? !isM),
       }))
-    }, `Maintenance mode turned ${!isM ? 'ON' : 'OFF'}.`)
+    }, `Maintenance mode turned ${!isM ? 'ON' : 'OFF'}.`, 'maintenance')
   }
 
   const columns = useMemo(() => {
@@ -503,19 +504,33 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
           <div style={{ display: 'flex', gap: '10px' }}>
             <button
               type="button"
-              className={`button button-sm ${cachedSettings?.isMaintenanceMode ? 'button-danger' : 'button-secondary'}`}
+              className={`button button-sm ${cachedSettings?.isMaintenanceMode ? 'button-danger' : 'button-secondary'} ${busyAction === 'maintenance' ? 'is-loading' : ''}`}
               disabled={busy}
               onClick={toggleMaint}
             >
-              Maintenance: {cachedSettings?.isMaintenanceMode ? 'ACTIVE' : 'OFF'}
+              {busyAction === 'maintenance' ? (
+                <span className="button-loading-content">
+                  <span className="spinner-inline" aria-hidden="true" />
+                  <span>Updating...</span>
+                </span>
+              ) : (
+                <span>Maintenance: {cachedSettings?.isMaintenanceMode ? 'ACTIVE' : 'OFF'}</span>
+              )}
             </button>
             <button
               type="button"
-              className="button button-secondary button-sm"
+              className={`button button-secondary button-sm ${loading ? 'is-loading' : ''}`}
               disabled={loading || busy}
               onClick={load}
             >
-              Reload Table
+              {loading ? (
+                <span className="button-loading-content">
+                  <span className="spinner-inline" aria-hidden="true" />
+                  <span>Reloading...</span>
+                </span>
+              ) : (
+                <span>Reload Table</span>
+              )}
             </button>
           </div>
         </div>
@@ -1084,8 +1099,19 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
             {/* Buttons */}
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <button className="button button-primary" disabled={busy} type="submit">
-                {busy ? 'Saving...' : 'Save Changes'}
+              <button
+                className={`button button-primary ${busyAction === 'save' ? 'is-loading' : ''}`}
+                disabled={busy}
+                type="submit"
+              >
+                {busyAction === 'save' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Saving...</span>
+                  </span>
+                ) : (
+                  <span>Save Changes</span>
+                )}
               </button>
               <button className="button button-secondary" type="button" onClick={() => setEditRecord(null)}>
                 Cancel
@@ -1129,15 +1155,24 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 type="button"
-                className="button button-danger"
+                className={`button button-danger ${busyAction === 'delete' ? 'is-loading' : ''}`}
                 disabled={busy}
                 onClick={async () => {
                   const action = deleteModal.action
-                  setDeleteModal(null)
-                  await run(action, 'Deleted successfully.')
+                  await run(async () => {
+                    await action()
+                    setDeleteModal(null)
+                  }, 'Deleted successfully.', 'delete')
                 }}
               >
-                Yes, Delete
+                {busyAction === 'delete' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Deleting...</span>
+                  </span>
+                ) : (
+                  <span>Yes, Delete</span>
+                )}
               </button>
               <button
                 type="button"

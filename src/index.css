@@ -732,8 +732,9 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
   line-height: 1;
+  vertical-align: middle;
 }
 
 .spinner-inline {
@@ -746,10 +747,26 @@ button {
   display: inline-block;
   flex-shrink: 0;
   vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.button-sm .spinner-inline,
+.btn-sm .spinner-inline {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
+
+.button-lg .spinner-inline,
+.btn-lg .spinner-inline {
+  width: 16px;
+  height: 16px;
+  border-width: 2.2px;
 }
 
 .button.is-loading,
-.btn.is-loading {
+.btn.is-loading,
+button[disabled].is-loading {
   cursor: wait !important;
   pointer-events: none;
   opacity: 0.88;
@@ -1949,12 +1966,121 @@ tbody tr:hover {
   transition: width 0.4s ease, background 0.2s ease;
 }
 
+/* --------------------------------------------------------------------------
+   FULL-SCREEN LOADING OVERLAY SYSTEM
+   -------------------------------------------------------------------------- */
+.fullscreen-loading-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(11, 14, 20, 0.78);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  user-select: none;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fsFadeIn 0.15s ease-out forwards;
+}
+
+:root[data-theme="light"] .fullscreen-loading-overlay {
+  background-color: rgba(248, 250, 252, 0.84);
+}
+
+.fullscreen-loading-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-elevated);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 30px 42px;
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
+  max-width: 90vw;
+  min-width: 230px;
+  text-align: center;
+  animation: fsScaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+:root[data-theme="light"] .fullscreen-loading-dialog {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.12);
+}
+
+.fullscreen-spinner {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.fullscreen-spinner-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--surface-border);
+  box-sizing: border-box;
+}
+
+:root[data-theme="light"] .fullscreen-spinner-track {
+  border-color: #e2e8f0;
+}
+
+.fullscreen-spinner-head {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--primary);
+  box-sizing: border-box;
+  animation: spin 0.75s linear infinite;
+}
+
+.fullscreen-loading-message {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.4;
+}
+
+@keyframes fsFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fsScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 #global-loader {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
-  z-index: 9999;
+  background: rgba(11, 14, 20, 0.78);
+  backdrop-filter: blur(2px);
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1970,13 +2096,13 @@ tbody tr:hover {
 }
 
 .loader-circle {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border: 3px solid var(--surface-border);
   border-top-color: var(--primary);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 16px;
+  animation: spin 0.75s linear infinite;
+  margin-bottom: 14px;
 }
 
 @keyframes spin {

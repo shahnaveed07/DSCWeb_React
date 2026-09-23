@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { extractApiMessage, submitCheckout } from '../services/dscApi'
+import { FullScreenLoader } from '../components/ui/FullScreenLoader'
 
 const BASE_PRICES = {
   free: 0,
@@ -163,6 +164,7 @@ export function CheckoutPage() {
 
   return (
     <main className="center-wrap">
+      <FullScreenLoader active={loading} message="Processing order..." />
       <section className="panel auth-card checkout-card" style={{ maxWidth: '880px', margin: '0 auto' }}>
         <div className="logo-mark free-panel-icon-60 mb-15">
           <img
@@ -326,14 +328,17 @@ export function CheckoutPage() {
 
               <button
                 type="submit"
-                className="button button-primary button-lg w-100"
+                className={`button button-primary button-lg w-100 ${loading ? 'is-loading' : ''}`}
                 disabled={loading}
               >
-                {loading
-                  ? requiresProof
-                    ? 'Submitting Order...'
-                    : 'Processing...'
-                  : 'Submit Order'}
+                {loading ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Processing order...</span>
+                  </span>
+                ) : (
+                  <span>Submit Order</span>
+                )}
               </button>
             </div>
           </div>

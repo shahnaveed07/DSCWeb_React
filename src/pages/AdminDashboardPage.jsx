@@ -28,7 +28,8 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
   const [revision, setRevision] = useState(0)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState('success')
-  const [busy, setBusy] = useState(false)
+  const [busyAction, setBusyAction] = useState('')
+  const busy = Boolean(busyAction)
 
   // Modals state
   const [orderModal, setOrderModal] = useState(null) // { mode: 'approve' | 'reject', orderId: number, username: string }
@@ -70,8 +71,8 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
     setTimeout(() => setMessage(''), 4000)
   }
 
-  async function runAction(action, successMsg) {
-    setBusy(true)
+  async function runAction(action, successMsg, actionId = 'action') {
+    setBusyAction(actionId)
     try {
       await action()
       if (successMsg) flashMessage(successMsg, 'success')
@@ -83,25 +84,34 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         flashMessage(extractApiMessage(issue.payload, issue.message || 'Action failed.'), 'error')
       }
     } finally {
-      setBusy(false)
+      setBusyAction('')
     }
   }
 
   async function handleOrderConfirm() {
     if (!orderModal) return
     const { mode, orderId } = orderModal
-    setOrderModal(null)
     await runAction(
-      () => processAdminOrder(session.token, orderId, mode),
+      async () => {
+        await processAdminOrder(session.token, orderId, mode)
+        setOrderModal(null)
+      },
       `Order #${orderId} ${mode === 'approve' ? 'approved & key issued' : 'rejected'}.`,
+      `order-${mode}`,
     )
   }
 
   async function handleDeleteConfirm() {
     if (!deleteModal) return
     const action = deleteModal.action
-    setDeleteModal(null)
-    await runAction(action, 'Deleted successfully.')
+    await runAction(
+      async () => {
+        await action()
+        setDeleteModal(null)
+      },
+      'Deleted successfully.',
+      'delete',
+    )
   }
 
   async function handleSaveUser(e) {
@@ -116,7 +126,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         isBanned: Boolean(editUser.isBanned ?? editUser.IsBanned),
       })
       setEditUser(null)
-    }, 'User updated successfully.')
+    }, 'User updated successfully.', 'saveUser')
   }
 
   async function handleChangePassword(e) {
@@ -125,7 +135,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
       await changeAdminPassword(session.token, passwordForm.currentPassword, passwordForm.newPassword)
       setPasswordForm({ currentPassword: '', newPassword: '' })
       setShowPassModal(false)
-    }, 'Admin password updated successfully.')
+    }, 'Admin password updated successfully.', 'changePass')
   }
 
   async function handleCreateAdmin(e) {
@@ -134,7 +144,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
       await createAdminAccount(session.token, newAdmin.username.trim().toLowerCase(), newAdmin.password)
       setNewAdmin({ username: '', password: '' })
       setShowCreateAdmin(false)
-    }, 'New admin created successfully.')
+    }, 'New admin created successfully.', 'createAdmin')
   }
 
   return (
@@ -178,24 +188,39 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </button>
             <button
               type="button"
-              className={`button button-sm ${isMaintenance ? 'button-danger' : 'button-secondary'}`}
+              className={`button button-sm ${isMaintenance ? 'button-danger' : 'button-secondary'} ${busyAction === 'maintenance' ? 'is-loading' : ''}`}
               disabled={busy}
               onClick={() =>
                 runAction(
                   () => toggleMaintenance(session.token, !isMaintenance),
                   `Maintenance mode ${!isMaintenance ? 'activated' : 'deactivated'}.`,
+                  'maintenance',
                 )
               }
             >
-              Maintenance: {isMaintenance ? 'ON' : 'OFF'}
+              {busyAction === 'maintenance' ? (
+                <span className="button-loading-content">
+                  <span className="spinner-inline" aria-hidden="true" />
+                  <span>Updating...</span>
+                </span>
+              ) : (
+                <span>Maintenance: {isMaintenance ? 'ON' : 'OFF'}</span>
+              )}
             </button>
             <button
               type="button"
-              className="button button-secondary button-sm"
+              className={`button button-secondary button-sm ${loading ? 'is-loading' : ''}`}
               disabled={busy || loading}
               onClick={() => setRevision((v) => v + 1)}
             >
-              Refresh
+              {loading ? (
+                <span className="button-loading-content">
+                  <span className="spinner-inline" aria-hidden="true" />
+                  <span>Refreshing...</span>
+                </span>
+              ) : (
+                <span>Refresh</span>
+              )}
             </button>
           </div>
         </div>
@@ -427,11 +452,18 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 type="button"
-                className={orderModal.mode === 'approve' ? 'button button-success' : 'button button-danger'}
+                className={`${orderModal.mode === 'approve' ? 'button button-success' : 'button button-danger'} ${busyAction === `order-${orderModal.mode}` ? 'is-loading' : ''}`}
                 onClick={handleOrderConfirm}
                 disabled={busy}
               >
-                {orderModal.mode === 'approve' ? 'Yes, Approve!' : 'Yes, Reject!'}
+                {busyAction === `order-${orderModal.mode}` ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>{orderModal.mode === 'approve' ? 'Approving...' : 'Rejecting...'}</span>
+                  </span>
+                ) : (
+                  <span>{orderModal.mode === 'approve' ? 'Yes, Approve!' : 'Yes, Reject!'}</span>
+                )}
               </button>
               <button
                 type="button"
@@ -462,11 +494,18 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 type="button"
-                className="button button-danger"
+                className={`button button-danger ${busyAction === 'delete' ? 'is-loading' : ''}`}
                 onClick={handleDeleteConfirm}
                 disabled={busy}
               >
-                Yes, Delete
+                {busyAction === 'delete' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Deleting...</span>
+                  </span>
+                ) : (
+                  <span>Yes, Delete</span>
+                )}
               </button>
               <button
                 type="button"
@@ -527,8 +566,19 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="button button-primary" disabled={busy} type="submit">
-                Save Changes
+              <button
+                className={`button button-primary ${busyAction === 'saveUser' ? 'is-loading' : ''}`}
+                disabled={busy}
+                type="submit"
+              >
+                {busyAction === 'saveUser' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Saving...</span>
+                  </span>
+                ) : (
+                  <span>Save Changes</span>
+                )}
               </button>
               <button
                 className="button button-secondary"
@@ -574,8 +624,19 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="button button-primary" disabled={busy} type="submit">
-                Create Admin
+              <button
+                className={`button button-primary ${busyAction === 'createAdmin' ? 'is-loading' : ''}`}
+                disabled={busy}
+                type="submit"
+              >
+                {busyAction === 'createAdmin' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Creating...</span>
+                  </span>
+                ) : (
+                  <span>Create Admin</span>
+                )}
               </button>
               <button
                 className="button button-secondary"
@@ -620,8 +681,19 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </label>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button className="button button-primary" disabled={busy} type="submit">
-                Update Password
+              <button
+                className={`button button-primary ${busyAction === 'changePass' ? 'is-loading' : ''}`}
+                disabled={busy}
+                type="submit"
+              >
+                {busyAction === 'changePass' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Updating...</span>
+                  </span>
+                ) : (
+                  <span>Update Password</span>
+                )}
               </button>
               <button
                 className="button button-secondary"

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { extractApiMessage, loginUser } from '../services/dscApi'
 import { clearStoredSession, persistSessionFromResponse } from '../utils/auth'
+import { FullScreenLoader } from '../components/ui/FullScreenLoader'
 
 export function UserLoginPage({ session, onSessionChange }) {
   const navigate = useNavigate()
@@ -43,6 +44,7 @@ export function UserLoginPage({ session, onSessionChange }) {
 
   return (
     <section className="auth-shell">
+      <FullScreenLoader active={loading} message="Signing in..." />
       <div className="auth-card">
         <span className="hero-eyebrow">Client Portal</span>
         <h1>Account Login</h1>

@@ -77,8 +77,19 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
 
           {error ? <p className="form-error" role="alert">{error}</p> : null}
 
-          <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Generating...' : 'Generate License Key'}
+          <button
+            className={`button button-primary ${loading ? 'is-loading' : ''}`}
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? (
+              <span className="button-loading-content">
+                <span className="spinner-inline" aria-hidden="true" />
+                <span>Generating...</span>
+              </span>
+            ) : (
+              <span>Generate License Key</span>
+            )}
           </button>
         </form>
 
