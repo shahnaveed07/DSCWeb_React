@@ -54,37 +54,23 @@ const appsList = [
 export function AppsPage() {
   return (
     <div className="center-wrap">
-      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
+      <section className="page-header-center">
         <span className="hero-eyebrow">Product Studio</span>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
-          Applications & Software
-        </h1>
-        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <h1>Applications & Software</h1>
+        <p>
           Explore desktop tools, Android applications, and interactive puzzle experiences
           developed by Dark Skull Corporation with an emphasis on speed, reliability, and clean design.
         </p>
       </section>
 
       {/* Showcase List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+      <div className="apps-list">
         {appsList.map((app) => (
-          <article
-            key={app.title}
-            className="card"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <article key={app.title} className="app-card">
+            <div className="app-card-header">
               <div>
-                <span className="badge warning">
-                  {app.badge}
-                </span>
-                <h2 style={{ fontSize: '1.4rem', margin: '6px 0 0', fontWeight: 700 }}>
-                  {app.title}
-                </h2>
+                <span className="badge warning">{app.badge}</span>
+                <h2 className="app-card-title">{app.title}</h2>
               </div>
               <div>
                 {app.action.href ? (
@@ -104,26 +90,13 @@ export function AppsPage() {
               </div>
             </div>
 
-            <p style={{ color: 'var(--primary)', fontSize: '0.96rem', fontWeight: 600, margin: 0 }}>
-              {app.tagline}
-            </p>
+            <p className="app-card-tagline">{app.tagline}</p>
+            <p className="app-card-desc">{app.description}</p>
 
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6, margin: 0 }}>
-              {app.description}
-            </p>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '12px',
-                paddingTop: '14px',
-                borderTop: '1px solid var(--surface-border)',
-              }}
-            >
+            <div className="app-feature-grid">
               {app.features.map((feat) => (
-                <div key={feat} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--text)' }}>
-                  <span style={{ color: 'var(--primary)', fontWeight: 700 }}>✓</span>
+                <div key={feat} className="app-feature-item">
+                  <span className="app-feature-check">✓</span>
                   <span>{feat}</span>
                 </div>
               ))}

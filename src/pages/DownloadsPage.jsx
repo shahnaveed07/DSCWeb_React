@@ -11,45 +11,34 @@ export function DownloadsPage({ systemStatus }) {
 
   return (
     <div className="center-wrap">
-      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
+      <section className="page-header-center">
         <span className="hero-eyebrow">Download Center</span>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
-          Official Software & Utility Downloads
-        </h1>
-        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <h1>Official Software & Utility Downloads</h1>
+        <p>
           Download verified binaries, public releases, and free packages provided by Dark Skull Corporation.
           All builds are scanned for security and maintained for compatibility.
         </p>
       </section>
 
       {/* Downloads Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+      <div className="downloads-grid">
         {/* Free Panel Package */}
-        <article
-          className="card"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <article className="download-card">
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="download-card-meta">
               <span className="badge warning">FREE UTILITY</span>
-              <span style={{ fontSize: '0.84rem', color: 'var(--muted)' }}>
+              <span className="text-muted text-sm">
                 {loading ? 'Checking slots...' : `${usedSlots} / ${maxSlots} Slots Used`}
               </span>
             </div>
 
-            <h2 style={{ fontSize: '1.35rem', margin: '6px 0 10px', fontWeight: 700 }}>
-              Free Panel Build
-            </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6 }}>
+            <h2 className="download-card-title">Free Panel Build</h2>
+            <p className="download-card-desc">
               The public version of our panel software. Test core functionality, view live credentials, and access the verified package archive.
             </p>
           </div>
 
-          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="download-card-actions">
             {freeLink ? (
               <a
                 className="button button-primary w-100"
@@ -71,29 +60,20 @@ export function DownloadsPage({ systemStatus }) {
         </article>
 
         {/* Calculator Desktop */}
-        <article
-          className="card"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <article className="download-card">
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="download-card-meta">
               <span className="badge good">DESKTOP APP</span>
-              <span style={{ fontSize: '0.84rem', color: 'var(--success)' }}>Stable Release</span>
+              <span className="text-success text-sm">Stable Release</span>
             </div>
 
-            <h2 style={{ fontSize: '1.35rem', margin: '6px 0 10px', fontWeight: 700 }}>
-              Calculator for Windows
-            </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6 }}>
+            <h2 className="download-card-title">Calculator for Windows</h2>
+            <p className="download-card-desc">
               Fast, distraction-free desktop calculator for Windows. Designed for daily calculations with continuous expression parsing and zero overhead.
             </p>
           </div>
 
-          <div style={{ marginTop: '20px' }}>
+          <div className="download-card-actions">
             <NavLink to="/pages/apps" className="button button-secondary w-100">
               Application Details & Overview
             </NavLink>
@@ -101,29 +81,20 @@ export function DownloadsPage({ systemStatus }) {
         </article>
 
         {/* QR Scanner Mobile */}
-        <article
-          className="card"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <article className="download-card">
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="download-card-meta">
               <span className="badge warning">ANDROID</span>
-              <span style={{ fontSize: '0.84rem', color: 'var(--muted)' }}>Google Play</span>
+              <span className="text-muted text-sm">Google Play</span>
             </div>
 
-            <h2 style={{ fontSize: '1.35rem', margin: '6px 0 10px', fontWeight: 700 }}>
-              QR Scanner | Generator
-            </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6 }}>
+            <h2 className="download-card-title">QR Scanner | Generator</h2>
+            <p className="download-card-desc">
               Fast barcode and QR code detection for Android. Scan physical codes or generate customized QR formats offline.
             </p>
           </div>
 
-          <div style={{ marginTop: '20px' }}>
+          <div className="download-card-actions">
             <a
               className="button button-secondary w-100"
               href="https://play.google.com/store/apps/details?id=com.dsc.qrscanner"
@@ -136,29 +107,20 @@ export function DownloadsPage({ systemStatus }) {
         </article>
 
         {/* Mind Matrix */}
-        <article
-          className="card"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <article className="download-card">
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="download-card-meta">
               <span className="badge warning">MOBILE GAME</span>
-              <span style={{ fontSize: '0.84rem', color: 'var(--muted)' }}>Google Play</span>
+              <span className="text-muted text-sm">Google Play</span>
             </div>
 
-            <h2 style={{ fontSize: '1.35rem', margin: '6px 0 10px', fontWeight: 700 }}>
-              Mind Matrix
-            </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6 }}>
+            <h2 className="download-card-title">Mind Matrix</h2>
+            <p className="download-card-desc">
               Train your reflexes and mental focus with hundreds of progressive puzzle and memory challenges.
             </p>
           </div>
 
-          <div style={{ marginTop: '20px' }}>
+          <div className="download-card-actions">
             <a
               className="button button-secondary w-100"
               href="https://play.google.com/store/apps/details?id=com.dsc.mindmatrix"

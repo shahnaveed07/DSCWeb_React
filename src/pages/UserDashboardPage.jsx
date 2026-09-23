@@ -85,12 +85,12 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
   return (
     <div className="center-wrap">
       <section className="panel">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
+        <div className="dashboard-header-flex">
           <div>
             <span className="hero-eyebrow">Client Portal</span>
             <h1 className="auth-title mt-6">Welcome, {String(session.username || 'User').toUpperCase()}</h1>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="flex gap-10">
             {!isFreePlan ? (
               <NavLink to="/pages/change" className="button button-secondary button-sm">
                 Change Password
@@ -104,10 +104,10 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
         {/* Status Alerts */}
         {isPending ? (
-          <div className="form-error" style={{ background: 'var(--warning-soft)', borderColor: 'var(--warning-border)', color: 'var(--warning)', marginBottom: '24px' }}>
+          <div className="form-error mb-24 alert-warning-box">
             <div>
               <strong>⚠️ Order Pending Review</strong>
-              <p style={{ margin: '4px 0 0', fontSize: '0.92rem', color: 'var(--text)' }}>
+              <p className="mt-4 text-sm text-main">
                 Your order is currently awaiting admin verification. Access keys and downloads will be enabled once approved.
               </p>
             </div>
@@ -115,10 +115,10 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
         ) : null}
 
         {isExpired ? (
-          <div className="form-error" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div className="form-error mb-24 flex items-center justify-between flex-wrap gap-12">
             <div>
               <strong>⛔ Subscription Expired</strong>
-              <p style={{ margin: '4px 0 0', fontSize: '0.92rem', color: 'var(--text)' }}>
+              <p className="mt-4 text-sm text-main">
                 Your access has expired. Please renew your plan from the products catalog to restore access.
               </p>
             </div>
@@ -129,9 +129,9 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
         ) : null}
 
         {isRejected ? (
-          <div className="form-error" style={{ marginBottom: '24px' }}>
+          <div className="form-error mb-24">
             <strong>❌ Order Not Approved</strong>
-            <p style={{ margin: '4px 0 0', fontSize: '0.92rem', color: 'var(--text)' }}>
+            <p className="mt-4 text-sm text-main">
               Your order could not be verified. Please contact support on Discord or submit a valid payment proof.
             </p>
           </div>
@@ -148,7 +148,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
           <div className="stat-card">
             <p className="stat-label">Active Plan</p>
-            <div id="dashPlan" className="stat-value" style={{ color: 'var(--primary)' }}>
+            <div id="dashPlan" className="stat-value text-primary">
               {livePlan.toUpperCase()}
             </div>
           </div>
@@ -159,8 +159,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
             </p>
             <div
               id="dashExpiry"
-              className="stat-value"
-              style={{ fontSize: '1.05rem', color: isExpired ? 'var(--danger)' : 'var(--success)' }}
+              className={`stat-value text-base ${isExpired ? 'text-danger' : 'text-success'}`}
             >
               {liveExpiry ? formatDateTime(liveExpiry) : 'No active expiry'}
             </div>
@@ -172,10 +171,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
             </p>
             <div
               id="dashOrderStatus"
-              className="stat-value"
-              style={{
-                color: isApproved ? 'var(--success)' : isRejected ? 'var(--danger)' : 'var(--warning)',
-              }}
+              className={`stat-value ${isApproved ? 'text-success' : isRejected ? 'text-danger' : 'text-warning'}`}
             >
               {liveStatus.toUpperCase()}
             </div>
@@ -183,8 +179,8 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
         </div>
 
         {/* License Key Card */}
-        <div className="card" id="key-card" style={{ padding: '20px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <div className="card mb-24" id="key-card">
+          <div className="flex items-center justify-between mb-10">
             <span className="micro-label">LICENSE KEY</span>
             <span className={`badge ${isApproved ? (keyUsed ? 'warning' : 'good') : 'warning'}`}>
               {isApproved ? (keyUsed ? 'Used' : 'Active') : 'Pending'}
@@ -193,23 +189,13 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
           <div
             id="dashOrderKey"
-            style={{
-              padding: '14px 16px',
-              fontFamily: 'monospace',
-              fontSize: '1.1rem',
-              letterSpacing: '0.05em',
-              wordBreak: 'break-all',
-              background: 'var(--surface-hover)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--surface-border)',
-              color: orderKey ? 'var(--text)' : 'var(--muted)',
-            }}
+            className={`license-key-box ${orderKey ? '' : 'is-empty'}`}
           >
             {orderKey || 'Key will be issued upon admin approval'}
           </div>
 
           {orderKey ? (
-            <div style={{ marginTop: '14px' }}>
+            <div className="mt-14">
               <button
                 id="copyDashKeyBtn"
                 className="button button-secondary button-sm"
@@ -224,15 +210,15 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
         {/* Download Section */}
         {isApproved ? (
-          <div className="card" style={{ padding: '20px' }}>
+          <div className="card">
             <span className="micro-label">SOFTWARE DOWNLOAD</span>
-            <h3 style={{ margin: '6px 0 8px', fontSize: '1.25rem' }}>Verified Panel Package</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', marginBottom: '18px' }}>
+            <h3 className="my-8 text-lg font-bold">Verified Panel Package</h3>
+            <p className="text-muted text-sm mb-18">
               Your account is approved. Fetch your secure binary build for {livePlan.toUpperCase()} directly.
             </p>
 
             {downloadError ? (
-              <div className="form-error" style={{ marginBottom: '14px' }}>
+              <div className="form-error mb-14">
                 {downloadError}
               </div>
             ) : null}

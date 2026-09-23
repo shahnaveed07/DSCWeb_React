@@ -1,26 +1,44 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { pageLabels, primaryNavItems } from '../../content/siteContent'
+import { pageLabels } from '../../content/siteContent'
+import { checkOwnerAccess } from '../../services/dscApi'
+import { getContextualMenu } from '../../utils/navigation'
 
 function isExternal(target) {
   return /^https?:\/\//.test(String(target || ''))
 }
 
-export function SiteHeader({ session, systemStatus, onLogout, compact = false }) {
+export function SiteHeader({ session, _systemStatus, onLogout, compact = false }) {
   const location = useLocation()
   const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [verifiedOwner, setVerifiedOwner] = useState(false)
+
+  const isOwner = Boolean(session?.isOwner || verifiedOwner)
+
   const [theme, setThemeState] = useState(() => {
     if (typeof document === 'undefined') return 'dark'
     const currentTheme = document.documentElement.getAttribute('data-theme')
     if (currentTheme === 'light' || currentTheme === 'dark') return currentTheme
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
-  const hasDownloadCta =
-    systemStatus &&
-    (systemStatus.showHomeDownloadBtn === true ||
-      systemStatus.ShowHomeDownloadBtn === true) &&
-    (systemStatus.freeLink || systemStatus.FreeLink)
+
+  // Check and keep owner permission updated for admin sessions
+  useEffect(() => {
+    let active = true
+    if (session?.role === 'Admin' && session?.token && !session?.isOwner) {
+      checkOwnerAccess(session.token)
+        .then((ownerRes) => {
+          if (active) setVerifiedOwner(Boolean(ownerRes))
+        })
+        .catch(() => {
+          if (active) setVerifiedOwner(false)
+        })
+    }
+    return () => {
+      active = false
+    }
+  }, [session])
 
   const currentPageLabel = useMemo(() => {
     const currentPath = location.pathname.toLowerCase()
@@ -30,6 +48,15 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false })
 
     return match?.label || ''
   }, [location.pathname])
+
+  const menuGroups = useMemo(() => {
+    return getContextualMenu({
+      pathname: location.pathname,
+      session,
+      isOwner,
+      onLogout,
+    })
+  }, [location.pathname, session, isOwner, onLogout])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -92,44 +119,20 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false })
           {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
         </button>
 
-        {hasDownloadCta ? (
-          <a
-            className="button button-secondary"
-            href="/pages/downloads"
-            target="_blank"
-            rel="noopener noreferrer"
+        {session ? (
+          <button
+            className="button button-secondary header-user-action"
+            type="button"
+            onClick={onLogout}
+            title={`Sign out (${session.username || session.role})`}
           >
-            <span aria-hidden="true">📥 </span>Download<span className="hide-mobile"> Panel</span>
-          </a>
-        ) : null}
-
-        {session?.role === 'User' ? (
-          <>
-            <NavLink className="button button-ghost" to="/pages/udash">
-              Dashboard
-            </NavLink>
-            <button className="button button-primary" type="button" onClick={onLogout}>
-              Logout
-            </button>
-          </>
-        ) : null}
-
-        {session?.role === 'Admin' ? (
-          <>
-            <NavLink className="button button-ghost" to="/pages/adash">
-              Admin
-            </NavLink>
-            <button className="button button-primary" type="button" onClick={onLogout}>
-              Logout
-            </button>
-          </>
-        ) : null}
-
-        {!session ? (
-          <NavLink className="button button-primary" to="/pages/ulogin">
+            Logout
+          </button>
+        ) : (
+          <NavLink className="button button-primary header-user-action" to="/pages/ulogin">
             Login
           </NavLink>
-        ) : null}
+        )}
 
         <div className="menu-container" ref={menuRef}>
           <button
@@ -145,38 +148,68 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false })
           <nav
             id="primary-menu"
             className="menu-panel"
-            aria-label="Primary navigation"
+            aria-label="Contextual navigation"
             hidden={!menuOpen}
-            onClick={() => setMenuOpen(false)}
           >
-            {primaryNavItems.map((item) => {
-              if (item.href) {
-                return (
-                  <a
-                    key={item.href}
-                    className="nav-link"
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {item.label}
-                  </a>
-                )
-              }
+            {menuGroups.map((group, groupIdx) => (
+              <div key={group.title || groupIdx} className="menu-group">
+                {group.title ? (
+                  <div className="menu-group-header">{group.title}</div>
+                ) : null}
+                <div className="menu-group-items">
+                  {group.items.map((item, itemIdx) => {
+                    if (item.isAction) {
+                      return (
+                        <button
+                          key={item.label || itemIdx}
+                          type="button"
+                          className={`nav-link nav-link-btn ${item.isDestructive ? 'nav-link-destructive' : ''}`}
+                          onClick={() => {
+                            setMenuOpen(false)
+                            item.onClick?.()
+                          }}
+                        >
+                          <span className="nav-link-text">{item.label}</span>
+                        </button>
+                      )
+                    }
 
-              return (
-                <NavLink
-                  key={item.to}
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active nav-link-active' : ''}`.trim()
-                  }
-                  to={item.to}
-                  end={item.to === '/'}
-                >
-                  {item.label}
-                </NavLink>
-              )
-            })}
+                    if (item.href) {
+                      return (
+                        <a
+                          key={item.href}
+                          className="nav-link"
+                          href={item.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          <span className="nav-link-text">{item.label}</span>
+                          <span className="nav-external-arrow" aria-hidden="true">↗</span>
+                        </a>
+                      )
+                    }
+
+                    return (
+                      <NavLink
+                        key={item.to}
+                        to={item.to}
+                        end={item.to === '/'}
+                        className={({ isActive }) =>
+                          `nav-link ${isActive || item.isCurrent ? 'active nav-link-active' : ''}`.trim()
+                        }
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <span className="nav-link-text">{item.label}</span>
+                        {item.badge ? <span className="nav-badge">{item.badge}</span> : null}
+                        {item.isCurrent ? <span className="nav-active-dot" title="Current Page" aria-hidden="true" /> : null}
+                      </NavLink>
+                    )
+                  })}
+                </div>
+                {groupIdx < menuGroups.length - 1 ? <div className="menu-divider" role="separator" /> : null}
+              </div>
+            ))}
           </nav>
         </div>
       </div>

@@ -106,12 +106,10 @@ const products = [
 export function ProductsPage() {
   return (
     <div className="center-wrap">
-      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
+      <section className="page-header-center">
         <span className="hero-eyebrow">Product Catalog</span>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
-          Software & Panel Products
-        </h1>
-        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <h1>Software & Panel Products</h1>
+        <p>
           Choose from our range of high-performance utilities and software panels.
           Enjoy transparent base pricing, multiple duration options, and verified access.
         </p>
@@ -131,7 +129,7 @@ export function ProductsPage() {
             <div>
               <h2 className="product-title">{p.title}</h2>
               <div className="product-price">
-                {p.price} <span style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 400 }}>/ {p.rateLabel}</span>
+                {p.price} <span className="product-price-rate">/ {p.rateLabel}</span>
               </div>
               <ul className="product-features">
                 {p.features.map((feat) => (
@@ -140,7 +138,7 @@ export function ProductsPage() {
               </ul>
             </div>
 
-            <div style={{ marginTop: '16px' }}>
+            <div className="product-action-wrap">
               {p.action.disabled ? (
                 <button
                   type="button"

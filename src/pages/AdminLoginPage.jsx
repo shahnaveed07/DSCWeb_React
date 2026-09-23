@@ -15,6 +15,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
 
   async function handleSubmit(event) {
     event.preventDefault()
+    if (loading) return
     setLoading(true)
     setError('')
 
@@ -50,15 +51,16 @@ export function AdminLoginPage({ session, onSessionChange }) {
           Authorized personnel only. Review order submissions, manage customer licenses, configure system maintenance, and adjust broadcast notices.
         </p>
 
-        <form className="form-stack" onSubmit={handleSubmit}>
+        <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">
             <span>Admin Username</span>
             <input
               autoComplete="username"
               onChange={(event) =>
-                setForm((current) => ({ ...current, username: event.target.value }))
+                !loading && setForm((current) => ({ ...current, username: event.target.value }))
               }
               placeholder="Enter admin username"
+              readOnly={loading}
               required
               type="text"
               value={form.username}
@@ -70,19 +72,31 @@ export function AdminLoginPage({ session, onSessionChange }) {
             <input
               autoComplete="current-password"
               onChange={(event) =>
-                setForm((current) => ({ ...current, password: event.target.value }))
+                !loading && setForm((current) => ({ ...current, password: event.target.value }))
               }
               placeholder="Enter admin password"
+              readOnly={loading}
               required
               type="password"
               value={form.password}
             />
           </label>
 
-          {error ? <p className="form-error">{error}</p> : null}
+          {error ? <p className="form-error" role="alert">{error}</p> : null}
 
-          <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Authenticating...' : 'Sign In as Admin'}
+          <button
+            className={`button button-primary button-full ${loading ? 'is-loading' : ''}`}
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? (
+              <span className="button-loading-content">
+                <span className="spinner-inline" aria-hidden="true" />
+                <span>Authenticating...</span>
+              </span>
+            ) : (
+              <span>Sign In as Admin</span>
+            )}
           </button>
         </form>
 

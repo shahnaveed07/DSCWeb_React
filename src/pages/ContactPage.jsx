@@ -40,43 +40,28 @@ const contactChannels = [
 export function ContactPage() {
   return (
     <div className="center-wrap">
-      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
+      <section className="page-header-center">
         <span className="hero-eyebrow">Direct Communication</span>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
-          Contact & Support Channels
-        </h1>
-        <p style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <h1>Contact & Support Channels</h1>
+        <p>
           Have questions about your order, need technical assistance, or want to discuss a custom build?
           Connect with the Dark Skull Corporation team through any of our official channels.
         </p>
       </section>
 
       {/* Channels Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+      <div className="channels-grid">
         {contactChannels.map((c) => (
-          <article
-            key={c.title}
-            className="card"
-            style={{
-              padding: '26px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
+          <article key={c.title} className="channel-card">
             <div>
-              <span className="badge warning" style={{ marginBottom: '10px' }}>
+              <span className="badge warning mb-10">
                 {c.tag}
               </span>
-              <h2 style={{ fontSize: '1.25rem', margin: '6px 0 10px', fontWeight: 700 }}>
-                {c.title}
-              </h2>
-              <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6, margin: 0 }}>
-                {c.description}
-              </p>
+              <h2 className="channel-card-title">{c.title}</h2>
+              <p className="channel-card-desc">{c.description}</p>
             </div>
 
-            <div style={{ marginTop: '24px' }}>
+            <div className="channel-card-action">
               <a
                 className={`button ${c.primary ? 'button-primary' : 'button-secondary'} w-100`}
                 href={c.href}

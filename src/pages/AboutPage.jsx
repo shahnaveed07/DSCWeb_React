@@ -39,67 +39,49 @@ const principles = [
 export function AboutPage() {
   return (
     <div className="center-wrap">
-      <section className="section-head-v2" style={{ textAlign: 'center', display: 'block', marginBottom: '36px' }}>
+      <section className="page-header-center">
         <span className="hero-eyebrow">Dark Skull Corporation</span>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '8px 0 12px' }}>
-          Independent Software Studio
-        </h1>
-        <p style={{ maxWidth: '680px', margin: '0 auto', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+        <h1>Independent Software Studio</h1>
+        <p>
           Dark Skull Corporation is an independent software studio focused on creating focused desktop utilities, specialized software panels, Android applications, and interactive puzzle experiences.
         </p>
       </section>
 
       {/* Focus Areas */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+      <div className="focus-grid">
         {focusAreas.map((area) => (
-          <div
-            key={area.title}
-            className="card"
-            style={{
-              padding: '24px',
-            }}
-          >
-            <span className="badge warning" style={{ marginBottom: '8px' }}>
+          <div key={area.title} className="focus-card">
+            <span className="badge warning mb-8">
               {area.tag}
             </span>
-            <h2 style={{ fontSize: '1.3rem', margin: '6px 0 10px', fontWeight: 700 }}>
-              {area.title}
-            </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.94rem', lineHeight: 1.6, margin: 0 }}>
-              {area.desc}
-            </p>
+            <h2 className="focus-card-title">{area.title}</h2>
+            <p className="focus-card-desc">{area.desc}</p>
           </div>
         ))}
       </div>
 
       {/* Principles Section */}
-      <section className="seo-section" style={{ marginTop: '20px', marginBottom: '32px' }}>
+      <section className="seo-section mb-32">
         <div className="seo-container">
           <h2>Our Core Principles</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginTop: '20px' }}>
+          <div className="principles-grid-about">
             {principles.map((pr) => (
-              <div key={pr.number} style={{ padding: '20px', background: 'var(--surface-hover)', borderRadius: '8px' }}>
-                <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--primary)', fontFamily: 'monospace' }}>
-                  {pr.number}
-                </span>
-                <h3 style={{ fontSize: '1.1rem', margin: '8px 0 6px', color: 'var(--text)' }}>
-                  {pr.title}
-                </h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.5, margin: 0 }}>
-                  {pr.desc}
-                </p>
+              <div key={pr.number} className="principle-item-about">
+                <span className="principle-item-num">{pr.number}</span>
+                <h3 className="principle-item-title">{pr.title}</h3>
+                <p className="principle-item-desc">{pr.desc}</p>
               </div>
             ))}
           </div>
 
-          <h2 style={{ marginTop: '36px' }}>Developer Portfolio & Leadership</h2>
+          <h2 className="mt-36">Developer Portfolio & Leadership</h2>
           <p>
             DSCWeb and the software offerings within the Dark Skull Corporation portfolio are developed and maintained under the leadership of{' '}
             <a
               href="https://naveedmushtaq.tech/"
               target="_blank"
               rel="noreferrer"
-              style={{ color: 'var(--primary)', fontWeight: 600 }}
+              className="text-primary font-semibold"
             >
               Naveed Mushtaq ↗
             </a>
@@ -109,14 +91,14 @@ export function AboutPage() {
       </section>
 
       {/* Call to action */}
-      <section className="card" style={{ padding: '32px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 8px' }}>
+      <section className="about-cta-card">
+        <h2 className="about-cta-title">
           Explore Our Products & Ecosystem
         </h2>
-        <p style={{ color: 'var(--muted)', maxWidth: '500px', margin: '0 auto 20px', fontSize: '0.95rem' }}>
+        <p className="about-cta-desc">
           Discover what we have built or connect directly with our engineering team on Discord.
         </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="about-cta-actions">
           <NavLink to="/pages/products" className="button button-primary">
             View Products Catalog
           </NavLink>

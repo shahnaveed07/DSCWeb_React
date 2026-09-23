@@ -15,6 +15,7 @@ export function UserLoginPage({ session, onSessionChange }) {
 
   async function handleSubmit(event) {
     event.preventDefault()
+    if (loading) return
     setLoading(true)
     setError('')
 
@@ -49,15 +50,16 @@ export function UserLoginPage({ session, onSessionChange }) {
           Sign in to manage your active panel subscriptions, view your verified license key, and download authorized software builds.
         </p>
 
-        <form className="form-stack" onSubmit={handleSubmit}>
+        <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">
             <span>Username</span>
             <input
               autoComplete="username"
               onChange={(event) =>
-                setForm((current) => ({ ...current, username: event.target.value }))
+                !loading && setForm((current) => ({ ...current, username: event.target.value }))
               }
               placeholder="Enter your username"
+              readOnly={loading}
               required
               type="text"
               value={form.username}
@@ -69,19 +71,31 @@ export function UserLoginPage({ session, onSessionChange }) {
             <input
               autoComplete="current-password"
               onChange={(event) =>
-                setForm((current) => ({ ...current, password: event.target.value }))
+                !loading && setForm((current) => ({ ...current, password: event.target.value }))
               }
               placeholder="Enter your password"
+              readOnly={loading}
               required
               type="password"
               value={form.password}
             />
           </label>
 
-          {error ? <p className="form-error">{error}</p> : null}
+          {error ? <p className="form-error" role="alert">{error}</p> : null}
 
-          <button className="button button-primary" disabled={loading} type="submit">
-            {loading ? 'Signing in...' : 'Sign In'}
+          <button
+            className={`button button-primary button-full ${loading ? 'is-loading' : ''}`}
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? (
+              <span className="button-loading-content">
+                <span className="spinner-inline" aria-hidden="true" />
+                <span>Logging in...</span>
+              </span>
+            ) : (
+              <span>Login</span>
+            )}
           </button>
         </form>
 
