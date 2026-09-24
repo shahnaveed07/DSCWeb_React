@@ -225,13 +225,22 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
             <button
               id="downloadPanelBtn"
-              className="button button-primary button-lg btn-download"
+              className={`button button-primary button-lg btn-download ${downloadLoading ? 'is-loading' : ''}`}
               disabled={downloadLoading}
               onClick={handleDownload}
               type="button"
             >
-              <span aria-hidden="true">📥 </span>
-              {downloadLoading ? 'Retrieving Package...' : `Download ${livePlan.toUpperCase()} Panel`}
+              {downloadLoading ? (
+                <span className="button-loading-content">
+                  <span className="spinner-inline" aria-hidden="true" />
+                  <span>Retrieving Package...</span>
+                </span>
+              ) : (
+                <>
+                  <span aria-hidden="true">📥 </span>
+                  <span>Download {livePlan.toUpperCase()} Panel</span>
+                </>
+              )}
             </button>
           </div>
         ) : null}
