@@ -1,8 +1,26 @@
-export function MaintenancePage({ systemStatus }) {
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+
+export function MaintenancePage({ systemStatus, onRetry }) {
+  const [retrying, setRetrying] = useState(false)
+
   const reason =
     systemStatus?.maintenanceReason ||
     systemStatus?.MaintenanceReason ||
-    'DSCWeb is temporarily offline while maintenance or critical system updates are performed. We will be back shortly.'
+    'DSCWeb is temporarily offline while critical system updates or routine maintenance operations are performed. We will be back shortly.'
+
+  async function handleRetry() {
+    setRetrying(true)
+    try {
+      if (typeof onRetry === 'function') {
+        await onRetry()
+      } else {
+        window.location.reload()
+      }
+    } finally {
+      setTimeout(() => setRetrying(false), 600)
+    }
+  }
 
   return (
     <div className="maintenance-container">
@@ -14,6 +32,7 @@ export function MaintenancePage({ systemStatus }) {
           stroke="#ffffff"
           strokeWidth="2.5"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -23,23 +42,36 @@ export function MaintenancePage({ systemStatus }) {
         </svg>
       </div>
 
-      <h1 className="maintenance-title">UNDER MAINTENANCE</h1>
+      <h1 className="maintenance-title">SYSTEM MAINTENANCE</h1>
 
       <p className="maintenance-text">{reason}</p>
 
       <div className="maintenance-buttons">
         <button
           type="button"
-          className="button button-primary"
-          onClick={() => window.location.reload()}
+          className={`button button-primary ${retrying ? 'is-loading' : ''}`}
+          disabled={retrying}
+          onClick={handleRetry}
         >
-          Refresh Page
+          {retrying ? (
+            <span className="button-loading-content">
+              <span className="spinner-inline" aria-hidden="true" />
+              <span>Checking Status...</span>
+            </span>
+          ) : (
+            <span>Try Again</span>
+          )}
         </button>
+
+        <Link to="/pages/alogin" className="button button-secondary">
+          Admin Login
+        </Link>
+
         <a
-          className="button button-secondary"
+          className="button button-ghost"
           href="https://discord.gg/XB2Zjmsb7K"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
           Discord Support ↗
         </a>

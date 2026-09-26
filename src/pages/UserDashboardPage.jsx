@@ -69,7 +69,13 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
         throw new Error('Download URL could not be retrieved.')
       }
 
-      window.open(payload.url, '_blank', 'noopener,noreferrer')
+      const link = document.createElement('a')
+      link.href = payload.url
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
     } catch (downloadIssue) {
       setDownloadError(
         extractApiMessage(

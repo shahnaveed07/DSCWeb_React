@@ -3,19 +3,19 @@
   "short_name": "DSC",
   "icons": [
     {
-      "src": "images/dsclogo.png",
+      "src": "/images/dsclogo.png",
       "sizes": "1280x1280",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     },
     {
-      "src": "images/dsclogo.png",
+      "src": "/images/dsclogo.png",
       "sizes": "1280x1280",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#0f172a",
-  "background_color": "#0f172a",
+  "theme_color": "#0b0e14",
+  "background_color": "#0b0e14",
   "display": "standalone"
 }

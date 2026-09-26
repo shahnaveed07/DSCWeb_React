@@ -35,18 +35,18 @@ export const pageLabels = [
 export const homeHighlights = [
   {
     eyebrow: 'Security',
-    title: 'Secure by design',
-    body: 'Phase 1 keeps the current backend contract intact while moving the frontend to a cleaner, more maintainable architecture.',
+    title: 'Secure by Design',
+    body: 'Enterprise-grade authorization, HWID validation, and private cryptographic licensing keys.',
   },
   {
-    eyebrow: 'Engineering',
-    title: 'Structured delivery',
-    body: 'Reusable sections, centralized API handling, and a predictable page model replace the legacy monolithic frontend runtime.',
+    eyebrow: 'Performance',
+    title: 'Structured Delivery',
+    body: 'Zero-latency startup, minimal memory consumption, and clean client-side performance across all tools.',
   },
   {
     eyebrow: 'Operations',
-    title: 'Production aware',
-    body: 'The rebuild carries forward maintenance states, download gating, role-based access, and explicit loading or failure feedback.',
+    title: 'Continuous Availability',
+    body: 'Real-time telemetry, maintenance awareness, and responsive community support channels.',
   },
 ]
 
@@ -89,9 +89,9 @@ export const servicePillars = [
   {
     title: 'Web and App Engineering',
     items: [
-      'Responsive website delivery',
+      'Responsive web applications and portals',
       'Lightweight utilities and mobile tooling',
-      'API-compatible frontend modernization',
+      'High-performance backend API integration',
     ],
   },
   {
@@ -99,26 +99,26 @@ export const servicePillars = [
     items: [
       'Operational visibility for maintenance states',
       'Download, licensing, and order workflows',
-      'A maintainable base for later Node and Express migration',
+      'Active developer communication and verification',
     ],
   },
 ]
 
 export const faqItems = [
   {
-    question: 'What stays the same in Phase 1?',
+    question: 'How do I activate my software panel?',
     answer:
-      'The live C# API and TiDB-backed data remain the operational source of truth while the new React frontend upgrades structure, presentation, and maintainability.',
+      'Select your desired tier via the Products page or Checkout, submit your payment proof, and upon verification your license key will be issued directly in your Client Portal.',
   },
   {
-    question: 'Which flows are preserved now?',
+    question: 'Where can I download verified software builds?',
     answer:
-      'Public marketing pages, free panel status, checkout submission, user authentication, password change, and dashboard order tracking are all included in the Phase 1 scope.',
+      'All official binaries and packages are available through our Download Center and inside authenticated user dashboards.',
   },
   {
-    question: 'Will the backend change now?',
+    question: 'How do I get technical assistance?',
     answer:
-      'No. The Node and Express migration is explicitly deferred. This upgrade is designed to consume the current backend cleanly.',
+      'You can join our verified Discord community for live announcements and direct interaction with the team, or contact us via our official support email.',
   },
 ]
 
@@ -143,7 +143,7 @@ export const productPlans = [
     features: [
       'OBS-safe usage guidance',
       'Longer purchase durations at checkout',
-      'Preserved existing order flow',
+      'Verified payment approval flow',
     ],
     action: { label: 'Buy Now', to: '/pages/checkout?panel=streamer' },
   },
@@ -155,8 +155,8 @@ export const productPlans = [
     featured: true,
     features: [
       'Private-slot orientation',
-      'Advanced protection positioning',
-      '24/7 support language retained from the legacy catalog',
+      'Advanced protection layer',
+      'Priority 24/7 Discord support access',
     ],
     action: { label: 'Buy Now', to: '/pages/checkout?panel=special' },
   },
@@ -167,8 +167,8 @@ export const productPlans = [
     slug: 'sniper',
     features: [
       'Fast-switch capabilities',
-      'Location analysis tools',
-      'Preserved duration-based checkout pricing',
+      'Lightweight memory footprint',
+      'Flexible duration-based checkout pricing',
     ],
     action: { label: 'Buy Now', to: '/pages/checkout?panel=sniper' },
   },
@@ -180,7 +180,7 @@ export const productPlans = [
     features: [
       'Advanced precision layer',
       'Tracking-oriented positioning',
-      'Same approval-based order flow',
+      'Direct order approval flow',
     ],
     action: { label: 'Buy Now', to: '/pages/checkout?panel=aimassist' },
   },
@@ -190,11 +190,11 @@ export const productPlans = [
     price: '$5 base rate',
     slug: 'premium',
     features: [
-      'Marked as upcoming in the current system',
-      'Priority support positioning',
-      'Reserved for later release',
+      'High-tier security defense',
+      'Extended multi-month options',
+      'Priority fast-track processing',
     ],
-    action: { label: 'Coming Soon', disabled: true },
+    action: { label: 'Buy Now', to: '/pages/checkout?panel=premium' },
   },
   {
     label: 'Enterprise',
@@ -203,33 +203,18 @@ export const productPlans = [
     slug: 'customised',
     features: [
       'Custom branding and packaging',
-      'Private-build positioning',
-      'Reserved for direct inquiry',
+      'Dedicated private-build orientation',
+      'Direct developer consultation',
     ],
-    action: { label: 'Coming Soon', disabled: true },
-  },
-]
-
-export const roadmapItems = [
-  {
-    title: 'Phase 1',
-    body: 'React frontend consumes the existing C# API while preserving current data and operational workflows.',
-  },
-  {
-    title: 'Phase 2',
-    body: 'Selected backend responsibilities can move to Node and Express after the frontend contract is stable and verified.',
-  },
-  {
-    title: 'Phase 3',
-    body: 'Admin CRUD and deeper internal tooling can be rebuilt on the new frontend once authenticated response contracts are fully captured.',
+    action: { label: 'Buy Now', to: '/pages/checkout?panel=customised' },
   },
 ]
 
 export const aboutStats = [
-  { label: 'Architecture', value: 'React + Vite' },
-  { label: 'Current API', value: 'C# on Render' },
-  { label: 'Data Store', value: 'TiDB retained' },
-  { label: 'Brand Goal', value: 'Same DSCWeb, rebuilt properly' },
+  { label: 'Established', value: '2026' },
+  { label: 'Platform Focus', value: 'Security & Utilities' },
+  { label: 'Support Model', value: 'Community & Direct' },
+  { label: 'Organization', value: 'Dark Skull Corporation' },
 ]
 
 export const contactChannels = [
@@ -249,7 +234,7 @@ export const contactChannels = [
     label: 'GitHub Workspace',
     title: 'Public Code Surface',
     body: 'Repositories, documentation, and shared technical artifacts.',
-    action: { label: 'View GitHub', href: 'https://github.com/' },
+    action: { label: 'View GitHub', href: 'https://github.com/shahnaveed07' },
   },
 ]
 
@@ -275,8 +260,8 @@ export const privacySections = [
     title: 'Third-Party Services',
     items: [
       'Google Play Services',
-      'Firebase for future products where enabled',
-      'Analytics and delivery tooling only where required',
+      'Verified payment processors',
+      'Delivery tooling only where required',
     ],
   },
   {
