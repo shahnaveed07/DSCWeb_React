@@ -7,82 +7,87 @@
    1. TOKENS & CSS VARIABLES — REFINED CENTRALIZED SYSTEM
    -------------------------------------------------------------------------- */
 :root {
-  /* Surfaces & Backgrounds — Layered Near-Black Charcoal & Graphite */
-  --bg: #0b0e14;
-  --bg-soft: #10141d;
-  --surface: #141923;
-  --surface-elevated: #1a202c;
-  --surface-hover: #222938;
+  /* Core Colors — Original DSCWeb Dark Theme */
+  --bg: #111111;
+  --bg-soft: #151515;
+  --surface: #181818;
+  --surface-solid: #1c1c1c;
+  --surface-strong: #202020;
+  --surface-elevated: #202020;
+  --surface-border: #2a2a2a;
+  --surface-border-strong: #3a3a3a;
+  --surface-hover: #242424;
 
-  /* Aliases for seamless component compatibility */
-  --surface-solid: var(--surface);
-  --surface-strong: var(--surface-elevated);
+  /* Aliases & Component Compatibility */
   --surface-muted: var(--bg-soft);
-  --card-bg: var(--surface);
-  --footer-bg: #080a0f;
-  --input-bg: var(--bg-soft);
+  --card-bg: #181818;
+  --card-border: #2a2a2a;
+  --card-hover-border: #3a3a3a;
+  --card-hover-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  --footer-bg: #151515;
+  --input-bg: #151515;
+  --input-placeholder: #737373;
 
-  /* Borders — Subtle Neutral Gray */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --border-hover: rgba(255, 255, 255, 0.24);
-  --surface-border: var(--border);
-  --surface-border-strong: var(--border-strong);
-  --card-border: var(--border);
-  --card-hover-border: var(--border-strong);
-  --line: var(--border);
-  --line-strong: var(--border-strong);
+  /* Borders */
+  --border: #2a2a2a;
+  --border-strong: #3a3a3a;
+  --border-hover: #4a4a4a;
+  --line: #2a2a2a;
+  --line-strong: #3a3a3a;
 
-  /* Typography — Soft White & Neutral Slate Hierarchy */
-  --text: #e6edf3;
-  --text-secondary: #94a3b8;
-  --text-soft: var(--text-secondary);
-  --text-muted: #64748b;
-  --muted: var(--text-muted);
-  --text-disabled: #475569;
-  --input-placeholder: #525e70;
-  --highlight-text: var(--text);
-  --panel-name: var(--text);
+  /* Typography */
+  --text: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-soft: #a3a3a3;
+  --text-muted: #8a8a8a;
+  --muted: #a3a3a3;
+  --text-disabled: #666666;
+  --highlight-text: #ffffff;
+  --panel-name: #ffffff;
 
-  /* Brand Accent — Restrained Technical Cyan / Teal */
-  --primary: #00b4a6;
-  --primary-hover: #009d91;
-  --primary-strong: var(--primary-hover);
-  --primary-active: #00877c;
-  --primary-soft: rgba(0, 180, 166, 0.1);
-  --primary-soft-strong: rgba(0, 180, 166, 0.18);
-  --primary-border: rgba(0, 180, 166, 0.28);
-  --primary-soft-border: var(--primary-border);
-  --primary-text: #042024;
-  --secondary: #0ea5e9;
+  /* Brand Accents — Original DSCWeb Cyan / Teal & Secondary */
+  --primary: #22b8cf;
+  --primary-hover: #1597aa;
+  --primary-strong: #1597aa;
+  --primary-active: #108092;
+  --primary-text: #082b31;
+  --secondary: #67d5e5;
+
+  --primary-soft: rgba(34, 184, 207, 0.12);
+  --primary-soft-strong: rgba(34, 184, 207, 0.2);
+  --primary-soft-border: rgba(34, 184, 207, 0.3);
+  --primary-border: rgba(34, 184, 207, 0.3);
+
   --accent: var(--primary);
   --accent-strong: var(--primary-strong);
-  --link-color: var(--primary);
-  --eyebrow-color: var(--primary);
+  --link-color: #67d5e5;
+  --eyebrow-color: #67d5e5;
 
-  /* Semantic Status Colors (Controlled Saturation) */
-  --success: #10b981;
-  --success-hover: #059669;
-  --success-soft: rgba(16, 185, 129, 0.12);
-  --success-border: rgba(16, 185, 129, 0.26);
+  /* Semantic Status Colors */
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-strong: #dc2626;
+  --danger-soft: rgba(239, 68, 68, 0.1);
+  --danger-border: rgba(239, 68, 68, 0.25);
+
+  --success: #22c55e;
+  --success-hover: #16a34a;
+  --success-soft: rgba(34, 197, 94, 0.1);
+  --success-border: rgba(34, 197, 94, 0.25);
 
   --warning: #f59e0b;
   --warning-hover: #d97706;
-  --warning-soft: rgba(245, 158, 11, 0.12);
-  --warning-border: rgba(245, 158, 11, 0.26);
+  --warning-soft: rgba(245, 158, 11, 0.1);
+  --warning-border: rgba(245, 158, 11, 0.25);
 
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
-  --danger-strong: var(--danger-hover);
-  --danger-soft: rgba(239, 68, 68, 0.12);
-  --danger-border: rgba(239, 68, 68, 0.26);
-
-  /* Elite Tier Accent (Subtle Warm Amber) */
-  --elite-bg: rgba(245, 158, 11, 0.06);
-  --elite-border: rgba(245, 158, 11, 0.4);
+  /* Elite Tier Accent */
+  --elite-bg: rgba(251, 191, 36, 0.05);
+  --elite-border: #f59e0b;
+  --elite-shadow: rgba(251, 191, 36, 0.2);
+  --elite-shadow-hover: rgba(251, 191, 36, 0.4);
+  --elite-text-slate: #e2e8f0;
   --elite-text-gold: #fbbf24;
-  --elite-text-gold-light: #fde68a;
-  --elite-text-slate: #cbd5e1;
+  --elite-text-gold-light: #fcd34d;
 
   /* Controls & Layout */
   --control-height: 40px;
@@ -94,138 +99,155 @@
   --content-width: min(1180px, calc(100vw - 32px));
   --section-gap: 36px;
 
-  /* Neutral Depth Shadows — No Colored Neon Glow */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.28);
-  --card-hover-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.4);
-  --ring: 0 0 0 2px rgba(0, 180, 166, 0.35);
+  /* Shadows & Elevation */
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.16);
+  --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --ring: 0 0 0 2px rgba(34, 184, 207, 0.28);
+  --surface-blur: 0px;
+  --card-blur: 0px;
+  --soft-blur: 0px;
+  --toast-blur: 0px;
+  --loader-blur: 0px;
+  --footer-blur: 0px;
 
   /* Overlays & Toasts */
-  --toast-info-bg: #111a28;
-  --toast-info-color: #38bdf8;
-  --toast-success-bg: #06281e;
-  --toast-success-color: #6ee7b7;
-  --toast-error-bg: #2b0c0c;
-  --toast-error-color: #fca5a5;
+  --toast-info-bg: rgba(30, 64, 175, 0.85);
+  --toast-info-color: #dbeafe;
+  --toast-success-bg: rgba(21, 128, 61, 0.85);
+  --toast-success-color: #dcfce7;
+  --toast-error-bg: rgba(153, 27, 27, 0.85);
+  --toast-error-color: #fee2e2;
 
-  --tooltip-bg: var(--surface-elevated);
-  --tooltip-color: var(--text);
-  --tooltip-border: var(--border-strong);
-  --tooltip-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --tooltip-bg: #202020;
+  --tooltip-color: #67d5e5;
+  --tooltip-border: #2a2a2a;
+  --tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --credentials-bg: #151515;
 
-  --alert-warning-bg: var(--warning-soft);
-  --alert-danger-bg: var(--danger-soft);
-  --skeleton-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.07) 50%, rgba(255, 255, 255, 0.03) 75%);
-  --seo-bg: rgba(255, 255, 255, 0.02);
-  --seo-border: rgba(255, 255, 255, 0.06);
+  --alert-warning-bg: rgba(245, 158, 11, 0.1);
+  --alert-danger-bg: rgba(239, 68, 68, 0.1);
+  --skeleton-bg: linear-gradient(90deg, rgba(30, 41, 59, 0.5) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.5) 75%);
+  --seo-bg: rgba(255, 255, 255, 0.03);
+  --seo-border: rgba(255, 255, 255, 0.08);
 }
 
 /* --------------------------------------------------------------------------
-   LIGHT THEME VARIABLES
+   LIGHT THEME VARIABLES — ORIGINAL DSCWEB LIGHT THEME
    -------------------------------------------------------------------------- */
 :root[data-theme="light"] {
-  /* Surfaces & Backgrounds — Crisp Clean Neutral */
-  --bg: #f8fafc;
-  --bg-soft: #f1f5f9;
+  /* Surfaces & Backgrounds */
+  --bg: #f7f7f7;
+  --bg-soft: #f2f2f2;
   --surface: #ffffff;
+  --surface-solid: #ffffff;
+  --surface-strong: #ffffff;
   --surface-elevated: #ffffff;
-  --surface-hover: #f1f5f9;
+  --surface-border: #e5e5e5;
+  --surface-border-strong: #cfcfcf;
+  --surface-hover: #f3f3f3;
 
-  --surface-solid: var(--surface);
-  --surface-strong: #f8fafc;
   --surface-muted: var(--bg-soft);
-  --card-bg: var(--surface);
-  --footer-bg: #f1f5f9;
+  --card-bg: #ffffff;
+  --card-border: #e5e5e5;
+  --card-hover-border: #cfcfcf;
+  --card-hover-shadow: 0 4px 14px rgba(23, 23, 23, 0.08);
+  --footer-bg: #f2f2f2;
   --input-bg: #ffffff;
+  --input-placeholder: #8a8a8a;
 
-  /* Borders — Soft Neutral Gray */
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --border-hover: #94a3b8;
-  --surface-border: var(--border);
-  --surface-border-strong: var(--border-strong);
-  --card-border: var(--border);
-  --card-hover-border: var(--border-strong);
-  --line: var(--border);
-  --line-strong: var(--border-strong);
+  /* Borders */
+  --border: #e5e5e5;
+  --border-strong: #cfcfcf;
+  --border-hover: #b5b5b5;
+  --line: #e5e5e5;
+  --line-strong: #cfcfcf;
 
-  /* Typography — High-Contrast Dark Charcoal & Slate */
-  --text: #0f172a;
-  --text-secondary: #334155;
-  --text-soft: var(--text-secondary);
-  --text-muted: #64748b;
-  --muted: var(--text-muted);
-  --text-disabled: #94a3b8;
-  --input-placeholder: #94a3b8;
-  --highlight-text: var(--text);
-  --panel-name: var(--text);
+  /* Typography */
+  --text: #171717;
+  --text-secondary: #666666;
+  --text-soft: #666666;
+  --text-muted: #737373;
+  --muted: #666666;
+  --text-disabled: #8a8a8a;
+  --highlight-text: #0f172a;
+  --panel-name: #0f172a;
 
-  /* Brand Accent — Deep Professional Cyan / Teal (Passes WCAG AA/AAA on light) */
+  /* Brand Accents — Original DSCWeb Light Teal / Cyan */
   --primary: #0891a2;
-  --primary-hover: #0e7490;
-  --primary-strong: var(--primary-hover);
-  --primary-active: #155e75;
-  --primary-soft: rgba(8, 145, 162, 0.08);
-  --primary-soft-strong: rgba(8, 145, 162, 0.14);
-  --primary-border: rgba(8, 145, 162, 0.24);
-  --primary-soft-border: var(--primary-border);
+  --primary-hover: #067381;
+  --primary-strong: #067381;
+  --primary-active: #045a65;
   --primary-text: #ffffff;
-  --secondary: #0284c7;
+  --secondary: #0e7490;
+
+  --primary-soft: rgba(8, 145, 162, 0.1);
+  --primary-soft-strong: rgba(8, 145, 162, 0.14);
+  --primary-soft-border: rgba(8, 145, 162, 0.22);
+  --primary-border: rgba(8, 145, 162, 0.22);
+
   --accent: var(--primary);
   --accent-strong: var(--primary-strong);
-  --link-color: var(--primary);
-  --eyebrow-color: var(--primary);
+  --link-color: #067381;
+  --eyebrow-color: #067381;
 
   /* Semantic Status Colors */
-  --success: #059669;
-  --success-hover: #047857;
-  --success-soft: rgba(5, 150, 105, 0.08);
-  --success-border: rgba(5, 150, 105, 0.22);
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-strong: #dc2626;
+  --danger-soft: rgba(239, 68, 68, 0.08);
+  --danger-border: rgba(239, 68, 68, 0.2);
+
+  --success: #16a34a;
+  --success-hover: #15803d;
+  --success-soft: rgba(22, 163, 74, 0.08);
+  --success-border: rgba(22, 163, 74, 0.2);
 
   --warning: #d97706;
   --warning-hover: #b45309;
   --warning-soft: rgba(217, 119, 6, 0.08);
-  --warning-border: rgba(217, 119, 6, 0.22);
-
-  --danger: #dc2626;
-  --danger-hover: #b91c1c;
-  --danger-strong: var(--danger-hover);
-  --danger-soft: rgba(220, 38, 38, 0.08);
-  --danger-border: rgba(220, 38, 38, 0.22);
+  --warning-border: rgba(217, 119, 6, 0.2);
 
   /* Elite Tier Accent */
-  --elite-bg: rgba(217, 119, 6, 0.05);
-  --elite-border: rgba(217, 119, 6, 0.35);
+  --elite-bg: rgba(251, 191, 36, 0.08);
+  --elite-border: #d97706;
+  --elite-shadow: rgba(251, 191, 36, 0.1);
+  --elite-shadow-hover: rgba(251, 191, 36, 0.25);
+  --elite-text-slate: #334155;
   --elite-text-gold: #b45309;
   --elite-text-gold-light: #d97706;
-  --elite-text-slate: #334155;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --card-hover-shadow: 0 8px 18px -2px rgba(0, 0, 0, 0.08);
-  --ring: 0 0 0 2px rgba(8, 145, 162, 0.28);
+  --shadow: 0 6px 18px rgba(23, 23, 23, 0.08);
+  --shadow-sm: 0 2px 8px rgba(23, 23, 23, 0.06);
+  --shadow-card: 0 4px 14px rgba(23, 23, 23, 0.07);
+  --ring: 0 0 0 2px rgba(8, 145, 162, 0.22);
+  --surface-blur: 0px;
+  --card-blur: 0px;
+  --soft-blur: 0px;
+  --toast-blur: 0px;
+  --loader-blur: 0px;
+  --footer-blur: 0px;
 
   /* Overlays & Toasts */
-  --toast-info-bg: #e0f2fe;
-  --toast-info-color: #0369a1;
-  --toast-success-bg: #d1fae5;
-  --toast-success-color: #065f46;
-  --toast-error-bg: #fee2e2;
-  --toast-error-color: #991b1b;
+  --toast-info-bg: rgba(191, 219, 254, 0.95);
+  --toast-info-color: #1e3a8a;
+  --toast-success-bg: rgba(187, 247, 208, 0.95);
+  --toast-success-color: #14532d;
+  --toast-error-bg: rgba(254, 202, 202, 0.95);
+  --toast-error-color: #7f1d1d;
 
   --tooltip-bg: #ffffff;
-  --tooltip-color: var(--text);
-  --tooltip-border: var(--border);
-  --tooltip-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --tooltip-color: var(--primary-strong);
+  --tooltip-border: var(--primary);
+  --tooltip-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+  --credentials-bg: #f2f2f2;
 
-  --alert-warning-bg: var(--warning-soft);
-  --alert-danger-bg: var(--danger-soft);
-  --skeleton-bg: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 25%, rgba(0, 0, 0, 0.07) 50%, rgba(0, 0, 0, 0.03) 75%);
-  --seo-bg: rgba(0, 0, 0, 0.02);
-  --seo-border: rgba(0, 0, 0, 0.06);
+  --alert-warning-bg: rgba(217, 119, 6, 0.1);
+  --alert-danger-bg: rgba(220, 38, 38, 0.1);
+  --skeleton-bg: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+  --seo-bg: rgba(255, 255, 255, 0.7);
+  --seo-border: rgba(15, 23, 42, 0.08);
 }
 
 /* --------------------------------------------------------------------------
@@ -696,6 +718,21 @@ button {
 .btn-copy:hover:not(:disabled) {
   background: var(--primary-soft-strong);
   border-color: var(--primary);
+}
+
+.btn-elite,
+.button-elite {
+  background: var(--warning) !important;
+  color: #171717 !important;
+  font-weight: 800;
+  border: 1px solid var(--warning) !important;
+}
+
+.btn-elite:hover:not(:disabled),
+.button-elite:hover:not(:disabled) {
+  background: var(--warning-hover) !important;
+  border-color: var(--warning-hover) !important;
+  color: #171717 !important;
 }
 
 .button-disabled,
