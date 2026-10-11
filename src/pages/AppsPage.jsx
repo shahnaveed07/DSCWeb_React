@@ -104,6 +104,45 @@ export function AppsPage() {
           </article>
         ))}
       </div>
+
+      {/* Roadmap Section */}
+      <section className="seo-section mt-36">
+        <div className="seo-container">
+          <span className="badge warning mb-8">Roadmap</span>
+          <h2 className="mt-8">In Development &amp; Future Tools</h2>
+          <p className="mb-20" style={{ color: 'var(--muted)' }}>
+            Upcoming software tools currently being designed and engineered by Dark Skull Corporation.
+          </p>
+
+          <div className="card-grid columns-2">
+            <article className="info-card">
+              <span className="card-badge">AI Suite</span>
+              <h3 className="mt-12">Future AI Assistant</h3>
+              <p className="mt-8" style={{ color: 'var(--muted)', fontSize: '0.92rem' }}>
+                Intelligent workflow experiences tailored for smart automation, productivity, and developer assistance.
+              </p>
+              <div className="mt-16">
+                <button className="button button-secondary button-sm" disabled type="button">
+                  Coming Soon
+                </button>
+              </div>
+            </article>
+
+            <article className="info-card">
+              <span className="card-badge">Desktop Suite</span>
+              <h3 className="mt-12">Future Desktop Tools</h3>
+              <p className="mt-8" style={{ color: 'var(--muted)', fontSize: '0.92rem' }}>
+                Next-generation desktop utilities that combine speed, system performance, and trusted usability.
+              </p>
+              <div className="mt-16">
+                <button className="button button-secondary button-sm" disabled type="button">
+                  Coming Soon
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

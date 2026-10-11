@@ -9,6 +9,7 @@ export function UserLoginPage({ session, onSessionChange }) {
   const [form, setForm] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loaderMessage, setLoaderMessage] = useState('Checking credentials...')
 
   if (session) {
     return <Navigate replace to={session.role === 'Admin' ? '/pages/adash' : '/pages/udash'} />
@@ -19,9 +20,15 @@ export function UserLoginPage({ session, onSessionChange }) {
     if (loading) return
     setLoading(true)
     setError('')
+    setLoaderMessage('Checking credentials...')
+
+    const wakeTimeout = setTimeout(() => {
+      setLoaderMessage('Waking up server (this can take a few seconds)...')
+    }, 4000)
 
     try {
       const payload = await loginUser(form)
+      clearTimeout(wakeTimeout)
       const nextSession = persistSessionFromResponse(payload, {
         expiry: payload?.expiry,
         plan: payload?.plan,
@@ -33,18 +40,21 @@ export function UserLoginPage({ session, onSessionChange }) {
         throw new Error('This account is not allowed on the user login page.')
       }
 
+      setLoaderMessage('Login successful. Redirecting...')
       onSessionChange(nextSession)
       navigate('/pages/udash')
     } catch (submitError) {
+      clearTimeout(wakeTimeout)
       setError(extractApiMessage(submitError?.payload, submitError.message || 'Login failed.'))
     } finally {
+      clearTimeout(wakeTimeout)
       setLoading(false)
     }
   }
 
   return (
     <section className="auth-shell">
-      <FullScreenLoader active={loading} message="Signing in..." />
+      <FullScreenLoader active={loading} message={loaderMessage} />
       <div className="auth-card">
         <span className="hero-eyebrow">Client Portal</span>
         <h1>Account Login</h1>

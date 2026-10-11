@@ -8,7 +8,7 @@ function isExternal(target) {
   return /^https?:\/\//.test(String(target || ''))
 }
 
-export function SiteHeader({ session, _systemStatus, onLogout, compact = false }) {
+export function SiteHeader({ session, systemStatus, onLogout, compact = false }) {
   const location = useLocation()
   const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -119,6 +119,16 @@ export function SiteHeader({ session, _systemStatus, onLogout, compact = false }
           <span className="theme-toggle-full">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
           <span className="theme-toggle-compact">{theme === 'dark' ? 'Light' : 'Dark'}</span>
         </button>
+
+        {systemStatus?.showHomeDownloadBtn || systemStatus?.ShowHomeDownloadBtn ? (
+          <NavLink
+            to="/pages/downloads"
+            className="button button-secondary header-download-btn"
+            title="Download Software Panel"
+          >
+            📥 Download<span className="hide-mobile">&nbsp;Panel</span>
+          </NavLink>
+        ) : null}
 
         {session ? (
           <button

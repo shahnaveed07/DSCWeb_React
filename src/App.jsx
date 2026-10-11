@@ -3,7 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { SiteLayout } from './components/layout/SiteLayout'
 import { ErrorBoundary } from './components/ui/ErrorBoundary'
 import { useRemoteResource } from './hooks/useRemoteResource'
-import { checkOwnerAccess, getSystemStatus } from './services/dscApi'
+import { checkOwnerAccess, getSystemStatus, pingBackend } from './services/dscApi'
 import { clearStoredSession, loadStoredSession } from './utils/auth'
 import { AboutPage } from './pages/AboutPage'
 import { AdminDashboardPage } from './pages/AdminDashboardPage'
@@ -106,6 +106,16 @@ export default function App() {
     getSystemStatus,
     [statusRevision],
   )
+
+  useEffect(() => {
+    // Keep backend alive on Render every 2 minutes while page is active
+    const timer = setInterval(() => {
+      if (!document.hidden) {
+        pingBackend()
+      }
+    }, 2 * 60 * 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   function handleRetryStatus() {
     setStatusRevision((v) => v + 1)
@@ -292,6 +302,9 @@ export default function App() {
               path="/pages/generateKey.html"
               element={<Navigate replace to="/pages/generatekey" />}
             />
+
+            <Route path="/pages/404" element={<NotFoundPage />} />
+            <Route path="/pages/404.html" element={<NotFoundPage />} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Route>

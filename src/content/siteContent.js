@@ -241,35 +241,94 @@ export const contactChannels = [
 export const privacySections = [
   {
     title: 'Information We Collect',
+    description: 'Depending on the service you use, we may collect only necessary technical details:',
     items: [
-      'Device and operating-system metadata where needed for app support',
-      'Crash reports and anonymous usage diagnostics',
-      'Contact or account information submitted through supported workflows',
+      'Device model and operating system',
+      'Application crash reports',
+      'Anonymous usage statistics',
+      'Information submitted through contact forms',
+      'Account information (where applicable)',
     ],
+    note: 'We do not intentionally collect sensitive personal information unless required for a specific feature.',
   },
   {
     title: 'How We Use Information',
+    description: 'Your information helps us maintain quality and platform reliability:',
     items: [
-      'Improve performance and reliability',
+      'Improve application performance',
+      'Fix bugs and crashes',
+      'Maintain security and licensing integrity',
       'Respond to support requests',
-      'Maintain platform security and service operations',
-      'Plan future feature releases',
+      'Develop new features',
+      'Enhance overall user experience',
     ],
+    note: 'We never sell or rent your personal information.',
+  },
+  {
+    title: 'Android App Permissions',
+    description: 'Some applications may request permissions only when required for a specific feature:',
+    items: [
+      'Camera — QR code scanning workflows',
+      'Storage — Save generated files and export data',
+      'Notifications — System updates, reminders, and alerts',
+    ],
+    note: 'Permissions are always requested only when necessary and can be revoked at any time in device settings.',
   },
   {
     title: 'Third-Party Services',
+    description: 'Our applications may use trusted third-party services including:',
     items: [
       'Google Play Services',
-      'Verified payment processors',
-      'Delivery tooling only where required',
+      'Firebase services (future products)',
+      'Google AdMob (supported free apps only)',
+      'Analytics services (where explicitly enabled)',
+    ],
+    note: 'These services operate under their own privacy policies.',
+  },
+  {
+    title: 'Cookies & Local Storage',
+    description: 'Our website uses minimal local client storage to:',
+    items: [
+      'Remember interface preferences (such as Light / Dark theme)',
+      'Persist authenticated dashboard sessions',
+      'Improve website performance and navigation responsiveness',
+    ],
+    note: 'You may disable cookies or clear local storage through your browser settings.',
+  },
+  {
+    title: 'Data Security',
+    description: 'We implement technical and organizational measures to safeguard user data:',
+    items: [
+      'Encrypted transport (HTTPS/TLS) across all API communications',
+      'Cryptographic HWID validation and hashed authentication tokens',
+      'Restricted administrative access with multi-tier authorization controls',
+    ],
+    note: 'However, no internet service or storage facility can guarantee absolute security.',
+  },
+  {
+    title: "Children's Privacy",
+    description: 'Protecting young users across all our platforms:',
+    items: [
+      'Our products are not intended to knowingly collect personal information from children without parental consent.',
+      'If such information is discovered, it will be removed as quickly as reasonably possible.',
     ],
   },
   {
     title: 'Your Rights',
+    description: 'Depending on your location and jurisdiction, you have the right to:',
     items: [
-      'Request access to your stored information',
-      'Request correction or deletion where applicable',
-      'Reach out through the contact channels for privacy concerns',
+      'Access your account information',
+      'Correct inaccurate or outdated information',
+      'Request deletion of your data and records',
+      'Contact us regarding privacy concerns and practices',
+    ],
+  },
+  {
+    title: 'Changes to This Policy',
+    description: 'We may update this Privacy Policy periodically to reflect improvements or legal requirements:',
+    items: [
+      'The latest version will always be available on this page with the updated effective date.',
+      'Continued use of our products after changes signifies agreement to the updated policy.',
     ],
   },
 ]

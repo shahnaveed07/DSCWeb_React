@@ -100,6 +100,10 @@ export function getFreePanelStatus(signal) {
   return request('/api/public/free-panel', { signal })
 }
 
+export function pingBackend() {
+  return request('/api/public/free-panel').catch(() => {})
+}
+
 export function loginUser(credentials) {
   return request('/api/auth/login', {
     method: 'POST',

@@ -9,6 +9,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
   const [form, setForm] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loaderMessage, setLoaderMessage] = useState('Checking admin credentials...')
 
   if (session) {
     return <Navigate replace to={session.role === 'Admin' ? '/pages/adash' : '/pages/udash'} />
@@ -19,9 +20,15 @@ export function AdminLoginPage({ session, onSessionChange }) {
     if (loading) return
     setLoading(true)
     setError('')
+    setLoaderMessage('Checking admin credentials...')
+
+    const wakeTimeout = setTimeout(() => {
+      setLoaderMessage('Waking up server (this can take a few seconds)...')
+    }, 4000)
 
     try {
       const payload = await loginAdmin(form)
+      clearTimeout(wakeTimeout)
       const nextSession = persistSessionFromResponse(payload, {
         isOwner:
           payload?.isOwner === true ||
@@ -34,18 +41,21 @@ export function AdminLoginPage({ session, onSessionChange }) {
         throw new Error('This account is not authorized for admin access.')
       }
 
+      setLoaderMessage('Admin authentication verified. Redirecting...')
       onSessionChange(nextSession)
       navigate('/pages/adash')
     } catch (submitError) {
+      clearTimeout(wakeTimeout)
       setError(extractApiMessage(submitError?.payload, submitError.message || 'Login failed.'))
     } finally {
+      clearTimeout(wakeTimeout)
       setLoading(false)
     }
   }
 
   return (
     <section className="auth-shell">
-      <FullScreenLoader active={loading} message="Authenticating..." />
+      <FullScreenLoader active={loading} message={loaderMessage} />
       <div className="auth-card">
         <span className="hero-eyebrow">Control Center</span>
         <h1>Admin Portal</h1>
