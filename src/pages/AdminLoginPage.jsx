@@ -58,9 +58,8 @@ export function AdminLoginPage({ session, onSessionChange }) {
       <FullScreenLoader active={loading} message={loaderMessage} />
       <div className="auth-card">
         <span className="hero-eyebrow">Control Center</span>
-        <h1>Admin Portal</h1>
-        <p className="hero-copy">Authorized administrators only.</p>
-
+        <h1>Admin Login</h1>
+        
         <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">
             <span>Admin Username</span>
@@ -102,7 +101,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
             {loading ? (
               <span className="button-loading-content">
                 <span className="spinner-inline" aria-hidden="true" />
-                <span>Authenticating...</span>
+                <span>Checking credentials...</span>
               </span>
             ) : (
               <span>Admin Login</span>
@@ -111,7 +110,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
         </form>
 
         <div className="link-row">
-          <Link to="/pages/ulogin">Client Login</Link>
+          <Link to="/pages/ulogin">User Login</Link>
           <Link to="/">Back to Home</Link>
         </div>
       </div>
