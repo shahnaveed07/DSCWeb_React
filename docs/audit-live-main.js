@@ -384,7 +384,7 @@
     window.setTimeout(() => {
       toast.classList.add("toast-hide");
       window.setTimeout(() => toast.remove(), 250);
-    }, 3000);
+    }, 5173);
   }
 
   async function copyTextToClipboard(text, buttonEl, defaultText = "Copy Key") {

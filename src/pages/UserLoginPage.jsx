@@ -109,8 +109,8 @@ export function UserLoginPage({ session, onSessionChange }) {
         </form>
 
         <div className="link-row">
-          <Link to="/pages/products">Order a License</Link>
           <Link to="/pages/alogin">Admin Portal</Link>
+          <Link to="/pages/home"> Back to Home</Link>
         </div>
       </div>
     </section>

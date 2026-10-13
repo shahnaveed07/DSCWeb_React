@@ -26,7 +26,7 @@ This modern React single-page application replaces the legacy monolithic website
 # Install dependencies
 npm install
 
-# Start local development server (port 3000)
+# Start local development server (port 5173)
 npm run dev
 
 # Run code linter
