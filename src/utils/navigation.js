@@ -427,8 +427,10 @@ export const FOOTER_PAGES = new Set([
 /**
  * Checks whether the current path requires the full website footer.
  */
+// export function isFooterNeeded(pathname = '/') {
+//   const clean = normalizePath(pathname).replace(/\/+$/, '') || '/'
+//   return FOOTER_PAGES.has(clean)
+// }
 export function isFooterNeeded(pathname = '/') {
-  const clean = normalizePath(pathname).replace(/\/+$/, '') || '/'
-  return FOOTER_PAGES.has(clean)
+  return true
 }
-

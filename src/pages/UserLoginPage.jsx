@@ -56,8 +56,7 @@ export function UserLoginPage({ session, onSessionChange }) {
     <section className="auth-shell">
       <FullScreenLoader active={loading} message={loaderMessage} />
       <div className="auth-card">
-        <span className="hero-eyebrow">User Login</span>
-        <h1>Account Login</h1>
+        <h1>User Login</h1>
 
         <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">

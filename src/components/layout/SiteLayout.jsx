@@ -24,7 +24,7 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
       <main className="main-shell">
         <Outlet />
       </main>
-      {showFooter && <SiteFooter />}
+      <SiteFooter/>
     </div>
   )
 }

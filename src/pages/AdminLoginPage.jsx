@@ -57,7 +57,6 @@ export function AdminLoginPage({ session, onSessionChange }) {
     <section className="auth-shell">
       <FullScreenLoader active={loading} message={loaderMessage} />
       <div className="auth-card">
-        <span className="hero-eyebrow">Control Center</span>
         <h1>Admin Login</h1>
         
         <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
