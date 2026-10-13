@@ -1,7 +1,6 @@
 {
   "name": "DSCWeb",
   "description": "DarkSkullCorporation official web portal and platform.",
-  "capabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "capabilities": []
 }
+

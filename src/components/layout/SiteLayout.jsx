@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { isFooterNeeded } from '../../utils/navigation'
-import { DSCAssistant } from '../chatbot/DSCAssistant'
 import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 
@@ -14,7 +13,6 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
 
   const showFooter = isFooterNeeded(cleanPath)
 
-
   return (
     <div className="app-shell">
       <SiteHeader
@@ -27,8 +25,8 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
         <Outlet />
       </main>
       {showFooter && <SiteFooter />}
-      <DSCAssistant session={session} />
     </div>
   )
 }
+
 
