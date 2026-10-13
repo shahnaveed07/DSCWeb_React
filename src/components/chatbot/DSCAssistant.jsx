@@ -83,6 +83,15 @@ export function DSCAssistant({ session }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isOpen])
 
+  // Cleanup in-flight requests on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [])
+
   function handleToggleOpen() {
     setIsOpen((prev) => {
       const next = !prev

@@ -92,12 +92,17 @@ export async function sendAssistantMessage({
 
   // 2. Attempt server-side Gemini completion
   try {
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    }
+    if (session?.token) {
+      headers.Authorization = `Bearer ${session.token}`
+    }
+
     const response = await fetch('/api/assistant/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
+      headers,
       signal,
       body: JSON.stringify({
         message: trimmed,
