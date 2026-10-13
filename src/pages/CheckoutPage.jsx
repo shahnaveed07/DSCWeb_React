@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { extractApiMessage, submitCheckout } from '../services/dscApi'
 import { FullScreenLoader } from '../components/ui/FullScreenLoader'
+import { PasswordInput } from '../components/ui/PasswordInput'
+
 
 const BASE_PRICES = {
   free: 0,
@@ -270,13 +272,13 @@ export function CheckoutPage() {
 
                 <label className="field" htmlFor="regPassword">
                   <span className="micro-label">ACCOUNT PASSWORD</span>
-                  <input
+                  <PasswordInput
                     id="regPassword"
-                    type="password"
                     placeholder="Minimum 3 characters"
                     minLength={3}
                     value={form.password}
                     onChange={(e) => setForm((c) => ({ ...c, password: e.target.value }))}
+                    disabled={isSubmitting}
                     required
                     autoComplete="new-password"
                   />

@@ -1,5 +1,3 @@
-import { NavLink } from 'react-router-dom'
-
 export function SiteFooter() {
   return (
     <footer id="dsc-footer" className="developer-footer">

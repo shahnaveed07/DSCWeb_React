@@ -431,6 +431,7 @@ export const FOOTER_PAGES = new Set([
 //   const clean = normalizePath(pathname).replace(/\/+$/, '') || '/'
 //   return FOOTER_PAGES.has(clean)
 // }
-export function isFooterNeeded(pathname = '/') {
+export function isFooterNeeded(_pathname = '/') {
   return true
 }
+

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { changePassword, extractApiMessage, isAuthError } from '../services/dscApi'
+import { PasswordInput } from '../components/ui/PasswordInput'
+
 
 export function ChangePasswordPage({ session, onSessionInvalid }) {
   const isFree = String(session?.plan || '').trim().toLowerCase() === 'free'
@@ -55,27 +57,29 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
         <form className="form-stack" onSubmit={handleSubmit}>
           <label className="field">
             <span>Current Password</span>
-            <input
+            <PasswordInput
+              autoComplete="current-password"
+              disabled={loading || isFree}
               onChange={(event) =>
                 setForm((current) => ({ ...current, currentPassword: event.target.value }))
               }
               placeholder="Enter current password"
               required
-              type="password"
               value={form.currentPassword}
             />
           </label>
 
           <label className="field">
             <span>New Password</span>
-            <input
+            <PasswordInput
+              autoComplete="new-password"
+              disabled={loading || isFree}
               minLength={3}
               onChange={(event) =>
                 setForm((current) => ({ ...current, newPassword: event.target.value }))
               }
               placeholder="Enter new password"
               required
-              type="password"
               value={form.newPassword}
             />
           </label>

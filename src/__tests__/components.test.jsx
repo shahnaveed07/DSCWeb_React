@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { useState } from 'react'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { StatusPage } from '../pages/StatusPage'
 import { SiteFooter } from '../components/layout/SiteFooter'
 import { SiteLayout } from '../components/layout/SiteLayout'
-import { isFooterNeeded } from '../utils/navigation'
-
+import { PasswordInput } from '../components/ui/PasswordInput'
 
 describe('Component Render Tests', () => {
   it('renders NotFoundPage with error 404 and return home action', () => {
@@ -44,7 +44,7 @@ describe('Component Render Tests', () => {
     expect(screen.getByText(/We'll be back shortly/i)).toBeTruthy()
   })
 
-  it('renders SiteFooter with copyright, developer credit, and navigation columns', () => {
+  it('renders SiteFooter with copyright and developer credit', () => {
     render(
       <MemoryRouter>
         <SiteFooter />
@@ -54,63 +54,163 @@ describe('Component Render Tests', () => {
     const brandMatches = screen.getAllByText(/Dark Skull Corporation/i)
     expect(brandMatches.length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/Naveed Mushtaq/i)).toBeTruthy()
-    expect(screen.getByRole('link', { name: /Applications/i })).toBeTruthy()
-    expect(screen.getByRole('link', { name: /Software Panels/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Naveed Mushtaq/i })).toBeTruthy()
   })
 
-  it('correctly evaluates isFooterNeeded for public content vs utility/auth routes', () => {
-    // Needed pages
-    expect(isFooterNeeded('/')).toBe(true)
-    expect(isFooterNeeded('/pages/apps')).toBe(true)
-    expect(isFooterNeeded('/pages/products')).toBe(true)
-    expect(isFooterNeeded('/pages/downloads')).toBe(true)
-    expect(isFooterNeeded('/pages/about')).toBe(true)
-    expect(isFooterNeeded('/pages/about/')).toBe(true)
-    expect(isFooterNeeded('/pages/about.html')).toBe(true)
-    expect(isFooterNeeded('/pages/contact')).toBe(true)
-    expect(isFooterNeeded('/pages/privacy-policy')).toBe(true)
-    expect(isFooterNeeded('/pages/terms')).toBe(true)
-
-    // Not needed on dashboard, auth, checkout, or admin tools
-    expect(isFooterNeeded('/pages/ulogin')).toBe(false)
-    expect(isFooterNeeded('/pages/alogin')).toBe(false)
-    expect(isFooterNeeded('/pages/udash')).toBe(false)
-    expect(isFooterNeeded('/pages/adash')).toBe(false)
-    expect(isFooterNeeded('/pages/checkout')).toBe(false)
-    expect(isFooterNeeded('/pages/freepanel')).toBe(false)
-    expect(isFooterNeeded('/pages/change')).toBe(false)
-    expect(isFooterNeeded('/pages/ownerdb')).toBe(false)
-    expect(isFooterNeeded('/pages/generatekey')).toBe(false)
-    expect(isFooterNeeded('/pages/404')).toBe(false)
-  })
-
-  it('renders SiteFooter in SiteLayout on needed pages, but excludes it on dashboards/auth', () => {
-    // Test on a needed public page: /pages/about
-    const { unmount } = render(
-      <MemoryRouter initialEntries={['/pages/about']}>
-        <Routes>
-          <Route element={<SiteLayout session={null} systemStatus={null} onLogout={() => {}} />}>
-            <Route path="/pages/about" element={<div>About Page Content</div>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.getByText('About Page Content')).toBeTruthy()
-    expect(screen.getByText(/Naveed Mushtaq/i)).toBeTruthy()
-    unmount()
-
-    // Test on an unneeded utility/dashboard page: /pages/udash
+  it('renders SiteLayout with header, main content, and footer', () => {
     render(
-      <MemoryRouter initialEntries={['/pages/udash']}>
+      <MemoryRouter initialEntries={['/']}>
         <Routes>
           <Route element={<SiteLayout session={null} systemStatus={null} onLogout={() => {}} />}>
-            <Route path="/pages/udash" element={<div>User Dashboard Content</div>} />
+            <Route path="/" element={<div>Home Page Content</div>} />
           </Route>
         </Routes>
       </MemoryRouter>
     )
-    expect(screen.getByText('User Dashboard Content')).toBeTruthy()
-    expect(screen.queryByText(/Naveed Mushtaq/i)).toBeNull()
+    expect(screen.getByText('Home Page Content')).toBeTruthy()
+    expect(screen.getByText(/Naveed Mushtaq/i)).toBeTruthy()
   })
 })
+
+describe('PasswordInput Component Tests', () => {
+  it('renders with initial password type and Show password accessible label', () => {
+    render(
+      <PasswordInput
+        id="test-pwd"
+        placeholder="Enter your secret"
+        value="supersecret123"
+        onChange={() => {}}
+      />
+    )
+
+    const input = screen.getByPlaceholderText('Enter your secret')
+    expect(input.getAttribute('type')).toBe('password')
+    expect(input.value).toBe('supersecret123')
+
+    const toggleBtn = screen.getByRole('button', { name: /Show password/i })
+    expect(toggleBtn).toBeTruthy()
+    expect(toggleBtn.getAttribute('type')).toBe('button')
+    expect(toggleBtn.getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('switches between password and text type on click without modifying value', () => {
+    function ControlledTest() {
+      const [val, setVal] = useState('MyP@ssw0rd!')
+      return (
+        <PasswordInput
+          id="toggle-test"
+          placeholder="Password"
+          value={val}
+          onChange={(e) => setVal(e.target.value)}
+        />
+      )
+    }
+
+    render(<ControlledTest />)
+    const input = screen.getByPlaceholderText('Password')
+    const button = screen.getByRole('button')
+
+    // Initial: concealed
+    expect(input.getAttribute('type')).toBe('password')
+    expect(input.value).toBe('MyP@ssw0rd!')
+    expect(button.getAttribute('aria-label')).toBe('Show password')
+
+    // Click to reveal
+    fireEvent.click(button)
+    expect(input.getAttribute('type')).toBe('text')
+    expect(input.value).toBe('MyP@ssw0rd!')
+    expect(button.getAttribute('aria-label')).toBe('Hide password')
+    expect(button.getAttribute('aria-pressed')).toBe('true')
+
+    // Click to conceal again
+    fireEvent.click(button)
+    expect(input.getAttribute('type')).toBe('password')
+    expect(input.value).toBe('MyP@ssw0rd!')
+    expect(button.getAttribute('aria-label')).toBe('Show password')
+    expect(button.getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('maintains independent visibility state across multiple password fields', () => {
+    render(
+      <form>
+        <PasswordInput
+          placeholder="Current password"
+          value="current123"
+          onChange={() => {}}
+        />
+        <PasswordInput
+          placeholder="New password"
+          value="new456"
+          onChange={() => {}}
+        />
+      </form>
+    )
+
+    const currentInput = screen.getByPlaceholderText('Current password')
+    const newInput = screen.getByPlaceholderText('New password')
+    const buttons = screen.getAllByRole('button', { name: /Show password/i })
+    expect(buttons.length).toBe(2)
+
+    // Toggle only the first field
+    fireEvent.click(buttons[0])
+
+    // First field should now be text, second must remain password
+    expect(currentInput.getAttribute('type')).toBe('text')
+    expect(newInput.getAttribute('type')).toBe('password')
+
+    // Toggle the second field
+    fireEvent.click(buttons[1])
+    expect(currentInput.getAttribute('type')).toBe('text')
+    expect(newInput.getAttribute('type')).toBe('text')
+  })
+
+  it('prevents toggling when disabled or readOnly', () => {
+    render(
+      <div>
+        <PasswordInput
+          placeholder="Disabled field"
+          value="locked"
+          disabled
+          onChange={() => {}}
+        />
+        <PasswordInput
+          placeholder="ReadOnly field"
+          value="frozen"
+          readOnly
+          onChange={() => {}}
+        />
+      </div>
+    )
+
+    const disabledInput = screen.getByPlaceholderText('Disabled field')
+    const disabledBtn = screen.getAllByRole('button')[0]
+    expect(disabledBtn.hasAttribute('disabled')).toBe(true)
+    fireEvent.click(disabledBtn)
+    expect(disabledInput.getAttribute('type')).toBe('password')
+
+    const readOnlyInput = screen.getByPlaceholderText('ReadOnly field')
+    const readOnlyBtn = screen.getAllByRole('button')[1]
+    expect(readOnlyBtn.hasAttribute('disabled')).toBe(true)
+    fireEvent.click(readOnlyBtn)
+    expect(readOnlyInput.getAttribute('type')).toBe('password')
+  })
+
+  it('does not submit parent form when toggle button is clicked', () => {
+    let formSubmitted = false
+    render(
+      <form onSubmit={(e) => { e.preventDefault(); formSubmitted = true }}>
+        <PasswordInput
+          placeholder="Form test password"
+          value="secret"
+          onChange={() => {}}
+        />
+      </form>
+    )
+
+    const toggleBtn = screen.getByRole('button')
+    fireEvent.click(toggleBtn)
+    expect(formSubmitted).toBe(false)
+  })
+})
+
 

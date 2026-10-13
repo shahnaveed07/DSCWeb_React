@@ -16,6 +16,8 @@ import {
   updateAdminUser,
 } from '../services/dscApi'
 import { formatDateTime } from '../utils/format'
+import { PasswordInput } from '../components/ui/PasswordInput'
+
 
 function getValue(source, keys) {
   for (const key of keys) {
@@ -613,12 +615,12 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
 
             <label className="field">
               <span>Password (minimum 6 characters)</span>
-              <input
+              <PasswordInput
                 required
                 minLength={6}
-                type="password"
                 autoComplete="new-password"
                 value={newAdmin.password}
+                disabled={busyAction === 'createAdmin'}
                 onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
               />
             </label>
@@ -661,21 +663,23 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
 
             <label className="field">
               <span>Current Password</span>
-              <input
+              <PasswordInput
                 required
-                type="password"
+                autoComplete="current-password"
                 value={passwordForm.currentPassword}
+                disabled={busyAction === 'changePass'}
                 onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
               />
             </label>
 
             <label className="field">
               <span>New Password (minimum 6 characters)</span>
-              <input
+              <PasswordInput
                 required
                 minLength={6}
-                type="password"
+                autoComplete="new-password"
                 value={passwordForm.newPassword}
+                disabled={busyAction === 'changePass'}
                 onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
               />
             </label>

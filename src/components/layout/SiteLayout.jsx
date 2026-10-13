@@ -1,5 +1,4 @@
 import { Outlet, useLocation } from 'react-router-dom'
-import { isFooterNeeded } from '../../utils/navigation'
 import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 
@@ -11,7 +10,6 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
     cleanPath,
   )
 
-  const showFooter = isFooterNeeded(cleanPath)
 
   return (
     <div className="app-shell">

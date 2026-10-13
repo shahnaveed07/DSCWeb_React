@@ -3,6 +3,8 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { extractApiMessage, loginAdmin } from '../services/dscApi'
 import { clearStoredSession, persistSessionFromResponse } from '../utils/auth'
 import { FullScreenLoader } from '../components/ui/FullScreenLoader'
+import { PasswordInput } from '../components/ui/PasswordInput'
+
 
 export function AdminLoginPage({ session, onSessionChange }) {
   const navigate = useNavigate()
@@ -78,7 +80,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
 
           <label className="field">
             <span>Admin Password</span>
-            <input
+            <PasswordInput
               autoComplete="current-password"
               onChange={(event) =>
                 !loading && setForm((current) => ({ ...current, password: event.target.value }))
@@ -86,7 +88,6 @@ export function AdminLoginPage({ session, onSessionChange }) {
               placeholder="Enter password"
               readOnly={loading}
               required
-              type="password"
               value={form.password}
             />
           </label>
