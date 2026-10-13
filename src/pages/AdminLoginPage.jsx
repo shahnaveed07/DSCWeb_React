@@ -57,7 +57,8 @@ export function AdminLoginPage({ session, onSessionChange }) {
     <section className="auth-shell">
       <FullScreenLoader active={loading} message={loaderMessage} />
       <div className="auth-card">
-        <h1>Admin Login</h1>
+        <span className="hero-eyebrow">Admin Login</span>
+        <h1>WELCOME BACK ADMIN</h1>
         
         <form className={`form-stack ${loading ? 'is-processing' : ''}`} onSubmit={handleSubmit}>
           <label className="field">
@@ -103,7 +104,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
                 <span>Checking credentials...</span>
               </span>
             ) : (
-              <span>Admin Login</span>
+              <span>Authenticate</span>
             )}
           </button>
         </form>
