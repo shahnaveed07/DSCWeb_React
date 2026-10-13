@@ -1,13 +1,19 @@
 import { Outlet, useLocation } from 'react-router-dom'
+import { isFooterNeeded } from '../../utils/navigation'
 import { DSCAssistant } from '../chatbot/DSCAssistant'
 import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 
 export function SiteLayout({ session, systemStatus, onLogout }) {
   const location = useLocation()
+  const cleanPath = location.pathname.toLowerCase().replace(/\.html$/i, '').replace(/\/+$/, '') || '/'
+
   const compactHeader = /^\/pages\/(ulogin|alogin|freepanel|checkout|udash|change|adash|ownerdb|generatekey)/i.test(
-    location.pathname,
+    cleanPath,
   )
+
+  const showFooter = isFooterNeeded(cleanPath)
+
 
   return (
     <div className="app-shell">
@@ -20,8 +26,9 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
       <main className="main-shell">
         <Outlet />
       </main>
-      <SiteFooter />
+      {showFooter && <SiteFooter />}
       <DSCAssistant session={session} />
     </div>
   )
 }
+

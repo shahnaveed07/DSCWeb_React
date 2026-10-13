@@ -409,3 +409,26 @@ export function getContextualMenu({ pathname = '/', session = null, isOwner = fa
     },
   ]
 }
+
+/**
+ * Canonical public showcase and content routes that require the website footer.
+ */
+export const FOOTER_PAGES = new Set([
+  '/',
+  '/pages/apps',
+  '/pages/products',
+  '/pages/downloads',
+  '/pages/about',
+  '/pages/contact',
+  '/pages/privacy-policy',
+  '/pages/terms',
+])
+
+/**
+ * Checks whether the current path requires the full website footer.
+ */
+export function isFooterNeeded(pathname = '/') {
+  const clean = normalizePath(pathname).replace(/\/+$/, '') || '/'
+  return FOOTER_PAGES.has(clean)
+}
+
