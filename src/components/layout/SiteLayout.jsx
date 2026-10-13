@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom'
+import { DSCAssistant } from '../chatbot/DSCAssistant'
 import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 
@@ -20,6 +21,7 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
         <Outlet />
       </main>
       <SiteFooter />
+      <DSCAssistant session={session} />
     </div>
   )
 }
