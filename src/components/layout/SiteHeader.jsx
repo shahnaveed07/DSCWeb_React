@@ -95,11 +95,17 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false })
   return (
     <header className={`site-header ${compact ? 'site-header-compact' : ''}`.trim()}>
       <NavLink className="logo-mark" to="/" aria-label="Dark Skull Corporation Home">
-        <img
-          src="/images/dsclogo.png"
-          alt="Dark Skull Corporation logo"
-          className="header-logo-img"
-        />
+        <picture>
+          <source srcSet="/images/dsclogo.webp" type="image/webp" />
+          <img
+            src="/images/dsclogo.png"
+            alt="Dark Skull Corporation logo"
+            className="header-logo-img"
+            width="36"
+            height="36"
+            loading="eager"
+          />
+        </picture>
         <span>
           <strong className="logo-text">Dark Skull Corporation</strong>
         </span>

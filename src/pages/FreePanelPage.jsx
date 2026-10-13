@@ -46,11 +46,16 @@ export function FreePanelPage() {
     <main className="center-wrap">
       <section className="panel auth-card free-panel-card" style={{ maxWidth: '540px', margin: '0 auto' }}>
         <div className="logo-mark free-panel-icon-60 mb-15">
-          <img
-            src="/images/dsclogo.png"
-            alt="Dark Skull Corporation"
-            className="header-logo-img"
-          />
+          <picture>
+            <source srcSet="/images/dsclogo.webp" type="image/webp" />
+            <img
+              src="/images/dsclogo.png"
+              alt="Dark Skull Corporation"
+              className="header-logo-img"
+              width="60"
+              height="60"
+            />
+          </picture>
         </div>
         <h1 className="auth-title">Free Panel Access</h1>
         <p className="auth-subtitle">Public test credentials and direct download access.</p>

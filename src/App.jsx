@@ -1,30 +1,40 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { SiteLayout } from './components/layout/SiteLayout'
 import { ErrorBoundary } from './components/ui/ErrorBoundary'
 import { useRemoteResource } from './hooks/useRemoteResource'
 import { checkOwnerAccess, getSystemStatus, pingBackend } from './services/dscApi'
 import { clearStoredSession, loadStoredSession } from './utils/auth'
-import { AboutPage } from './pages/AboutPage'
-import { AdminDashboardPage } from './pages/AdminDashboardPage'
-import { AdminLoginPage } from './pages/AdminLoginPage'
-import { AdminWorkspacePage } from './pages/AdminWorkspacePage'
-import { AppsPage } from './pages/AppsPage'
-import { ChangePasswordPage } from './pages/ChangePasswordPage'
-import { CheckoutPage } from './pages/CheckoutPage'
-import { ContactPage } from './pages/ContactPage'
-import { DownloadsPage } from './pages/DownloadsPage'
-import { FreePanelPage } from './pages/FreePanelPage'
-import { GenerateKeyPage } from './pages/GenerateKeyPage'
 import { HomePage } from './pages/HomePage'
-import { MaintenancePage } from './pages/MaintenancePage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
-import { ProductsPage } from './pages/ProductsPage'
-import { StatusPage } from './pages/StatusPage'
-import { TermsPage } from './pages/TermsPage'
-import { UserDashboardPage } from './pages/UserDashboardPage'
-import { UserLoginPage } from './pages/UserLoginPage'
+
+// Lazy-loaded routes for code splitting and lightweight initial loads
+const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage').then((m) => ({ default: m.AdminLoginPage })))
+const AdminWorkspacePage = lazy(() => import('./pages/AdminWorkspacePage').then((m) => ({ default: m.AdminWorkspacePage })))
+const AppsPage = lazy(() => import('./pages/AppsPage').then((m) => ({ default: m.AppsPage })))
+const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage').then((m) => ({ default: m.ChangePasswordPage })))
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage })))
+const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })))
+const DownloadsPage = lazy(() => import('./pages/DownloadsPage').then((m) => ({ default: m.DownloadsPage })))
+const FreePanelPage = lazy(() => import('./pages/FreePanelPage').then((m) => ({ default: m.FreePanelPage })))
+const GenerateKeyPage = lazy(() => import('./pages/GenerateKeyPage').then((m) => ({ default: m.GenerateKeyPage })))
+const MaintenancePage = lazy(() => import('./pages/MaintenancePage').then((m) => ({ default: m.MaintenancePage })))
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })))
+const ProductsPage = lazy(() => import('./pages/ProductsPage').then((m) => ({ default: m.ProductsPage })))
+const StatusPage = lazy(() => import('./pages/StatusPage').then((m) => ({ default: m.StatusPage })))
+const TermsPage = lazy(() => import('./pages/TermsPage').then((m) => ({ default: m.TermsPage })))
+const UserDashboardPage = lazy(() => import('./pages/UserDashboardPage').then((m) => ({ default: m.UserDashboardPage })))
+const UserLoginPage = lazy(() => import('./pages/UserLoginPage').then((m) => ({ default: m.UserLoginPage })))
+
+function RouteLoadingFallback() {
+  return (
+    <div className="center-wrap" style={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="spinner-inline" style={{ width: '28px', height: '28px' }} />
+    </div>
+  )
+}
 
 function redirectForSession(session) {
   if (!session) return '/pages/ulogin'
@@ -133,9 +143,10 @@ export default function App() {
   return (
     <ErrorBoundary>
       <MaintenanceGate onRetry={handleRetryStatus} systemStatus={systemStatus}>
-        <Routes>
-          <Route path="/pages/status" element={<StatusPage />} />
-          <Route path="/pages/status.html" element={<Navigate replace to="/pages/status" />} />
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <Routes>
+            <Route path="/pages/status" element={<StatusPage />} />
+            <Route path="/pages/status.html" element={<Navigate replace to="/pages/status" />} />
 
           <Route
             element={
@@ -309,7 +320,8 @@ export default function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-      </MaintenanceGate>
-    </ErrorBoundary>
+      </Suspense>
+    </MaintenanceGate>
+  </ErrorBoundary>
   )
 }

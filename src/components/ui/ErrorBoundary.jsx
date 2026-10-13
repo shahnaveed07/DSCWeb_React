@@ -31,11 +31,16 @@ export class ErrorBoundary extends Component {
         <main className="center-wrap" role="alert" aria-live="assertive">
           <section className="panel auth-card" style={{ maxWidth: '560px', margin: '60px auto', textAlign: 'center' }}>
             <div className="logo-mark mb-15" style={{ width: '56px', height: '56px', margin: '0 auto 16px' }}>
-              <img
-                src="/images/dsclogo.png"
-                alt="Dark Skull Corporation"
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              />
+              <picture>
+                <source srcSet="/images/dsclogo.webp" type="image/webp" />
+                <img
+                  src="/images/dsclogo.png"
+                  alt="Dark Skull Corporation"
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  width="56"
+                  height="56"
+                />
+              </picture>
             </div>
             <span className="hero-eyebrow" style={{ color: 'var(--warning)' }}>Application Notice</span>
             <h1 className="auth-title mt-6">Something Went Wrong</h1>

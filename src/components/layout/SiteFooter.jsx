@@ -7,11 +7,17 @@ export function SiteFooter() {
         <div className="footer-grid">
           <div className="footer-col footer-brand-col">
             <NavLink className="footer-brand" to="/" aria-label="Dark Skull Corporation Home">
-              <img
-                src="/images/dsclogo.png"
-                alt="Dark Skull Corporation"
-                className="footer-brand-logo"
-              />
+              <picture>
+                <source srcSet="/images/dsclogo.webp" type="image/webp" />
+                <img
+                  src="/images/dsclogo.png"
+                  alt="Dark Skull Corporation"
+                  className="footer-brand-logo"
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                />
+              </picture>
               <span className="footer-brand-name">Dark Skull Corporation</span>
             </NavLink>
             <p className="footer-desc">

@@ -36,7 +36,10 @@ export function StatusPage() {
     <section className="status-layout">
       <div className="panel status-panel">
         <Link className="status-brand" to="/" aria-label="DSCWeb home">
-          <img src="/images/dsclogo.png" alt="" className="status-logo" />
+          <picture>
+            <source srcSet="/images/dsclogo.webp" type="image/webp" />
+            <img src="/images/dsclogo.png" alt="DSC" className="status-logo" width="48" height="48" />
+          </picture>
         </Link>
 
         <div className="status-content">

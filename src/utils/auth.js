@@ -92,6 +92,22 @@ function isExpired(claims, lastActivityAt) {
   return false
 }
 
+export function isSessionExpired(claims, lastActivityAt) {
+  return isExpired(claims, lastActivityAt)
+}
+
+export function persistCurrentUser(session) {
+  if (!session) return null
+  const now = Date.now()
+  const completeSession = {
+    ...session,
+    loginTime: session.loginTime || now,
+    lastActivityAt: session.lastActivityAt || now,
+  }
+  writeStorage(completeSession)
+  return completeSession
+}
+
 export function loadStoredSession() {
   try {
     const raw = readStorage()

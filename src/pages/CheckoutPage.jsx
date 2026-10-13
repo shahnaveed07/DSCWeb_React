@@ -167,11 +167,16 @@ export function CheckoutPage() {
       <FullScreenLoader active={loading} message="Processing order..." />
       <section className="panel auth-card checkout-card" style={{ maxWidth: '880px', margin: '0 auto' }}>
         <div className="logo-mark free-panel-icon-60 mb-15">
-          <img
-            src="/images/dsclogo.png"
-            alt="Dark Skull Corporation"
-            className="header-logo-img"
-          />
+          <picture>
+            <source srcSet="/images/dsclogo.webp" type="image/webp" />
+            <img
+              src="/images/dsclogo.png"
+              alt="Dark Skull Corporation"
+              className="header-logo-img"
+              width="60"
+              height="60"
+            />
+          </picture>
         </div>
         <h1 className="auth-title">Complete Order</h1>
         <p className="auth-subtitle">
