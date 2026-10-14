@@ -34,33 +34,33 @@ export const pageLabels = [
 
 export const homeHighlights = [
   {
-    eyebrow: 'Security',
-    title: 'Secure by Design',
-    body: 'Enterprise-grade authorization, HWID validation, and private cryptographic licensing keys.',
+    eyebrow: 'Hardware Binding',
+    title: 'Secure License Protection',
+    body: 'Hardware ID (HWID) verification ensures single-device integrity, stopping credential theft and account abuse.',
   },
   {
     eyebrow: 'Performance',
-    title: 'Structured Delivery',
-    body: 'Zero-latency startup, minimal memory consumption, and clean client-side performance across all tools.',
+    title: 'Zero Bloat Architecture',
+    body: 'Clean binaries built in C# and Kotlin with lightweight memory footprints and zero background data collection.',
   },
   {
-    eyebrow: 'Operations',
-    title: 'Continuous Availability',
-    body: 'Real-time telemetry, maintenance awareness, and responsive community support channels.',
+    eyebrow: 'Transparency',
+    title: 'Live Operational Telemetry',
+    body: 'Real-time status indicators, open free slot tracking, and responsive developer communication on Discord.',
   },
 ]
 
 export const featuredApps = [
   {
-    type: 'Utility',
+    type: 'Interactive Tool',
     title: 'Calculator',
-    description: 'A lightweight desktop utility for fast calculations and day-to-day productivity.',
-    primaryAction: { label: 'Go to Downloads', to: '/pages/downloads' },
+    description: 'A responsive arithmetic calculator with history logs, keyboard input, and lightweight Windows desktop architecture.',
+    primaryAction: { label: 'Try Web Calculator', to: '/pages/apps' },
   },
   {
     type: 'Android Utility',
     title: 'QR Scanner | Generator',
-    description: 'High-speed QR scanning and generation shipped through Google Play.',
+    description: 'High-speed camera detection for barcodes and custom offline QR code generation published on Google Play.',
     primaryAction: {
       label: 'Open Play Store',
       href: 'https://play.google.com/store/apps/details?id=com.dsc.qrscanner',
@@ -69,7 +69,7 @@ export const featuredApps = [
   {
     type: 'Puzzle Game',
     title: 'Mind Matrix',
-    description: 'A game-focused mobile release built around short puzzle sessions and polished interactions.',
+    description: 'Handcrafted brain-training puzzle challenges focusing on pattern recognition, reaction timing, and cognitive drills.',
     primaryAction: {
       label: 'Open Play Store',
       href: 'https://play.google.com/store/apps/details?id=com.dsc.mindmatrix',
@@ -79,257 +79,380 @@ export const featuredApps = [
 
 export const servicePillars = [
   {
-    title: 'Product Design',
+    title: 'Desktop Utility Panels',
     items: [
-      'Information architecture and navigation systems',
-      'Component-oriented interface design',
-      'Careful content hierarchy and readable flows',
+      'OBS-safe streamer overlays and HUD controls',
+      'Tactical hotkey switches with sub-millisecond response',
+      'Precision mouse sensitivity and calibration tools',
     ],
   },
   {
-    title: 'Web and App Engineering',
+    title: 'Mobile Applications',
     items: [
-      'Responsive web applications and portals',
-      'Lightweight utilities and mobile tooling',
-      'High-performance backend API integration',
+      'Offline-capable QR code scanning and generation',
+      'Minimalist brain-training puzzle games',
+      'Zero third-party tracking or background bloatware',
     ],
   },
   {
-    title: 'Release and Support',
+    title: 'Security & Licensing',
     items: [
-      'Operational visibility for maintenance states',
-      'Download, licensing, and order workflows',
-      'Active developer communication and verification',
+      'Cryptographic HWID validation on authenticated client binaries',
+      'Manual verification of payment proofs with order tracking',
+      'Community evaluation builds via the live Free Panel',
     ],
   },
 ]
 
 export const faqItems = [
   {
-    question: 'How do I activate my software panel?',
+    question: 'How does software licensing and order delivery work?',
     answer:
-      'Select your desired tier via the Products page or Checkout, submit your payment proof, and upon verification your license key will be issued directly in your Client Portal.',
+      'Select your desired software tier and duration on the Checkout page, complete payment via UPI, and submit your screenshot transaction proof. Once our administrator verifies your payment (typically within 1 to 24 hours), your access key is generated and appears on your User Dashboard.',
   },
   {
-    question: 'Where can I download verified software builds?',
+    question: 'What is the Free Panel, and who can use it?',
     answer:
-      'All official binaries and packages are available through our Download Center and inside authenticated user dashboards.',
+      'The Free Panel is a shared community evaluation edition that allows anyone to test our software panel interface and server connectivity without payment. Available slots are monitored live (up to 20 slots). When slots are open, free credentials and download links are displayed directly on the Free Panel page.',
   },
   {
-    question: 'How do I get technical assistance?',
+    question: 'What are the system requirements for DSC software panels?',
     answer:
-      'You can join our verified Discord community for live announcements and direct interaction with the team, or contact us via our official support email.',
+      'Our desktop utilities run on Windows 10 and Windows 11 (64-bit). They require Microsoft .NET Framework 4.8 and standard Visual C++ Redistributables. Android applications require Android 7.0 (Nougat) or newer.',
+  },
+  {
+    question: 'What is Hardware ID (HWID) validation?',
+    answer:
+      'HWID validation is a security measure that locks your software license key to your specific computer hardware profile. This prevents license theft, key sharing, and unauthorized redistribution, ensuring each user maintains an isolated and secure session.',
+  },
+  {
+    question: 'How do I reach the team for support or order inquiries?',
+    answer:
+      'For the fastest assistance, join our verified Discord community at discord.gg/XB2Zjmsb7K where we have active support channels. Alternatively, submit an inquiry through our Contact page or email darkskullcorporation@gmail.com.',
   },
 ]
 
 export const productPlans = [
   {
-    label: 'Free Tier',
+    label: 'Community Evaluation',
     title: 'FREE-PANEL',
+    category: 'Public Evaluation Tier',
     price: '$0 base rate',
     slug: 'free',
+    badge: 'FREE ACCESS',
+    description:
+      'A community test edition designed to evaluate core software panel functionality, server connectivity, and interface speed before purchasing a private plan.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: '< 30 MB RAM',
+      licensing: 'Shared pool (20 concurrent slots)',
+      requirements: '.NET Framework 4.8',
+    },
     features: [
-      'Limited-slot access',
-      'Free credential visibility',
-      'Download controlled by current system status',
+      'Shared evaluation credentials displayed in real time',
+      'Live server slot telemetry and availability monitor',
+      'Direct binary package archive download when slots are open',
+      'Community Discord troubleshooting and status reports',
     ],
-    action: { label: 'View Free Panel', to: '/pages/freepanel' },
+    action: { label: 'Access Free Panel', to: '/pages/freepanel', primary: true },
   },
   {
-    label: 'Streaming Edition',
+    label: 'Content Creators',
     title: 'STREAMER-PANEL',
+    category: 'Broadcasting & Overlay Utility',
     price: '$2 base rate',
     slug: 'streamer',
+    description:
+      'Engineered specifically for live streamers and content creators. Operates with OBS Studio and Streamlabs without interfering with capture software or revealing sensitive data on stream.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: '< 45 MB RAM',
+      licensing: 'Single user HWID-bound',
+      requirements: 'OBS 28+ or Streamlabs Desktop (optional)',
+    },
     features: [
-      'OBS-safe usage guidance',
-      'Longer purchase durations at checkout',
-      'Verified payment approval flow',
+      'OBS and broadcast-safe overlay capture mode',
+      'Customizable HUD opacity and instant hotkey toggle',
+      'Durations from 1 to 365 days with duration discounts',
+      'Verified screenshot payment approval and key delivery',
     ],
-    action: { label: 'Buy Now', to: '/pages/checkout?panel=streamer' },
+    action: { label: 'Order Streamer Panel', to: '/pages/checkout?panel=streamer', primary: true },
   },
   {
-    label: 'VIP Tier',
+    label: 'VIP Dedicated Tier',
     title: 'SPECIAL-PANEL',
+    category: 'High-Priority Software Suite',
     price: '$3 base rate',
     slug: 'special',
     featured: true,
+    badge: 'VIP TIER',
+    description:
+      'Our flagship desktop panel tier featuring private server slot allocations, enhanced stability defense, and 24/7 priority customer support.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: '< 50 MB RAM',
+      licensing: 'Dedicated private slot (HWID protected)',
+      requirements: 'Windows 10/11 64-bit, .NET 4.8',
+    },
     features: [
-      'Private-slot orientation',
-      'Advanced protection layer',
-      'Priority 24/7 Discord support access',
+      'Dedicated private server allocation (no slot contention)',
+      'Advanced anti-tamper and hardware protection layer',
+      'Priority 24/7 Discord support with expedited response times',
+      'Fast-track order approval and immediate key generation',
+      'Full duration range from 1 to 365 days',
     ],
-    action: { label: 'Buy Now', to: '/pages/checkout?panel=special' },
+    action: { label: 'Order Special Panel', to: '/pages/checkout?panel=special', primary: true, elite: true },
   },
   {
-    label: 'Tactical Tier',
+    label: 'Tactical Controls',
     title: 'SNIPER-PANEL',
+    category: 'Rapid Input & Hotkey Switcher',
     price: '$1 base rate',
     slug: 'sniper',
+    description:
+      'A streamlined utility designed for sub-millisecond hotkey switching, rapid tool swapping, and custom keybind profiles with negligible system overhead.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: '< 20 MB RAM',
+      licensing: 'Single user HWID-bound',
+      requirements: 'Windows 10/11 (64-bit)',
+    },
     features: [
-      'Fast-switch capabilities',
-      'Lightweight memory footprint',
-      'Flexible duration-based checkout pricing',
+      'Sub-millisecond input response and hotkey mapping',
+      'Multi-profile configuration switchers for distinct setups',
+      'Ultra-compact memory footprint under 20 MB',
+      'Flexible checkout durations starting from a 1-day trial',
     ],
-    action: { label: 'Buy Now', to: '/pages/checkout?panel=sniper' },
+    action: { label: 'Order Sniper Panel', to: '/pages/checkout?panel=sniper', primary: true },
   },
   {
-    label: 'Precision Edition',
+    label: 'Input Calibration',
     title: 'AIM-ASSIST-PANEL',
+    category: 'Precision Sensitivity Tuning',
     price: '$1 base rate',
     slug: 'aimassist',
+    description:
+      'Calibrate mouse input curves, acceleration smoothing, and crosshair positioning to build muscle memory and consistent cursor movement across games and display setups.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: '< 35 MB RAM',
+      licensing: 'Single user HWID-bound',
+      requirements: 'Windows 10/11, adjustable DPI mouse',
+    },
     features: [
-      'Advanced precision layer',
-      'Tracking-oriented positioning',
-      'Direct order approval flow',
+      'Raw input stream smoothing and dynamic sensitivity curve scaling',
+      'Display DPI matching across multiple desktop resolutions',
+      'Built-in precision calibration test canvas',
+      'Manual payment verification and authenticated dashboard retrieval',
     ],
-    action: { label: 'Buy Now', to: '/pages/checkout?panel=aimassist' },
+    action: { label: 'Order Aim Assist Panel', to: '/pages/checkout?panel=aimassist', primary: true },
   },
   {
-    label: 'Next Gen',
+    label: 'Next Generation',
     title: 'PREMIUM-PANEL',
+    category: 'Unified Multi-Module Suite',
     price: '$5 base rate',
     slug: 'premium',
+    description:
+      'Currently under active development. Combines broadcasting protection, precision tuning, and automated cloud configuration profiles into one unified architecture.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: 'Under evaluation',
+      licensing: 'Single user HWID-bound',
+      requirements: 'Planned for Q4 2026',
+    },
     features: [
-      'High-tier security defense',
-      'Extended multi-month options',
-      'Priority fast-track processing',
+      'Unified multi-module interface across all DSC desktop tools',
+      'Automated cloud synchronization of user configurations',
+      'Direct developer hotline support channel',
+      'Automatic license rotation and silent updates',
     ],
-    action: { label: 'Buy Now', to: '/pages/checkout?panel=premium' },
+    action: { label: 'In Development — Follow on Discord', href: 'https://discord.gg/XB2Zjmsb7K', disabled: false },
   },
   {
-    label: 'Enterprise',
+    label: 'Custom Engineering',
     title: 'CUSTOMISED-PANEL',
+    category: 'Bespoke Private Compilation',
     price: '$10 base rate',
     slug: 'customised',
+    description:
+      'Custom compilation for teams, streamers, or organizations requiring bespoke feature sets, dedicated private pipelines, or specialized hardware configurations.',
+    specs: {
+      platform: 'Windows 10 / 11 (64-bit)',
+      memory: 'Custom tailored',
+      licensing: 'Private dedicated build',
+      requirements: 'Direct developer consultation',
+    },
     features: [
-      'Custom branding and packaging',
-      'Dedicated private-build orientation',
-      'Direct developer consultation',
+      'Bespoke feature integration based on specific client requirements',
+      'Dedicated private build compilation and distribution channel',
+      'One-on-one consultation with lead engineer Naveed Mushtaq',
+      'Custom branding, tailored keybind matrices, and private support',
     ],
-    action: { label: 'Buy Now', to: '/pages/checkout?panel=customised' },
+    action: { label: 'Request Custom Build', to: '/pages/checkout?panel=customised', primary: true },
   },
 ]
 
 export const aboutStats = [
-  { label: 'Established', value: '2026' },
-  { label: 'Platform Focus', value: 'Security & Utilities' },
-  { label: 'Support Model', value: 'Community & Direct' },
-  { label: 'Organization', value: 'Dark Skull Corporation' },
+  { label: 'Founded', value: '2024' },
+  { label: 'Platform Focus', value: 'Windows & Android' },
+  { label: 'Lead Developer', value: 'Naveed Mushtaq' },
+  { label: 'Community', value: 'Discord Verified' },
 ]
 
 export const contactChannels = [
   {
-    label: 'Official Email',
-    title: 'darkskullcorporation@gmail.com',
-    body: 'Business communication, support follow-up, and general product inquiries.',
-    action: { label: 'Send Email', href: 'mailto:darkskullcorporation@gmail.com' },
-  },
-  {
-    label: 'Discord Community',
-    title: 'Developer Support',
-    body: 'Live announcements, community discussion, and direct support routing.',
+    label: 'Discord Server',
+    title: 'dsc.gg/XB2Zjmsb7K',
+    body: 'Live community support, update announcements, and direct ticket interaction with our engineering team.',
     action: { label: 'Join Discord', href: 'https://discord.gg/XB2Zjmsb7K' },
   },
   {
-    label: 'GitHub Workspace',
-    title: 'Public Code Surface',
-    body: 'Repositories, documentation, and shared technical artifacts.',
+    label: 'Official Email',
+    title: 'darkskullcorporation@gmail.com',
+    body: 'Formal business inquiries, licensing verification, partnership opportunities, and order assistance.',
+    action: { label: 'Send Email', href: 'mailto:darkskullcorporation@gmail.com' },
+  },
+  {
+    label: 'GitHub Organization',
+    title: 'github.com/shahnaveed07',
+    body: 'Public repositories, open-source utilities, issue reporting, and technical documentation.',
     action: { label: 'View GitHub', href: 'https://github.com/shahnaveed07' },
+  },
+  {
+    label: 'Developer Portfolio',
+    title: 'naveedmushtaq.tech',
+    body: 'Learn about lead engineer Naveed Mushtaq, explore engineering background, and review technical credentials.',
+    action: { label: 'Visit Portfolio', href: 'https://naveedmushtaq.tech/' },
   },
 ]
 
 export const privacySections = [
   {
     title: 'Information We Collect',
-    description: 'Depending on the service you use, we may collect only necessary technical details:',
+    description: 'We adhere to data minimization. We only collect technical details strictly necessary to provide and secure our services:',
     items: [
-      'Device model and operating system',
-      'Application crash reports',
-      'Anonymous usage statistics',
-      'Information submitted through contact forms',
-      'Account information (where applicable)',
+      'Usernames and salted password hashes for client portal accounts',
+      'Hardware Identifier (HWID) strings to bind software licenses to authorized machines',
+      'Screenshot proofs of transaction submitted during the checkout process',
+      'Basic technical logs (IP address, operating system, browser user agent) for server security and rate-limiting',
+      'Crash logs and diagnostic information for Android mobile applications',
     ],
-    note: 'We do not intentionally collect sensitive personal information unless required for a specific feature.',
+    note: 'We do not collect government identification, financial card numbers, or sensitive personal data.',
   },
   {
     title: 'How We Use Information',
-    description: 'Your information helps us maintain quality and platform reliability:',
+    description: 'Data collected is used solely to maintain platform operations, licensing integrity, and customer support:',
     items: [
-      'Improve application performance',
-      'Fix bugs and crashes',
-      'Maintain security and licensing integrity',
-      'Respond to support requests',
-      'Develop new features',
-      'Enhance overall user experience',
+      'Verifying payment proofs and issuing valid license keys',
+      'Enforcing single-device license binding via HWID checks',
+      'Providing customer service and resolving order questions',
+      'Monitoring server health, uptime, and preventing denial-of-service attacks',
+      'Debugging crashes and improving performance across desktop and Android tools',
     ],
-    note: 'We never sell or rent your personal information.',
+    note: 'We never sell, rent, or trade your personal information to third parties.',
+  },
+  {
+    title: 'Cookies, Local Storage & Advertising Disclosures',
+    description: 'Transparency regarding browser storage and third-party advertising cookies (including Google AdSense):',
+    items: [
+      'Local Storage: Used strictly to save interface preferences (such as Light / Dark theme) and store your authenticated session token.',
+      'Third-Party Advertising: Third-party vendors, including Google, use cookies to serve ads based on a user’s prior visits to this website or other websites.',
+      'Google Advertising Cookies: Google’s use of advertising cookies enables it and its partners to serve ads to our users based on their visit to our sites and/or other sites on the Internet.',
+      'Personalized Ad Opt-Out: Users may opt out of personalized advertising by visiting Google Ads Settings (https://www.google.com/settings/ads).',
+      'Network Opt-Out: You can also opt out of a third-party vendor’s use of cookies for personalized advertising by visiting www.aboutads.info.',
+    ],
+    note: 'You can disable or delete browser cookies and clear local storage at any time through your browser settings.',
   },
   {
     title: 'Android App Permissions',
-    description: 'Some applications may request permissions only when required for a specific feature:',
+    description: 'Permissions in our Android mobile applications are strictly scoped to user-invoked features:',
     items: [
-      'Camera — QR code scanning workflows',
-      'Storage — Save generated files and export data',
-      'Notifications — System updates, reminders, and alerts',
+      'Camera Permission (QR Scanner): Used solely to detect physical QR and barcode patterns via the camera viewfinder. No image data is transmitted or stored externally.',
+      'Storage / Photo Permission: Used solely when you explicitly tap to save or export a generated QR code image file to your device gallery.',
+      'Zero Background Tracking: Our mobile applications do not run persistent background tracking services or harvest personal contacts.',
     ],
-    note: 'Permissions are always requested only when necessary and can be revoked at any time in device settings.',
+    note: 'Permissions can be revoked at any time via your Android device system settings.',
   },
   {
-    title: 'Third-Party Services',
-    description: 'Our applications may use trusted third-party services including:',
+    title: 'Data Security & Storage',
+    description: 'We take technical measures to safeguard the integrity and confidentiality of your data:',
     items: [
-      'Google Play Services',
-      'Firebase services (future products)',
-      'Google AdMob (supported free apps only)',
-      'Analytics services (where explicitly enabled)',
+      'Transport Layer Security: All web traffic and API endpoints are encrypted using HTTPS/TLS.',
+      'Cryptographic Validation: HWID tokens and authentication requests are verified on secure server-side infrastructure.',
+      'Access Controls: Order proofs and user account records are restricted to authenticated administrators only.',
     ],
-    note: 'These services operate under their own privacy policies.',
+    note: 'While we employ industry-standard security practices, no internet transmission or database is completely impenetrable.',
   },
   {
-    title: 'Cookies & Local Storage',
-    description: 'Our website uses minimal local client storage to:',
+    title: 'Data Retention & User Rights',
+    description: 'We respect your control over your personal information:',
     items: [
-      'Remember interface preferences (such as Light / Dark theme)',
-      'Persist authenticated dashboard sessions',
-      'Improve website performance and navigation responsiveness',
-    ],
-    note: 'You may disable cookies or clear local storage through your browser settings.',
-  },
-  {
-    title: 'Data Security',
-    description: 'We implement technical and organizational measures to safeguard user data:',
-    items: [
-      'Encrypted transport (HTTPS/TLS) across all API communications',
-      'Cryptographic HWID validation and hashed authentication tokens',
-      'Restricted administrative access with multi-tier authorization controls',
-    ],
-    note: 'However, no internet service or storage facility can guarantee absolute security.',
-  },
-  {
-    title: "Children's Privacy",
-    description: 'Protecting young users across all our platforms:',
-    items: [
-      'Our products are not intended to knowingly collect personal information from children without parental consent.',
-      'If such information is discovered, it will be removed as quickly as reasonably possible.',
+      'Account Deletion: You may request complete deletion of your account and associated order records by emailing darkskullcorporation@gmail.com.',
+      'Access & Correction: You may request an export of your account data or correct outdated order information at any time.',
+      'Retention Period: Transaction proofs are retained for historical audit and support verification, then purged according to data retention schedules.',
     ],
   },
   {
-    title: 'Your Rights',
-    description: 'Depending on your location and jurisdiction, you have the right to:',
+    title: "Children's Privacy Protection",
+    description: 'Protecting the safety of young users online:',
     items: [
-      'Access your account information',
-      'Correct inaccurate or outdated information',
-      'Request deletion of your data and records',
-      'Contact us regarding privacy concerns and practices',
+      'Our website and software products are not directed to children under the age of 13.',
+      'We do not knowingly collect personal information from children under 13.',
+      'If you believe a child has provided us with personal information, please notify us immediately for swift removal.',
     ],
   },
   {
-    title: 'Changes to This Policy',
-    description: 'We may update this Privacy Policy periodically to reflect improvements or legal requirements:',
+    title: 'Policy Updates & Contact Details',
+    description: 'How we communicate policy updates:',
     items: [
-      'The latest version will always be available on this page with the updated effective date.',
-      'Continued use of our products after changes signifies agreement to the updated policy.',
+      'This Privacy Policy may be updated periodically to reflect changes in our products or regulatory requirements.',
+      'The current effective date will always be prominently displayed at the top of this page.',
+      'Direct privacy inquiries to: darkskullcorporation@gmail.com (Attn: Naveed Mushtaq).',
     ],
+  },
+]
+
+export const termsSections = [
+  {
+    label: '1. Acceptance',
+    title: 'Acceptance of Terms & Eligibility',
+    body: 'By accessing or using the DSCWeb website (dscweb.me), purchasing licenses, downloading binaries, or using our Android applications, you agree to be bound by these Terms of Service. If you do not agree to these terms, you must discontinue use immediately.',
+  },
+  {
+    label: '2. License Grant',
+    title: 'Software Licensing & Single-User Restrictions',
+    body: 'All Dark Skull Corporation desktop utilities and software panels are licensed, not sold. Licenses are granted on a non-exclusive, non-transferable, revocable basis for single-machine use bound to your unique Hardware ID (HWID). Sharing license keys, renting access, or attempting to bypass hardware locks is strictly prohibited.',
+  },
+  {
+    label: '3. Prohibited Use',
+    title: 'Prohibited Conduct & Intellectual Property',
+    body: 'You agree not to decompile, reverse-engineer, disassemble, modify, or crack any DSC binary or script. You may not redistribute software packages, host unauthorized mirrors, conduct automated scraping of our services, or attempt to compromise server infrastructure.',
+  },
+  {
+    label: '4. Orders & Verification',
+    title: 'Payment Verification & Delivery Policy',
+    body: 'Orders placed through the checkout system require manual administrator review of payment transaction proofs. Once payment is confirmed, license keys are issued to your User Dashboard. Due to the digital nature of software licenses, all sales are final once an access key is generated and activated.',
+  },
+  {
+    label: '5. Free Evaluation',
+    title: 'Free Panel Fair Use Policy',
+    body: 'The Free Panel is provided as a courtesy for community evaluation only. Access is subject to slot availability (maximum 20 concurrent slots) and may be suspended or restarted during maintenance windows without prior notice.',
+  },
+  {
+    label: '6. Disclaimer',
+    title: 'Disclaimer of Warranties',
+    body: 'DSC software and web services are provided on an "as-is" and "as-available" basis without warranties of any kind, whether express or implied. Dark Skull Corporation does not guarantee uninterrupted operation, error-free execution, or compatibility with all third-party software.',
+  },
+  {
+    label: '7. Limitation',
+    title: 'Limitation of Liability',
+    body: 'In no event shall Dark Skull Corporation, its developer Naveed Mushtaq, or affiliates be liable for indirect, incidental, special, consequential, or punitive damages arising from the use or inability to use our software, website, or services.',
+  },
+  {
+    label: '8. Governance',
+    title: 'Modifications & Contact Information',
+    body: 'We reserve the right to modify these terms at any time. Continued use of our website or software after changes indicates acceptance. For legal questions regarding these terms, contact darkskullcorporation@gmail.com.',
   },
 ]
 
@@ -338,22 +461,31 @@ export const footerGroups = [
     title: 'Explore',
     links: [
       { label: 'Home', to: '/' },
-      { label: 'Apps', to: '/pages/apps' },
-      { label: 'Products', to: '/pages/products' },
-      { label: 'Downloads', to: '/pages/downloads' },
-      { label: 'About', to: '/pages/about' },
-      { label: 'Contact', to: '/pages/contact' },
+      { label: 'Apps & Utilities', to: '/pages/apps' },
+      { label: 'Products & Pricing', to: '/pages/products' },
+      { label: 'Download Center', to: '/pages/downloads' },
+      { label: 'About Studio', to: '/pages/about' },
+      { label: 'Contact Support', to: '/pages/contact' },
     ],
   },
   {
-    title: 'Platform',
+    title: 'Platform & Legal',
     links: [
-      { label: 'User Login', to: '/pages/ulogin' },
-      { label: 'Admin Login', to: '/pages/alogin' },
-      { label: 'Free Panel', to: '/pages/freepanel' },
-      { label: 'Status', to: '/pages/status' },
+      { label: 'Free Panel Access', to: '/pages/freepanel' },
+      { label: 'System Status', to: '/pages/status' },
       { label: 'Privacy Policy', to: '/pages/privacy-policy' },
-      { label: 'Terms', to: '/pages/terms' },
+      { label: 'Terms of Service', to: '/pages/terms' },
+      { label: 'Client Login', to: '/pages/ulogin' },
+      { label: 'Checkout', to: '/pages/checkout' },
+    ],
+  },
+  {
+    title: 'Community & Connect',
+    links: [
+      { label: 'Discord Community', href: 'https://discord.gg/XB2Zjmsb7K' },
+      { label: 'GitHub Organization', href: 'https://github.com/shahnaveed07' },
+      { label: 'Developer Portfolio', href: 'https://naveedmushtaq.tech/' },
+      { label: 'Email Support', href: 'mailto:darkskullcorporation@gmail.com' },
     ],
   },
 ]

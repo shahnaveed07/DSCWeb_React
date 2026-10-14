@@ -1,31 +1,41 @@
 import { Link } from 'react-router-dom'
+import { usePageMeta } from '../hooks/usePageMeta'
 import { PageSection } from '../components/ui/PageSection'
 import { privacySections } from '../content/siteContent'
 
 export function PrivacyPolicyPage() {
+  usePageMeta({
+    title: 'Privacy Policy & Cookie Disclosures',
+    description:
+      'Dark Skull Corporation Privacy Policy explaining technical data collection, HWID license binding, third-party advertising disclosures, and cookie policies.',
+    canonical: 'https://dscweb.me/pages/privacy-policy',
+  })
+
   return (
     <div className="page-stack">
+      {/* Hero */}
       <section className="hero-block">
-        <span className="hero-eyebrow">Privacy Policy</span>
-        <h1>Your privacy matters to us.</h1>
+        <span className="hero-eyebrow">Dark Skull Corporation</span>
+        <h1>Privacy Policy &amp; Cookie Disclosures</h1>
         <p className="hero-copy">
-          Dark Skull Corporation is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard information when you use our website, Android applications, software products, and related services.
+          We believe in data minimization and transparent operation. This Privacy Policy details the technical information collected when you access DSCWeb (dscweb.me), use our Android applications, or license our desktop software panels.
         </p>
         <p className="mt-8 text-sm" style={{ color: 'var(--muted)' }}>
-          <strong>Effective Date:</strong> August 2026
+          <strong>Last Updated:</strong> October 2026 &nbsp;|&nbsp; <strong>Effective Date:</strong> August 2026
         </p>
       </section>
 
+      {/* Main Content Sections */}
       <PageSection
-        title="Privacy Overview"
-        description="We believe privacy should be simple and transparent. We collect only the information necessary to operate our services, improve our applications, maintain security, and provide a dependable user experience."
+        title="Privacy &amp; Data Handling Principles"
+        description="We collect only the technical data required to verify software licenses, authenticate sessions, process checkout orders, and maintain server reliability. We never sell or monetize user personal information."
       >
         <div className="card-grid columns-2">
           {privacySections.map((section) => (
             <article className="info-card" key={section.title}>
               <h3>{section.title}</h3>
               {section.description ? (
-                <p className="text-sm mb-12" style={{ color: 'var(--muted)' }}>
+                <p className="text-sm mb-12" style={{ color: 'var(--muted)', lineHeight: '1.5' }}>
                   {section.description}
                 </p>
               ) : null}
@@ -35,26 +45,37 @@ export function PrivacyPolicyPage() {
                 ))}
               </ul>
               {section.note ? (
-                <p className="text-xs mt-12" style={{ color: 'var(--secondary)' }}>
-                  {section.note}
+                <p className="text-xs mt-12" style={{ color: 'var(--secondary)', lineHeight: '1.4' }}>
+                  <strong>Note:</strong> {section.note}
                 </p>
               ) : null}
             </article>
           ))}
 
+          {/* Contact Box */}
           <article className="info-card">
-            <h3>Contact Us Regarding Privacy</h3>
-            <p className="text-sm mb-12" style={{ color: 'var(--muted)' }}>
-              If you have any questions or requests regarding this Privacy Policy or data handling:
+            <h3>Privacy Questions &amp; Data Deletion</h3>
+            <p className="text-sm mb-12" style={{ color: 'var(--muted)', lineHeight: '1.5' }}>
+              To exercise your data privacy rights, request an export of your account records, or request complete deletion of your data:
             </p>
-            <p className="text-sm mb-8">
+            <p className="text-sm mb-8" style={{ lineHeight: '1.6' }}>
               <strong>Dark Skull Corporation</strong>
               <br />
-              Developer: Naveed Mushtaq
+              Lead Developer: Naveed Mushtaq
               <br />
-              Email:{' '}
+              Official Email:{' '}
               <a href="mailto:darkskullcorporation@gmail.com" style={{ color: 'var(--primary)' }}>
                 darkskullcorporation@gmail.com
+              </a>
+              <br />
+              Discord Community:{' '}
+              <a
+                href="https://discord.gg/XB2Zjmsb7K"
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'var(--primary)' }}
+              >
+                discord.gg/XB2Zjmsb7K ↗
               </a>
             </p>
             <div className="mt-12">

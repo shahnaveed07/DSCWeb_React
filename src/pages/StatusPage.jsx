@@ -1,4 +1,5 @@
 import { Link, useSearchParams } from 'react-router-dom'
+import { usePageMeta } from '../hooks/usePageMeta'
 
 const statusStates = {
   update: {
@@ -31,6 +32,12 @@ const statusStates = {
 export function StatusPage() {
   const [searchParams] = useSearchParams()
   const state = statusStates[searchParams.get('type')] || statusStates.default
+
+  usePageMeta({
+    title: `System Status — ${state.label}`,
+    description: state.description,
+    canonical: 'https://dscweb.me/pages/status',
+  })
 
   return (
     <section className="status-layout">

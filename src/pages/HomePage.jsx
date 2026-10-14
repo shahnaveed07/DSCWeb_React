@@ -1,75 +1,18 @@
+import { NavLink } from 'react-router-dom'
+import { usePageMeta } from '../hooks/usePageMeta'
 import { ButtonLink } from '../components/layout/SiteHeader'
 
-const buildAreas = [
-  {
-    num: '01',
-    category: 'Applications',
-    title: 'Mobile & Desktop Apps',
-    text: 'Focused tools built around practical features, instant startup, and everyday productivity.',
-  },
-  {
-    num: '02',
-    category: 'Software Panels',
-    title: 'Security & Utilities',
-    text: 'High-performance desktop software utilities with verified licensing and live operational telemetry.',
-  },
-  {
-    num: '03',
-    category: 'Interactive Games',
-    title: 'Logic & Cognition',
-    text: 'Handcrafted puzzle games and interactive challenges built for players who enjoy mental exercises.',
-  },
-]
+export function HomePage({ systemStatus }) {
+  usePageMeta({
+    title: 'Dark Skull Corporation | Independent Software Studio',
+    description:
+      'Dark Skull Corporation develops focused desktop utilities, specialized software panels, Android applications, and logic puzzle games.',
+    canonical: 'https://dscweb.me/',
+  })
 
-const featuredWork = [
-  {
-    badge: 'Desktop Utility',
-    title: 'Calculator',
-    text: 'A simple, ultra-responsive calculator for everyday mathematical computations without bloat.',
-    action: { label: 'View Application', to: '/pages/apps' },
-    style: 'button button-secondary',
-  },
-  {
-    badge: 'Android App',
-    title: 'QR Scanner | Generator',
-    text: 'Instant camera detection for barcodes and QR codes, alongside custom offline QR generation.',
-    action: {
-      label: 'Google Play ↗',
-      href: 'https://play.google.com/store/apps/details?id=com.dsc.qrscanner',
-    },
-    style: 'button button-primary',
-  },
-  {
-    badge: 'Brain Game',
-    title: 'Mind Matrix',
-    text: 'A minimalist suite of logic, memory, and spatial reaction drills with progressive difficulty scaling.',
-    action: {
-      label: 'Google Play ↗',
-      href: 'https://play.google.com/store/apps/details?id=com.dsc.mindmatrix',
-    },
-    style: 'button button-primary',
-  },
-]
+  const isMaintenance =
+    systemStatus?.isMaintenanceMode === true || systemStatus?.IsMaintenanceMode === true
 
-const principles = [
-  {
-    num: '01',
-    title: 'Useful',
-    text: 'Every feature must solve a tangible problem. We eliminate fluff, bloatware, and cosmetic friction.',
-  },
-  {
-    num: '02',
-    title: 'Simple',
-    text: 'Interfaces should be obvious and fast. Tools must perform their duty without demanding continuous attention.',
-  },
-  {
-    num: '03',
-    title: 'Reliable',
-    text: 'We test continuously, verify builds across operating systems, and fix issues transparently.',
-  },
-]
-
-export function HomePage() {
   return (
     <div className="home-container">
       {/* Hero Section */}
@@ -78,17 +21,48 @@ export function HomePage() {
           <div className="hero-eyebrow-row">
             <span className="hero-eyebrow">Dark Skull Corporation</span>
             <span className="hero-dot">·</span>
-            <span className="hero-subkicker">Independent Studio</span>
+            <span className="hero-subkicker">Independent Software Studio</span>
+            <span className="hero-dot">·</span>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.78rem',
+                color: isMaintenance ? 'var(--warning)' : 'var(--success)',
+                fontWeight: 600,
+              }}
+            >
+              <span
+                style={{
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  backgroundColor: isMaintenance ? 'var(--warning)' : 'var(--success)',
+                }}
+              />
+              {isMaintenance ? 'System Maintenance' : 'Systems Operational'}
+            </span>
           </div>
+
           <h1 className="home-hero-title">
-            Software made to be <span className="text-highlight">useful</span>.
+            Software built to be <span className="text-highlight">useful</span>.
           </h1>
+
           <p className="home-hero-desc">
-            We build apps, tools, games, and specialized digital products with a focus on practical features, robust performance, and straightforward user experiences.
+            We develop lightweight desktop utilities, specialized software panels with hardware-bound licensing, privacy-conscious Android applications, and interactive logic puzzle games.
           </p>
+
           <div className="home-hero-actions">
-            <ButtonLink action={{ label: 'Explore Apps', to: '/pages/apps' }} className="button button-primary button-lg" />
-            <ButtonLink action={{ label: 'View Products', to: '/pages/products' }} className="button button-secondary button-lg" />
+            <NavLink to="/pages/products" className="button button-primary button-lg">
+              Explore Products
+            </NavLink>
+            <NavLink to="/pages/downloads" className="button button-secondary button-lg">
+              Download Center
+            </NavLink>
+            <NavLink to="/pages/apps" className="button button-ghost button-lg">
+              Try Apps &amp; Calculator
+            </NavLink>
           </div>
         </div>
 
@@ -97,29 +71,29 @@ export function HomePage() {
           <div className="hero-cap-item">
             <span className="hero-cap-num">01</span>
             <div className="hero-cap-text">
-              <strong>Desktop Utilities</strong>
-              <span>Clean, fast Windows applications</span>
+              <strong>Desktop Software Panels</strong>
+              <span>Streaming HUD, quick-switch &amp; calibration</span>
             </div>
           </div>
           <div className="hero-cap-item">
             <span className="hero-cap-num">02</span>
             <div className="hero-cap-text">
-              <strong>Android Releases</strong>
-              <span>Privacy-first mobile utilities</span>
+              <strong>Android Utilities</strong>
+              <span>Fast QR scanner &amp; offline code generator</span>
             </div>
           </div>
           <div className="hero-cap-item">
             <span className="hero-cap-num">03</span>
             <div className="hero-cap-text">
               <strong>Interactive Games</strong>
-              <span>Logic & pattern recognition</span>
+              <span>Mind Matrix logic &amp; cognitive drills</span>
             </div>
           </div>
           <div className="hero-cap-item">
             <span className="hero-cap-num">04</span>
             <div className="hero-cap-text">
-              <strong>Verified Binaries</strong>
-              <span>Direct delivery & key management</span>
+              <strong>Hardware ID Security</strong>
+              <span>Cryptographic HWID validation &amp; delivery</span>
             </div>
           </div>
         </div>
@@ -131,27 +105,82 @@ export function HomePage() {
       <section className="home-section">
         <div className="section-head-v2">
           <div className="section-title-wrap">
-            <span className="section-eyebrow">Selected Work</span>
-            <h2 className="section-title-v2">Featured Projects</h2>
+            <span className="section-eyebrow">Real Releases</span>
+            <h2 className="section-title-v2">Featured Software &amp; Tools</h2>
           </div>
           <p className="section-subtitle-v2">
-            A look at recent software releases developed and actively maintained by Dark Skull Corporation.
+            Actively maintained applications and software releases available for immediate access and download.
           </p>
         </div>
 
         <div className="showcase-grid">
-          {featuredWork.map((item) => (
-            <article className="showcase-card" key={item.title}>
-              <div className="showcase-card-top">
-                <span className="showcase-badge">{item.badge}</span>
-                <h3 className="showcase-title">{item.title}</h3>
-                <p className="showcase-desc">{item.text}</p>
-              </div>
-              <div className="showcase-card-bottom">
-                <ButtonLink action={item.action} className={item.style || 'button button-primary'} />
-              </div>
-            </article>
-          ))}
+          {/* Card 1: Free Panel */}
+          <article className="showcase-card">
+            <div className="showcase-card-top">
+              <span className="showcase-badge">Public Evaluation</span>
+              <h3 className="showcase-title">Free Panel Build</h3>
+              <p className="showcase-desc">
+                Public community release of our panel software. Test interface responsiveness, monitor live server slot availability, and download the verified package archive.
+              </p>
+            </div>
+            <div className="showcase-card-bottom">
+              <ButtonLink action={{ label: 'Access Free Panel', to: '/pages/freepanel' }} className="button button-primary" />
+            </div>
+          </article>
+
+          {/* Card 2: Calculator */}
+          <article className="showcase-card">
+            <div className="showcase-card-top">
+              <span className="showcase-badge">Interactive Tool</span>
+              <h3 className="showcase-title">Calculator Tool</h3>
+              <p className="showcase-desc">
+                A lightweight mathematics utility featuring instant expression parsing, calculation history logs, and zero tracking. Try it directly in your browser.
+              </p>
+            </div>
+            <div className="showcase-card-bottom">
+              <ButtonLink action={{ label: 'Launch Calculator', to: '/pages/apps' }} className="button button-secondary" />
+            </div>
+          </article>
+
+          {/* Card 3: QR Scanner */}
+          <article className="showcase-card">
+            <div className="showcase-card-top">
+              <span className="showcase-badge">Android Utility</span>
+              <h3 className="showcase-title">QR Scanner | Generator</h3>
+              <p className="showcase-desc">
+                High-speed autofocus camera scanner for barcodes and QR codes, paired with an offline generator for Wi-Fi, contacts, and URLs on Google Play.
+              </p>
+            </div>
+            <div className="showcase-card-bottom">
+              <ButtonLink
+                action={{
+                  label: 'Google Play ↗',
+                  href: 'https://play.google.com/store/apps/details?id=com.dsc.qrscanner',
+                }}
+                className="button button-primary"
+              />
+            </div>
+          </article>
+
+          {/* Card 4: Mind Matrix */}
+          <article className="showcase-card">
+            <div className="showcase-card-top">
+              <span className="showcase-badge">Brain Game</span>
+              <h3 className="showcase-title">Mind Matrix</h3>
+              <p className="showcase-desc">
+                Minimalist mobile puzzle game featuring progressive logic, sequence recall, and cognitive reflex drills playable completely offline.
+              </p>
+            </div>
+            <div className="showcase-card-bottom">
+              <ButtonLink
+                action={{
+                  label: 'Google Play ↗',
+                  href: 'https://play.google.com/store/apps/details?id=com.dsc.mindmatrix',
+                }}
+                className="button button-primary"
+              />
+            </div>
+          </article>
         </div>
       </section>
 
@@ -162,49 +191,40 @@ export function HomePage() {
         <div className="section-head-v2">
           <div className="section-title-wrap">
             <span className="section-eyebrow">Disciplines</span>
-            <h2 className="section-title-v2">What We Build</h2>
+            <h2 className="section-title-v2">Software Disciplines</h2>
           </div>
           <p className="section-subtitle-v2">
-            Different software categories unified by one philosophy: building software that people can genuinely use.
+            Focused development areas grounded in practical usability, clean interfaces, and robust software architecture.
           </p>
         </div>
 
         <div className="disciplines-grid">
-          {buildAreas.map((area) => (
-            <article className="discipline-card" key={area.title}>
-              <div className="discipline-num">{area.num}</div>
-              <span className="discipline-category">{area.category}</span>
-              <h3 className="discipline-title">{area.title}</h3>
-              <p className="discipline-text">{area.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+          <article className="discipline-card">
+            <div className="discipline-num">01</div>
+            <span className="discipline-category">Desktop Engineering</span>
+            <h3 className="discipline-title">Utility Software Panels</h3>
+            <p className="discipline-text">
+              High-performance Windows utilities designed for OBS-safe broadcasting, rapid tool switching, and precision input calibration with minimal RAM usage.
+            </p>
+          </article>
 
-      <hr className="home-divider" />
+          <article className="discipline-card">
+            <div className="discipline-num">02</div>
+            <span className="discipline-category">Mobile Engineering</span>
+            <h3 className="discipline-title">Privacy-Centric Mobile Tools</h3>
+            <p className="discipline-text">
+              Android applications built with scoped permissions, offline-first generation engines, and zero background telemetry or invasive analytics.
+            </p>
+          </article>
 
-      {/* Principles Section */}
-      <section className="home-section">
-        <div className="section-head-v2">
-          <div className="section-title-wrap">
-            <span className="section-eyebrow">Core Standards</span>
-            <h2 className="section-title-v2">Engineered with Purpose</h2>
-          </div>
-          <p className="section-subtitle-v2">
-            Quality software is not complicated. We focus on the fundamentals that matter to our users.
-          </p>
-        </div>
-
-        <div className="principles-grid">
-          {principles.map((principle) => (
-            <article className="principle-card" key={principle.num}>
-              <div className="principle-header">
-                <span className="principle-num">{principle.num}</span>
-                <h3 className="principle-title">{principle.title}</h3>
-              </div>
-              <p className="principle-desc">{principle.text}</p>
-            </article>
-          ))}
+          <article className="discipline-card">
+            <div className="discipline-num">03</div>
+            <span className="discipline-category">Licensing &amp; Security</span>
+            <h3 className="discipline-title">Cryptographic HWID Binding</h3>
+            <p className="discipline-text">
+              Hardware ID authorization ensuring secure single-device access, verified payment proof reviews, and transparent community evaluation tiers.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -213,21 +233,21 @@ export function HomePage() {
       {/* Split Highlights: About & Contact */}
       <section className="home-section home-split-grid">
         <article className="highlight-panel">
-          <span className="section-eyebrow">About Dark Skull</span>
+          <span className="section-eyebrow">About Dark Skull Corporation</span>
           <h2 className="highlight-title">Independent Engineering</h2>
           <p className="highlight-desc">
-            Dark Skull Corporation is an independent software studio focused on applications, desktop tools, and games. Our software evolves through practical testing, community feedback, and steady refinement.
+            Led by software engineer Naveed Mushtaq, Dark Skull Corporation creates focused applications, tools, and games. We believe in steady refinement, practical utility, and direct community communication.
           </p>
           <div className="highlight-action">
-            <ButtonLink action={{ label: 'About Studio', to: '/pages/about' }} className="button button-secondary" />
+            <ButtonLink action={{ label: 'Read About Studio', to: '/pages/about' }} className="button button-secondary" />
           </div>
         </article>
 
         <article className="highlight-panel highlight-panel-alt">
-          <span className="section-eyebrow">Get In Touch</span>
-          <h2 className="highlight-title">Direct Communication</h2>
+          <span className="section-eyebrow">Direct Support</span>
+          <h2 className="highlight-title">Active Community &amp; Help</h2>
           <p className="highlight-desc">
-            Have questions about an active order, need technical assistance, or want to discuss custom utility development? We maintain active community and support channels.
+            Need technical assistance, have questions regarding an order, or want to verify license keys? Join our verified Discord community or email our support desk directly.
           </p>
           <div className="highlight-action">
             <ButtonLink action={{ label: 'Contact Support', to: '/pages/contact' }} className="button button-primary" />

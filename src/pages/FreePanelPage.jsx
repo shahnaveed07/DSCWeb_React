@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import { useRemoteResource } from '../hooks/useRemoteResource'
+import { usePageMeta } from '../hooks/usePageMeta'
 import { getFreePanelStatus } from '../services/dscApi'
 
 export function FreePanelPage() {
+  usePageMeta({
+    title: 'Free Panel Access & Live Credentials',
+    description:
+      'Access public evaluation credentials, real-time slot telemetry, and official package archive downloads for the Dark Skull Corporation Free Panel.',
+    canonical: 'https://dscweb.me/pages/freepanel',
+  })
+
   const [copiedUser, setCopiedUser] = useState(false)
   const [copiedPass, setCopiedPass] = useState(false)
   const { data, error, loading } = useRemoteResource(getFreePanelStatus, [])

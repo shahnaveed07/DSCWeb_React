@@ -213,4 +213,21 @@ describe('PasswordInput Component Tests', () => {
   })
 })
 
+describe('Page Content & AdSense Remediation Tests', () => {
+  it('renders SiteFooter with structured Explore, Platform & Legal, and Community columns', () => {
+    render(
+      <MemoryRouter>
+        <SiteFooter />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByText('Explore')).toBeTruthy()
+    expect(screen.getByText('Platform & Legal')).toBeTruthy()
+    expect(screen.getByText('Community & Connect')).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Apps & Utilities/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Privacy Policy/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Terms of Service/i })).toBeTruthy()
+  })
+})
+
 

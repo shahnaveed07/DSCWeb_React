@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { extractApiMessage, submitCheckout } from '../services/dscApi'
 import { FullScreenLoader } from '../components/ui/FullScreenLoader'
 import { PasswordInput } from '../components/ui/PasswordInput'
+import { usePageMeta } from '../hooks/usePageMeta'
 
 
 const BASE_PRICES = {
@@ -33,6 +34,13 @@ export function CheckoutPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const panel = String(searchParams.get('panel') || '').trim().toLowerCase()
+
+  usePageMeta({
+    title: panel ? `Checkout — ${panel.toUpperCase()} Panel` : 'Order Checkout',
+    description: 'Complete your Dark Skull Corporation software panel order, duration selection, and payment verification.',
+    canonical: 'https://dscweb.me/pages/checkout',
+  })
+
   const [days, setDays] = useState(30)
   const [proofFile, setProofFile] = useState(null)
   const [previewSrc, setPreviewSrc] = useState('')
