@@ -179,6 +179,14 @@ export function persistSessionFromResponse(payload, extra = {}) {
       payload?.ExpiryTime ||
       extra.expiry ||
       null,
+    mustChangePassword: Boolean(
+      payload?.mustChangePassword ||
+      payload?.MustChangePassword ||
+      payload?.must_change_password ||
+      claims?.mustChangePassword ||
+      claims?.must_change_password ||
+      extra.mustChangePassword
+    ),
     isOwner: Boolean(extra.isOwner || payload?.isOwner),
     loginTime: Number(extra.loginTime) || now,
     lastActivityAt: now,
@@ -186,6 +194,18 @@ export function persistSessionFromResponse(payload, extra = {}) {
 
   writeStorage(session)
   return session
+}
+
+export function updateStoredSession(partial) {
+  const current = loadStoredSession()
+  if (!current) return null
+  const updated = {
+    ...current,
+    ...partial,
+    lastActivityAt: Date.now(),
+  }
+  writeStorage(updated)
+  return updated
 }
 
 export function authHeader(token) {

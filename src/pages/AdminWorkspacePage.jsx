@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   deleteOwnerRecord,
   extractApiMessage,
+  forceUserPasswordReset,
   getOwnerTable,
   isAuthError,
   mapSettingsRecord,
+  resetUserHwid,
   toggleMaintenance,
   updateOwnerRecord,
 } from '../services/dscApi'
@@ -259,8 +261,13 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       if (successMsg) setMessage(successMsg)
       load()
     } catch (issue) {
-      if (isAuthError(issue)) onSessionInvalid()
-      else setError(extractApiMessage(issue?.payload, issue?.message || 'The request failed.'))
+      if (issue?.status === 401) {
+        onSessionInvalid()
+      } else if (issue?.status === 403) {
+        setError(extractApiMessage(issue?.payload, 'Access denied: Owner privileges required for this action.'))
+      } else {
+        setError(extractApiMessage(issue?.payload, issue?.message || 'The request failed.'))
+      }
     } finally {
       setBusyAction('')
     }
@@ -368,7 +375,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       setEditForm({
         username: row.username ?? row.Username ?? '',
         hwid: row.hwid ?? row.HWID ?? '',
-        captchaToken: row.CaptchaToken ?? row.captchaToken ?? '',
+        captchaToken: row.EnvName ?? row.envName ?? row.CaptchaToken ?? row.captchaToken ?? '',
         isBanned: Boolean(row.isBanned ?? row.IsBanned ?? false),
         failedLoginAttempts:
           row.failedLoginAttempts ?? row.FailedLoginAttempts ?? 0,
@@ -439,6 +446,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         userId: editId,
         Username: editForm.username,
         HWID: editForm.hwid,
+        EnvName: editForm.captchaToken,
         CaptchaToken: editForm.captchaToken,
         IsBanned: Boolean(editForm.isBanned),
         FailedLoginAttempts: Number(editForm.failedLoginAttempts) || 0,
@@ -1026,7 +1034,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                 </label>
 
                 <label className="field">
-                  <span>PC Name / CaptchaToken</span>
+                  <span>PC Name / Environment (EnvName)</span>
                   <input
                     value={editForm.captchaToken || ''}
                     onChange={(e) => setEditForm({ ...editForm, captchaToken: e.target.value })}
@@ -1095,6 +1103,44 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   />
                 </label>
               </>
+            ) : null}
+
+            {table === 'users' && editRecord ? (
+              <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--surface-border)' }}>
+                <span className="micro-label" style={{ display: 'block', marginBottom: '8px' }}>OWNER SECURITY ACTIONS</span>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className={`button button-secondary button-sm ${busyAction === 'resetHwid' ? 'is-loading' : ''}`}
+                    disabled={busy}
+                    onClick={() => {
+                      const id = editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId
+                      run(
+                        () => resetUserHwid(token, id),
+                        `HWID successfully reset for user #${id}.`,
+                        'resetHwid',
+                      )
+                    }}
+                  >
+                    Reset HWID
+                  </button>
+                  <button
+                    type="button"
+                    className={`button button-danger button-sm ${busyAction === 'forceReset' ? 'is-loading' : ''}`}
+                    disabled={busy}
+                    onClick={() => {
+                      const id = editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId
+                      run(
+                        () => forceUserPasswordReset(token, id),
+                        `Password reset successfully enforced for user #${id}.`,
+                        'forceReset',
+                      )
+                    }}
+                  >
+                    Force Password Reset
+                  </button>
+                </div>
+              </div>
             ) : null}
 
             {/* Buttons */}

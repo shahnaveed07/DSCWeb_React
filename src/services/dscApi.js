@@ -62,6 +62,8 @@ export function extractApiMessage(payload, fallbackMessage = 'An unexpected erro
   } else if (payload && typeof payload === 'object') {
     if (typeof payload.message === 'string') {
       candidate = payload.message
+    } else if (typeof payload.detail === 'string') {
+      candidate = payload.detail
     } else if (typeof payload.error === 'string') {
       candidate = payload.error
     } else if (typeof payload.title === 'string') {
@@ -267,6 +269,22 @@ export function updateAdminUser(token, user) {
 
 export function deleteAdminUser(token, id) {
   return request(`/api/admin/user/delete/${encodeURIComponent(id)}`, { method: 'DELETE', token })
+}
+
+export function resetUserHwid(token, id) {
+  return request(`/api/admin/user/${encodeURIComponent(id)}/reset-hwid`, {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+export function forceUserPasswordReset(token, id) {
+  return request(`/api/admin/user/${encodeURIComponent(id)}/force-password-reset`, {
+    method: 'POST',
+    token,
+    body: {},
+  })
 }
 
 export function processAdminOrder(token, id, action) {

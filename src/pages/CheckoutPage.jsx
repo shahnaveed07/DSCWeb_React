@@ -111,8 +111,13 @@ export function CheckoutPage() {
       return
     }
 
-    if (password.length < 3) {
-      setError('Password must be at least 3 characters long.')
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.')
+      return
+    }
+
+    if (days < 3) {
+      setError('1-day trials are provided via the live Free Panel or community testing. Paid orders require a minimum of 3 days.')
       return
     }
 
@@ -128,11 +133,12 @@ export function CheckoutPage() {
     setLoading(true)
 
     try {
+      const normalizedPlan = panel === 'aimassist' ? 'aimbot' : panel
       const orderData = {
         Username: username,
         PasswordHash: password,
         DiscordId: discordId,
-        Plan: panel,
+        Plan: normalizedPlan,
         Days: days,
         Amount: priceDisplayText,
         TxnId: 'SS_PROOF_ONLY',
@@ -199,19 +205,22 @@ export function CheckoutPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div className="card" style={{ padding: '20px' }}>
                 <label className="field" htmlFor="selectDays">
-                  <span className="micro-label">DURATION & PLAN</span>
+                  <span className="micro-label">DURATION &amp; PLAN</span>
                   <select
                     id="selectDays"
                     className="input-field"
                     value={days}
                     onChange={(e) => setDays(Number(e.target.value))}
                   >
-                    {Object.entries(DURATION_MULTIPLIERS).map(([dayVal, cfg]) => (
+                    {[3, 7, 15, 30, 60, 365].map((dayVal) => (
                       <option key={dayVal} value={dayVal}>
-                        {cfg.label}
+                        {DURATION_MULTIPLIERS[dayVal]?.label || `${dayVal} Days`}
                       </option>
                     ))}
                   </select>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--muted)', marginTop: '4px', display: 'block' }}>
+                    Note: For 1-day community evaluation, use the live Free Panel.
+                  </span>
                 </label>
 
                 <div style={{ marginTop: '16px' }}>
@@ -279,14 +288,14 @@ export function CheckoutPage() {
                 </label>
 
                 <label className="field" htmlFor="regPassword">
-                  <span className="micro-label">ACCOUNT PASSWORD</span>
+                  <span className="micro-label">ACCOUNT PASSWORD (MINIMUM 6 CHARACTERS)</span>
                   <PasswordInput
                     id="regPassword"
-                    placeholder="Minimum 3 characters"
-                    minLength={3}
+                    placeholder="Minimum 6 characters"
+                    minLength={6}
                     value={form.password}
                     onChange={(e) => setForm((c) => ({ ...c, password: e.target.value }))}
-                    disabled={isSubmitting}
+                    disabled={loading}
                     required
                     autoComplete="new-password"
                   />

@@ -6,12 +6,14 @@ import {
   createAdminAccount,
   deleteAdminUser,
   extractApiMessage,
+  forceUserPasswordReset,
   getAdminSnapshot,
   isAuthError,
   mapAdminUsers,
   mapPendingOrders,
   mapSettingsRecord,
   processAdminOrder,
+  resetUserHwid,
   toggleMaintenance,
   updateAdminUser,
 } from '../services/dscApi'
@@ -80,8 +82,10 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
       if (successMsg) flashMessage(successMsg, 'success')
       setRevision((v) => v + 1)
     } catch (issue) {
-      if (isAuthError(issue)) {
+      if (issue?.status === 401) {
         onSessionInvalid()
+      } else if (issue?.status === 403) {
+        flashMessage(extractApiMessage(issue.payload, 'Access denied: Owner privileges required for this action.'), 'error')
       } else {
         flashMessage(extractApiMessage(issue.payload, issue.message || 'Action failed.'), 'error')
       }
@@ -129,6 +133,26 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
       })
       setEditUser(null)
     }, 'User updated successfully.', 'saveUser')
+  }
+
+  async function handleResetHwid() {
+    if (!editUser) return
+    const id = editUser?.id ?? editUser?.Id ?? editUser?.userId ?? editUser?.UserId
+    const username = getValue(editUser, ['username', 'Username'])
+    await runAction(async () => {
+      await resetUserHwid(session.token, id)
+      setEditUser(null)
+    }, `HWID successfully reset for user ${username}.`, 'resetHwid')
+  }
+
+  async function handleForcePasswordReset() {
+    if (!editUser) return
+    const id = editUser?.id ?? editUser?.Id ?? editUser?.userId ?? editUser?.UserId
+    const username = getValue(editUser, ['username', 'Username'])
+    await runAction(async () => {
+      await forceUserPasswordReset(session.token, id)
+      setEditUser(null)
+    }, `Password reset successfully enforced for user ${username}.`, 'forceReset')
   }
 
   async function handleChangePassword(e) {
@@ -188,27 +212,44 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             >
               Password
             </button>
-            <button
-              type="button"
-              className={`button button-sm ${isMaintenance ? 'button-danger' : 'button-secondary'} ${busyAction === 'maintenance' ? 'is-loading' : ''}`}
-              disabled={busy}
-              onClick={() =>
-                runAction(
-                  () => toggleMaintenance(session.token, !isMaintenance),
-                  `Maintenance mode ${!isMaintenance ? 'activated' : 'deactivated'}.`,
-                  'maintenance',
-                )
-              }
-            >
-              {busyAction === 'maintenance' ? (
-                <span className="button-loading-content">
-                  <span className="spinner-inline" aria-hidden="true" />
-                  <span>Updating...</span>
-                </span>
-              ) : (
-                <span>Maintenance: {isMaintenance ? 'ON' : 'OFF'}</span>
-              )}
-            </button>
+            {ownerAccess ? (
+              <button
+                type="button"
+                className={`button button-sm ${isMaintenance ? 'button-danger' : 'button-secondary'} ${busyAction === 'maintenance' ? 'is-loading' : ''}`}
+                disabled={busy}
+                onClick={() =>
+                  runAction(
+                    () => toggleMaintenance(session.token, !isMaintenance),
+                    `Maintenance mode ${!isMaintenance ? 'activated' : 'deactivated'}.`,
+                    'maintenance',
+                  )
+                }
+              >
+                {busyAction === 'maintenance' ? (
+                  <span className="button-loading-content">
+                    <span className="spinner-inline" aria-hidden="true" />
+                    <span>Updating...</span>
+                  </span>
+                ) : (
+                  <span>Maintenance: {isMaintenance ? 'ON' : 'OFF'}</span>
+                )}
+              </button>
+            ) : (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  background: isMaintenance ? 'var(--danger-soft, #3a1515)' : 'var(--surface-border)',
+                  color: isMaintenance ? 'var(--danger)' : 'var(--muted)',
+                }}
+              >
+                Maint: {isMaintenance ? 'ON' : 'OFF'}
+              </span>
+            )}
             <button
               type="button"
               className={`button button-secondary button-sm ${loading ? 'is-loading' : ''}`}
@@ -590,6 +631,44 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                 Cancel
               </button>
             </div>
+
+            {ownerAccess ? (
+              <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--surface-border)' }}>
+                <span className="micro-label" style={{ display: 'block', marginBottom: '8px' }}>OWNER SECURITY ACTIONS</span>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className={`button button-secondary button-sm ${busyAction === 'resetHwid' ? 'is-loading' : ''}`}
+                    disabled={busy}
+                    onClick={handleResetHwid}
+                  >
+                    {busyAction === 'resetHwid' ? (
+                      <span className="button-loading-content">
+                        <span className="spinner-inline" aria-hidden="true" />
+                        <span>Resetting HWID...</span>
+                      </span>
+                    ) : (
+                      <span>Reset HWID</span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    className={`button button-danger button-sm ${busyAction === 'forceReset' ? 'is-loading' : ''}`}
+                    disabled={busy}
+                    onClick={handleForcePasswordReset}
+                  >
+                    {busyAction === 'forceReset' ? (
+                      <span className="button-loading-content">
+                        <span className="spinner-inline" aria-hidden="true" />
+                        <span>Enforcing Reset...</span>
+                      </span>
+                    ) : (
+                      <span>Force Password Reset</span>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </form>
         </div>
       ) : null}

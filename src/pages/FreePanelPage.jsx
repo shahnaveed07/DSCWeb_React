@@ -27,7 +27,6 @@ export function FreePanelPage() {
   const percentage = maxSlots > 0 ? Math.min((usedSlots / maxSlots) * 100, 100) : 0
   const isFull = remaining <= 0
   const hasCredentials = Boolean(freeUser && freePass)
-  const isOffline = !loading && !error && !hasCredentials
 
   let progressColor = 'var(--success)'
   if (percentage > 85) {
@@ -78,43 +77,52 @@ export function FreePanelPage() {
 
         {!loading && (
           <div id="freePanelContent">
-            {hasCredentials ? (
+            {!error ? (
               <div id="freeAvailableBox">
-                <div className="card" style={{ padding: '18px', marginBottom: '20px', background: 'var(--surface-hover)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                    <div>
-                      <span className="micro-label">USERNAME</span>
-                      <h3 id="displayFreeUser" style={{ margin: '4px 0 0', fontFamily: 'monospace', fontSize: '1.15rem' }}>
-                        {freeUser}
-                      </h3>
+                {hasCredentials ? (
+                  <div className="card" style={{ padding: '18px', marginBottom: '20px', background: 'var(--surface-hover)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                      <div>
+                        <span className="micro-label">USERNAME</span>
+                        <h3 id="displayFreeUser" style={{ margin: '4px 0 0', fontFamily: 'monospace', fontSize: '1.15rem' }}>
+                          {freeUser}
+                        </h3>
+                      </div>
+                      <button
+                        id="copyUserBtn"
+                        className="button button-secondary button-sm"
+                        onClick={handleCopyUser}
+                        type="button"
+                      >
+                        {copiedUser ? 'Copied!' : 'Copy'}
+                      </button>
                     </div>
-                    <button
-                      id="copyUserBtn"
-                      className="button button-secondary button-sm"
-                      onClick={handleCopyUser}
-                      type="button"
-                    >
-                      {copiedUser ? 'Copied!' : 'Copy'}
-                    </button>
-                  </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '14px', borderTop: '1px solid var(--surface-border)' }}>
-                    <div>
-                      <span className="micro-label">PASSWORD</span>
-                      <h3 id="displayFreePass" style={{ margin: '4px 0 0', fontFamily: 'monospace', fontSize: '1.15rem' }}>
-                        {freePass}
-                      </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '14px', borderTop: '1px solid var(--surface-border)' }}>
+                      <div>
+                        <span className="micro-label">PASSWORD</span>
+                        <h3 id="displayFreePass" style={{ margin: '4px 0 0', fontFamily: 'monospace', fontSize: '1.15rem' }}>
+                          {freePass}
+                        </h3>
+                      </div>
+                      <button
+                        id="copyPassBtn"
+                        className="button button-secondary button-sm"
+                        onClick={handleCopyPass}
+                        type="button"
+                      >
+                        {copiedPass ? 'Copied!' : 'Copy'}
+                      </button>
                     </div>
-                    <button
-                      id="copyPassBtn"
-                      className="button button-secondary button-sm"
-                      onClick={handleCopyPass}
-                      type="button"
-                    >
-                      {copiedPass ? 'Copied!' : 'Copy'}
-                    </button>
                   </div>
-                </div>
+                ) : (
+                  <div className="card" style={{ padding: '16px', marginBottom: '20px', background: 'var(--surface-hover)', border: '1px solid var(--surface-border)' }}>
+                    <span className="micro-label">COMMUNITY EVALUATION POOL</span>
+                    <p style={{ margin: '6px 0 0', fontSize: '0.9rem', color: 'var(--muted)' }}>
+                      Evaluation credentials are managed dynamically by the authentication server. Verify current slot capacity below and download the official package archive.
+                    </p>
+                  </div>
+                )}
 
                 <div className="progress-container">
                   <div className="progress-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.86rem', color: 'var(--muted)' }}>
@@ -159,7 +167,7 @@ export function FreePanelPage() {
               </div>
             ) : null}
 
-            {isOffline || error ? (
+            {error ? (
               <div id="freeOfflineMsg" className="form-error" style={{ marginTop: '16px' }}>
                 <strong style={{ display: 'block', marginBottom: '4px' }}>Free Panel Not Available</strong>
                 <span style={{ fontSize: '0.92rem' }}>The free panel is currently offline. Please check back later.</span>

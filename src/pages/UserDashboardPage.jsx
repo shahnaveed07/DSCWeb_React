@@ -60,9 +60,10 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
     setDownloadError('')
 
     try {
+      const downloadPlan = livePlan.toLowerCase() === 'aimassist' ? 'aimbot' : livePlan.toLowerCase()
       const payload = await getSecureDownload(
         session.token,
-        livePlan.toLowerCase(),
+        downloadPlan,
       )
 
       if (!payload?.url) {

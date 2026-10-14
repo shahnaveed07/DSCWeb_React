@@ -90,6 +90,13 @@ export function UserLoginPage({ session, onSessionChange }) {
         throw new Error('This account is not allowed on the user login page.')
       }
 
+      if (nextSession.mustChangePassword) {
+        setLoaderMessage('Password update required. Redirecting...')
+        onSessionChange(nextSession)
+        navigate('/pages/change')
+        return
+      }
+
       setLoaderMessage('Login successful. Redirecting...')
       onSessionChange(nextSession)
       navigate('/pages/udash')

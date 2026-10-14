@@ -58,13 +58,17 @@ function MaintenanceGate({ children, systemStatus, onRetry }) {
   return children
 }
 
-function RoleGate({ session, role, children }) {
+function RoleGate({ session, role, children, allowMustChange = false }) {
   if (!session) {
     return <Navigate replace to={role === 'Admin' ? '/pages/alogin' : '/pages/ulogin'} />
   }
 
   if (session.role !== role) {
     return <Navigate replace to={redirectForSession(session)} />
+  }
+
+  if (session.mustChangePassword && role === 'User' && !allowMustChange) {
+    return <Navigate replace to="/pages/change" />
   }
 
   return children
@@ -256,9 +260,10 @@ export default function App() {
             <Route
               path="/pages/change"
               element={
-                <RoleGate role="User" session={session}>
+                <RoleGate allowMustChange role="User" session={session}>
                   <ChangePasswordPage
                     onSessionInvalid={handleLogout}
+                    onSessionUpdate={handleSessionChange}
                     session={session}
                   />
                 </RoleGate>

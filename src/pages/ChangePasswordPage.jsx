@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { changePassword, extractApiMessage, isAuthError } from '../services/dscApi'
 import { PasswordInput } from '../components/ui/PasswordInput'
+import { updateStoredSession } from '../utils/auth'
 
-
-export function ChangePasswordPage({ session, onSessionInvalid }) {
+export function ChangePasswordPage({ session, onSessionInvalid, onSessionUpdate }) {
   const isFree = String(session?.plan || '').trim().toLowerCase() === 'free'
+  const mustChange = Boolean(session?.mustChangePassword)
   const [form, setForm] = useState({ currentPassword: '', newPassword: '' })
   const [error, setError] = useState(isFree ? 'Free users cannot change password.' : '')
   const [success, setSuccess] = useState('')
@@ -21,8 +22,8 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
       return
     }
 
-    if (form.newPassword.length < 3) {
-      setError('New password must be at least 3 characters long.')
+    if (form.newPassword.length < 6) {
+      setError('New password must be at least 6 characters long.')
       return
     }
 
@@ -35,8 +36,14 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
 
     try {
       await changePassword(session.token, form.currentPassword, form.newPassword)
-      setSuccess('Password updated successfully.')
+      setSuccess('Password updated successfully. You may now access your dashboard.')
       setForm({ currentPassword: '', newPassword: '' })
+      if (mustChange) {
+        const updated = updateStoredSession({ mustChangePassword: false })
+        if (onSessionUpdate && updated) {
+          onSessionUpdate(updated)
+        }
+      }
     } catch (submitError) {
       if (isAuthError(submitError)) {
         onSessionInvalid()
@@ -54,6 +61,15 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
         <span className="hero-eyebrow">Security Settings</span>
         <h1>Change Password</h1>
 
+        {mustChange ? (
+          <div className="form-error mb-16" style={{ background: 'var(--warning-soft)', borderColor: 'var(--warning-border)', color: 'var(--warning)' }}>
+            <strong>Password Reset Required</strong>
+            <p className="mt-4 text-sm text-main" style={{ margin: '4px 0 0' }}>
+              Your account requires a new password before you can access the user dashboard and software downloads.
+            </p>
+          </div>
+        ) : null}
+
         <form className="form-stack" onSubmit={handleSubmit}>
           <label className="field">
             <span>Current Password</span>
@@ -70,15 +86,15 @@ export function ChangePasswordPage({ session, onSessionInvalid }) {
           </label>
 
           <label className="field">
-            <span>New Password</span>
+            <span>New Password (minimum 6 characters)</span>
             <PasswordInput
               autoComplete="new-password"
               disabled={loading || isFree}
-              minLength={3}
+              minLength={6}
               onChange={(event) =>
                 setForm((current) => ({ ...current, newPassword: event.target.value }))
               }
-              placeholder="Enter new password"
+              placeholder="Enter new password (min. 6 characters)"
               required
               value={form.newPassword}
             />
