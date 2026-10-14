@@ -1,6 +1,3 @@
-import { NavLink } from 'react-router-dom'
-import { footerGroups } from '../../content/siteContent'
-
 export function SiteFooter() {
   return (
     <footer id="dsc-footer" className="developer-footer">

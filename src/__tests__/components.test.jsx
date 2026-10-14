@@ -214,19 +214,15 @@ describe('PasswordInput Component Tests', () => {
 })
 
 describe('Page Content & AdSense Remediation Tests', () => {
-  it('renders SiteFooter with structured Explore, Platform & Legal, and Community columns', () => {
+  it('renders SiteFooter with copyright and developer credit', () => {
     render(
       <MemoryRouter>
         <SiteFooter />
       </MemoryRouter>
     )
 
-    expect(screen.getByText('Explore')).toBeTruthy()
-    expect(screen.getByText('Platform & Legal')).toBeTruthy()
-    expect(screen.getByText('Community & Connect')).toBeTruthy()
-    expect(screen.getByRole('link', { name: /Apps & Utilities/i })).toBeTruthy()
-    expect(screen.getByRole('link', { name: /Privacy Policy/i })).toBeTruthy()
-    expect(screen.getByRole('link', { name: /Terms of Service/i })).toBeTruthy()
+    expect(screen.getByText(/Dark Skull Corporation\. All rights reserved\./i)).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Naveed Mushtaq/i })).toBeTruthy()
   })
 })
 

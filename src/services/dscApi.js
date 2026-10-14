@@ -1,30 +1,32 @@
 import { authHeader } from '../utils/auth'
 import { normalizeCollection } from '../utils/format'
 
-const DEFAULT_API_BASE_URL = 'https://dscauth.onrender.com'
+export const DEFAULT_API_BASE_URL = 'https://dscauth.onrender.com'
 
-function getApiBaseUrl() {
+export function getApiBaseUrl() {
   const configured = String(import.meta.env.VITE_API_BASE_URL || '').trim()
-  return configured || DEFAULT_API_BASE_URL
+  const base = configured || DEFAULT_API_BASE_URL
+  return base.replace(/\/+$/, '')
 }
 
-const API_BASE_URL = getApiBaseUrl()
+export function buildUrl(path) {
+  const cleanPath = String(path || '').startsWith('/') ? path : `/${path}`
+  return `${getApiBaseUrl()}${cleanPath}`
+}
 
 export class ApiError extends Error {
   constructor(message, details = {}) {
     super(message)
     this.name = 'ApiError'
-    this.status = details.status || 0
-    this.payload = details.payload
+    this.status = details.status ?? 0
+    this.payload = details.payload ?? null
+    this.isNetworkError = Boolean(details.isNetworkError)
+    this.isCorsError = Boolean(details.isCorsError)
   }
 }
 
-function buildUrl(path) {
-  return `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`
-}
-
 async function readPayload(response) {
-  const contentType = String(response.headers.get('content-type') || '').toLowerCase()
+  const contentType = String(response.headers?.get('content-type') || '').toLowerCase()
   if (contentType.includes('application/json')) {
     try {
       return await response.json()
@@ -40,12 +42,46 @@ async function readPayload(response) {
   }
 }
 
-export function extractApiMessage(payload, fallbackMessage) {
-  if (typeof payload === 'string' && payload.trim()) return payload.trim()
-  if (typeof payload?.error === 'string' && payload.error.trim()) return payload.error.trim()
-  if (typeof payload?.message === 'string' && payload.message.trim()) return payload.message.trim()
-  if (typeof payload?.title === 'string' && payload.title.trim()) return payload.title.trim()
-  return fallbackMessage
+export function extractApiMessage(payload, fallbackMessage = 'An unexpected error occurred.') {
+  if (!payload) return fallbackMessage
+
+  // ASP.NET Core 8 ValidationProblemDetails / ProblemDetails dictionary
+  // e.g. { errors: { Username: ["Username is required"], Password: ["Password is required"] } }
+  if (payload && typeof payload === 'object' && payload.errors && typeof payload.errors === 'object') {
+    const errorStrings = Object.values(payload.errors)
+      .flat()
+      .filter((msg) => typeof msg === 'string' && msg.trim())
+    if (errorStrings.length > 0) {
+      return errorStrings.join(' ')
+    }
+  }
+
+  let candidate = ''
+  if (typeof payload === 'string') {
+    candidate = payload
+  } else if (payload && typeof payload === 'object') {
+    if (typeof payload.message === 'string') {
+      candidate = payload.message
+    } else if (typeof payload.error === 'string') {
+      candidate = payload.error
+    } else if (typeof payload.title === 'string') {
+      candidate = payload.title
+    }
+  }
+
+  candidate = candidate.trim()
+
+  // Guard: Never expose raw HTML error pages (e.g. cloud gateway 502s) or backend stack traces
+  if (
+    !candidate ||
+    candidate.startsWith('<!DOCTYPE') ||
+    candidate.startsWith('<html') ||
+    /Exception:|Stack Trace:|SqlException|at System\.|Microsoft\.AspNetCore/i.test(candidate)
+  ) {
+    return fallbackMessage
+  }
+
+  return candidate
 }
 
 async function request(path, options = {}) {
@@ -75,11 +111,56 @@ async function request(path, options = {}) {
     requestInit.body = typeof body === 'string' ? body : JSON.stringify(body)
   }
 
-  const response = await fetch(buildUrl(path), requestInit)
+  let response
+  try {
+    response = await fetch(buildUrl(path), requestInit)
+  } catch (networkOrCorsError) {
+    if (networkOrCorsError?.name === 'AbortError') {
+      throw new ApiError('The request timed out. Please try again.', {
+        status: 408,
+        payload: null,
+      })
+    }
+
+    // Safe diagnostic logging for developers without exposing passwords or sensitive tokens
+    if (typeof console !== 'undefined' && console.warn) {
+      console.warn(
+        `[DSC API] Connection failed for ${method} ${path}. This can occur due to network unavailability, backend cold starts, or backend CORS misconfiguration (e.g., HTTP 500 without CORS headers).`
+      )
+    }
+
+    throw new ApiError(
+      'Unable to connect to the authentication server. Please verify your connection or try again shortly.',
+      {
+        status: 0,
+        isNetworkError: true,
+        payload: null,
+      }
+    )
+  }
+
   const payload = await readPayload(response)
 
   if (!response.ok) {
-    throw new ApiError(extractApiMessage(payload, 'Request failed.'), {
+    let fallback = 'Request failed.'
+    if (response.status === 400) {
+      fallback = 'Invalid request. Please check your input.'
+    } else if (response.status === 401) {
+      fallback = 'Invalid credentials. Please verify your username and password.'
+    } else if (response.status === 403) {
+      fallback = 'Access denied. You do not have permission to access this resource.'
+    } else if (response.status === 404) {
+      fallback = 'The requested resource was not found.'
+    } else if (response.status === 429) {
+      fallback = 'Too many requests. Please wait a moment before trying again.'
+    } else if (response.status >= 500) {
+      fallback = 'The server encountered an internal error. Please try again shortly.'
+    }
+
+    // For 500+ errors, never expose backend stack traces or internal implementation details
+    const finalMessage = response.status >= 500 ? fallback : extractApiMessage(payload, fallback)
+
+    throw new ApiError(finalMessage, {
       status: response.status,
       payload,
     })
@@ -105,22 +186,28 @@ export function pingBackend() {
 }
 
 export function loginUser(credentials) {
+  const username = String(credentials?.username || '').trim().toLowerCase()
+  const password = String(credentials?.password || '')
+
   return request('/api/auth/login', {
     method: 'POST',
     body: {
-      username: String(credentials.username || '').trim().toLowerCase(),
-      password: credentials.password,
+      username,
+      password,
       HWID: 'WEB-CLIENT',
     },
   })
 }
 
 export function loginAdmin(credentials) {
+  const username = String(credentials?.username || '').trim().toLowerCase()
+  const password = String(credentials?.password || '')
+
   return request('/api/admin/login', {
     method: 'POST',
     body: {
-      username: String(credentials.username || '').trim().toLowerCase(),
-      password: credentials.password,
+      username,
+      password,
     },
   })
 }
@@ -184,23 +271,32 @@ export function deleteAdminUser(token, id) {
 
 export function processAdminOrder(token, id, action) {
   return request(`/api/admin/orders/${action}/${encodeURIComponent(id)}`, {
-    method: 'POST', token, body: {},
+    method: 'POST',
+    token,
+    body: {},
   })
 }
 
 export function createAdminAccount(token, username, password) {
-  return request('/api/admin/create-admin', { method: 'POST', token, body: { username, password } })
+  return request('/api/admin/create-admin', {
+    method: 'POST',
+    token,
+    body: { username, password },
+  })
 }
 
 export function changeAdminPassword(token, currentPassword, newPassword) {
   return request('/api/admin/change-password', {
-    method: 'POST', token, body: { currentPassword, newPassword },
+    method: 'POST',
+    token,
+    body: { currentPassword, newPassword },
   })
 }
 
 export function toggleMaintenance(token, isMaintenanceMode) {
   return request('/api/admin/maintenance/toggle', {
-    method: 'POST', token,
+    method: 'POST',
+    token,
     body: { isMaintenanceMode, IsMaintenanceMode: isMaintenanceMode },
   })
 }
@@ -216,9 +312,13 @@ export async function checkOwnerAccess(token) {
 }
 
 const ownerTables = {
-  users: '/api/admin/users', keys: '/api/admin/keys', admins: '/api/admin/manage/admins',
-  orders: '/api/admin/orders/all', settings: '/api/admin/settings/all',
-  freeSettings: '/api/admin/settings/all', freeusers: '/api/admin/free-users',
+  users: '/api/admin/users',
+  keys: '/api/admin/keys',
+  admins: '/api/admin/manage/admins',
+  orders: '/api/admin/orders/all',
+  settings: '/api/admin/settings/all',
+  freeSettings: '/api/admin/settings/all',
+  freeusers: '/api/admin/free-users',
   panelUpdates: '/api/auth/panel-updates',
 }
 
@@ -228,9 +328,12 @@ export function getOwnerTable(token, table) {
 
 export function updateOwnerRecord(token, table, record) {
   const configs = {
-    users: ['/api/admin/user/update', 'PUT'], keys: ['/api/admin/manage/key', 'PUT'],
-    admins: ['/api/admin/manage/admin', 'PUT'], orders: ['/api/admin/orders/update', 'PUT'],
-    settings: ['/api/admin/settings/update', 'PUT'], freeSettings: ['/api/admin/settings/update', 'PUT'],
+    users: ['/api/admin/user/update', 'PUT'],
+    keys: ['/api/admin/manage/key', 'PUT'],
+    admins: ['/api/admin/manage/admin', 'PUT'],
+    orders: ['/api/admin/orders/update', 'PUT'],
+    settings: ['/api/admin/settings/update', 'PUT'],
+    freeSettings: ['/api/admin/settings/update', 'PUT'],
     freeusers: ['/api/admin/manage/free-user/update', 'PUT'],
     panelUpdates: ['/api/auth/panel-updates/save', 'PUT'],
   }
@@ -266,4 +369,5 @@ export function mapSettingsRecord(payload) {
   return payload || {}
 }
 
+const API_BASE_URL = getApiBaseUrl()
 export { API_BASE_URL }
