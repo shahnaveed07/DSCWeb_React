@@ -287,6 +287,14 @@ export function forceUserPasswordReset(token, id) {
   })
 }
 
+export function setUserPassword(token, id, newPassword) {
+  return request(`/api/admin/user/${encodeURIComponent(id)}/set-password`, {
+    method: 'POST',
+    token,
+    body: { newPassword },
+  })
+}
+
 export function processAdminOrder(token, id, action) {
   return request(`/api/admin/orders/${action}/${encodeURIComponent(id)}`, {
     method: 'POST',

@@ -7,6 +7,7 @@ import {
   isAuthError,
   mapSettingsRecord,
   resetUserHwid,
+  setUserPassword,
   toggleMaintenance,
   updateOwnerRecord,
 } from '../services/dscApi'
@@ -15,6 +16,7 @@ import {
   toDatetimeLocal,
   toIsoOrNullFromDatetimeLocal,
 } from '../utils/format'
+import { PasswordInput } from '../components/ui/PasswordInput'
 
 const TABLES = [
   ['users', 'Users'],
@@ -191,6 +193,9 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   const [selectedIds, setSelectedIds] = useState(new Set())
   const [editRecord, setEditRecord] = useState(null)
   const [editForm, setEditForm] = useState({})
+  const [userPasswordForm, setUserPasswordForm] = useState({ newPassword: '', confirmPassword: '' })
+  const [userPasswordError, setUserPasswordError] = useState('')
+  const [userPasswordSuccess, setUserPasswordSuccess] = useState('')
   const [deleteModal, setDeleteModal] = useState(null)
   const [loading, setLoading] = useState(true)
   const [busyAction, setBusyAction] = useState('')
@@ -325,8 +330,18 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
     })
   }
 
+  function closeEdit() {
+    setEditRecord(null)
+    setUserPasswordForm({ newPassword: '', confirmPassword: '' })
+    setUserPasswordError('')
+    setUserPasswordSuccess('')
+  }
+
   function openEdit(row) {
     setEditRecord(row)
+    setUserPasswordForm({ newPassword: '', confirmPassword: '' })
+    setUserPasswordError('')
+    setUserPasswordSuccess('')
     if (table === 'users') {
       setEditForm({
         plan: row.plan ?? row.Plan ?? '',
@@ -387,6 +402,76 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         update3: row.update3 ?? row.Update3 ?? '',
         update4: row.update4 ?? row.Update4 ?? '',
       })
+    }
+  }
+
+  async function handleSetUserPassword() {
+    setUserPasswordError('')
+    setUserPasswordSuccess('')
+
+    if (!editRecord) {
+      setUserPasswordError('Please select a valid user account.')
+      return
+    }
+
+    const id = editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId
+    if (id === undefined || id === null || id === '') {
+      setUserPasswordError('Invalid user ID. Cannot update password.')
+      return
+    }
+
+    const { newPassword, confirmPassword } = userPasswordForm
+    if (!newPassword || !confirmPassword) {
+      setUserPasswordError('Both new password and confirm password fields are required.')
+      return
+    }
+
+    if (newPassword.length < 6) {
+      setUserPasswordError('New password must be at least 6 characters long.')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setUserPasswordError('New password and confirmation do not match.')
+      return
+    }
+
+    setBusyAction('setUserPassword')
+    try {
+      const res = await setUserPassword(token, id, newPassword)
+      const successText = res?.message || `Password successfully updated for user #${id}.`
+      setUserPasswordForm({ newPassword: '', confirmPassword: '' })
+      setUserPasswordSuccess(successText)
+      setUserPasswordError('')
+      load()
+    } catch (issue) {
+      let friendlyError = ''
+      if (issue?.isNetworkError || (typeof navigator !== 'undefined' && !navigator.onLine)) {
+        friendlyError = 'Network error: Unable to reach the server. Please check your internet connection.'
+      } else if (issue?.status === 400) {
+        friendlyError = extractApiMessage(
+          issue?.payload,
+          'Invalid password request. Please ensure the password meets backend requirements.',
+        )
+      } else if (issue?.status === 401) {
+        onSessionInvalid()
+        return
+      } else if (issue?.status === 403) {
+        friendlyError = 'Access denied: Owner privileges required to update user passwords.'
+      } else if (issue?.status === 404) {
+        friendlyError = `User #${id} not found on the server.`
+      } else if (issue?.status >= 500) {
+        friendlyError = 'Server error encountered while setting password. Please try again later.'
+      } else {
+        friendlyError = extractApiMessage(
+          issue?.payload,
+          issue?.message || 'Failed to update user password.',
+        )
+      }
+      setUserPasswordError(friendlyError)
+      setUserPasswordSuccess('')
+    } finally {
+      setBusyAction('')
     }
   }
 
@@ -1140,6 +1225,101 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                     Force Password Reset
                   </button>
                 </div>
+
+                {/* Direct Set User Password Section */}
+                <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px dashed var(--surface-border)' }}>
+                  <span className="micro-label" style={{ display: 'block', marginBottom: '6px' }}>SET NEW USER PASSWORD</span>
+                  <p style={{ color: 'var(--muted)', fontSize: '0.85rem', margin: '0 0 12px 0' }}>
+                    Directly assign a new password for account #{editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId} ({editRecord.username ?? editRecord.Username ?? 'user'}). This takes effect immediately without requiring user action.
+                  </p>
+
+                  {userPasswordSuccess ? (
+                    <div className="form-success" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                      {userPasswordSuccess}
+                    </div>
+                  ) : null}
+
+                  {userPasswordError ? (
+                    <div className="form-error" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                      {userPasswordError}
+                    </div>
+                  ) : null}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                    <label className="field" style={{ margin: 0 }}>
+                      <span>New Password (min 6 characters)</span>
+                      <PasswordInput
+                        value={userPasswordForm.newPassword}
+                        placeholder="Enter new password"
+                        autoComplete="new-password"
+                        minLength={6}
+                        disabled={busy}
+                        onChange={(e) => {
+                          setUserPasswordForm((prev) => ({ ...prev, newPassword: e.target.value }))
+                          setUserPasswordError('')
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleSetUserPassword()
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <label className="field" style={{ margin: 0 }}>
+                      <span>Confirm New Password</span>
+                      <PasswordInput
+                        value={userPasswordForm.confirmPassword}
+                        placeholder="Confirm new password"
+                        autoComplete="new-password"
+                        minLength={6}
+                        disabled={busy}
+                        onChange={(e) => {
+                          setUserPasswordForm((prev) => ({ ...prev, confirmPassword: e.target.value }))
+                          setUserPasswordError('')
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleSetUserPassword()
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      className={`button button-secondary button-sm ${busyAction === 'setUserPassword' ? 'is-loading' : ''}`}
+                      disabled={busy}
+                      onClick={handleSetUserPassword}
+                    >
+                      {busyAction === 'setUserPassword' ? (
+                        <span className="button-loading-content">
+                          <span className="spinner-inline" aria-hidden="true" />
+                          <span>Updating Password...</span>
+                        </span>
+                      ) : (
+                        <span>Set New Password</span>
+                      )}
+                    </button>
+                    {userPasswordForm.newPassword || userPasswordForm.confirmPassword ? (
+                      <button
+                        type="button"
+                        className="button button-text button-sm"
+                        disabled={busy}
+                        onClick={() => {
+                          setUserPasswordForm({ newPassword: '', confirmPassword: '' })
+                          setUserPasswordError('')
+                        }}
+                      >
+                        Clear
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             ) : null}
 
@@ -1159,7 +1339,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   <span>Save Changes</span>
                 )}
               </button>
-              <button className="button button-secondary" type="button" onClick={() => setEditRecord(null)}>
+              <button className="button button-secondary" type="button" onClick={closeEdit}>
                 Cancel
               </button>
             </div>
@@ -1173,7 +1353,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   disabled={busy}
                   onClick={() => {
                     const id = editId
-                    setEditRecord(null)
+                    closeEdit()
                     confirmDelete(id)
                   }}
                 >

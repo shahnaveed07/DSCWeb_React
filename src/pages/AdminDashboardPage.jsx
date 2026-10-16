@@ -14,6 +14,7 @@ import {
   mapSettingsRecord,
   processAdminOrder,
   resetUserHwid,
+  setUserPassword,
   toggleMaintenance,
   updateAdminUser,
 } from '../services/dscApi'
@@ -45,6 +46,16 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
   // Form states
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' })
   const [newAdmin, setNewAdmin] = useState({ username: '', password: '' })
+  const [userPassForm, setUserPassForm] = useState({ newPassword: '', confirmPassword: '' })
+  const [userPassError, setUserPassError] = useState('')
+  const [userPassSuccess, setUserPassSuccess] = useState('')
+
+  function closeEditUser() {
+    setEditUser(null)
+    setUserPassForm({ newPassword: '', confirmPassword: '' })
+    setUserPassError('')
+    setUserPassSuccess('')
+  }
 
   const { data, error, loading } = useRemoteResource(
     () => getAdminSnapshot(session.token),
@@ -131,7 +142,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         expiryTime: editUser.expiryTime ?? editUser.ExpiryTime ?? null,
         isBanned: Boolean(editUser.isBanned ?? editUser.IsBanned),
       })
-      setEditUser(null)
+      closeEditUser()
     }, 'User updated successfully.', 'saveUser')
   }
 
@@ -141,7 +152,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
     const username = getValue(editUser, ['username', 'Username'])
     await runAction(async () => {
       await resetUserHwid(session.token, id)
-      setEditUser(null)
+      closeEditUser()
     }, `HWID successfully reset for user ${username}.`, 'resetHwid')
   }
 
@@ -151,8 +162,78 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
     const username = getValue(editUser, ['username', 'Username'])
     await runAction(async () => {
       await forceUserPasswordReset(session.token, id)
-      setEditUser(null)
+      closeEditUser()
     }, `Password reset successfully enforced for user ${username}.`, 'forceReset')
+  }
+
+  async function handleSetUserPassword() {
+    setUserPassError('')
+    setUserPassSuccess('')
+
+    if (!editUser) {
+      setUserPassError('Please select a valid user account.')
+      return
+    }
+
+    const id = editUser?.id ?? editUser?.Id ?? editUser?.userId ?? editUser?.UserId
+    if (id === undefined || id === null || id === '') {
+      setUserPassError('Invalid user ID. Cannot update password.')
+      return
+    }
+
+    const { newPassword, confirmPassword } = userPassForm
+    if (!newPassword || !confirmPassword) {
+      setUserPassError('Both new password and confirm password fields are required.')
+      return
+    }
+
+    if (newPassword.length < 6) {
+      setUserPassError('New password must be at least 6 characters long.')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setUserPassError('New password and confirmation do not match.')
+      return
+    }
+
+    setBusyAction('setUserPassword')
+    try {
+      const res = await setUserPassword(session.token, id, newPassword)
+      const successText = res?.message || `Password successfully updated for user #${id}.`
+      setUserPassForm({ newPassword: '', confirmPassword: '' })
+      setUserPassSuccess(successText)
+      flashMessage(successText, 'success')
+      setRevision((v) => v + 1)
+    } catch (issue) {
+      let friendlyError = ''
+      if (issue?.isNetworkError || (typeof navigator !== 'undefined' && !navigator.onLine)) {
+        friendlyError = 'Network error: Unable to reach the server. Please check your internet connection.'
+      } else if (issue?.status === 400) {
+        friendlyError = extractApiMessage(
+          issue?.payload,
+          'Invalid password request. Please ensure the password meets backend requirements.',
+        )
+      } else if (issue?.status === 401) {
+        onSessionInvalid()
+        return
+      } else if (issue?.status === 403) {
+        friendlyError = 'Access denied: Owner privileges required to update user passwords.'
+      } else if (issue?.status === 404) {
+        friendlyError = `User #${id} not found on the server.`
+      } else if (issue?.status >= 500) {
+        friendlyError = 'Server error encountered while setting password. Please try again later.'
+      } else {
+        friendlyError = extractApiMessage(
+          issue?.payload,
+          issue?.message || 'Failed to update user password.',
+        )
+      }
+      setUserPassError(friendlyError)
+      flashMessage(friendlyError, 'error')
+    } finally {
+      setBusyAction('')
+    }
   }
 
   async function handleChangePassword(e) {
@@ -427,7 +508,12 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                           <button
                             type="button"
                             className="button button-secondary button-sm"
-                            onClick={() => setEditUser({ ...user })}
+                            onClick={() => {
+                              setUserPassForm({ newPassword: '', confirmPassword: '' })
+                              setUserPassError('')
+                              setUserPassSuccess('')
+                              setEditUser({ ...user })
+                            }}
                           >
                             Edit
                           </button>
@@ -626,7 +712,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               <button
                 className="button button-secondary"
                 type="button"
-                onClick={() => setEditUser(null)}
+                onClick={closeEditUser}
               >
                 Cancel
               </button>
@@ -666,6 +752,101 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                       <span>Force Password Reset</span>
                     )}
                   </button>
+                </div>
+
+                {/* Direct Set User Password Section */}
+                <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px dashed var(--surface-border)' }}>
+                  <span className="micro-label" style={{ display: 'block', marginBottom: '6px' }}>SET NEW USER PASSWORD</span>
+                  <p style={{ color: 'var(--muted)', fontSize: '0.85rem', margin: '0 0 12px 0' }}>
+                    Directly assign a new password for account #{editUser?.id ?? editUser?.Id ?? editUser?.userId ?? editUser?.UserId} ({getValue(editUser, ['username', 'Username'])}). This takes effect immediately without requiring user action.
+                  </p>
+
+                  {userPassSuccess ? (
+                    <div className="form-success" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                      {userPassSuccess}
+                    </div>
+                  ) : null}
+
+                  {userPassError ? (
+                    <div className="form-error" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                      {userPassError}
+                    </div>
+                  ) : null}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                    <label className="field" style={{ margin: 0 }}>
+                      <span>New Password (min 6 characters)</span>
+                      <PasswordInput
+                        value={userPassForm.newPassword}
+                        placeholder="Enter new password"
+                        autoComplete="new-password"
+                        minLength={6}
+                        disabled={busy}
+                        onChange={(e) => {
+                          setUserPassForm((prev) => ({ ...prev, newPassword: e.target.value }))
+                          setUserPassError('')
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleSetUserPassword()
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <label className="field" style={{ margin: 0 }}>
+                      <span>Confirm New Password</span>
+                      <PasswordInput
+                        value={userPassForm.confirmPassword}
+                        placeholder="Confirm new password"
+                        autoComplete="new-password"
+                        minLength={6}
+                        disabled={busy}
+                        onChange={(e) => {
+                          setUserPassForm((prev) => ({ ...prev, confirmPassword: e.target.value }))
+                          setUserPassError('')
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleSetUserPassword()
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      className={`button button-secondary button-sm ${busyAction === 'setUserPassword' ? 'is-loading' : ''}`}
+                      disabled={busy}
+                      onClick={handleSetUserPassword}
+                    >
+                      {busyAction === 'setUserPassword' ? (
+                        <span className="button-loading-content">
+                          <span className="spinner-inline" aria-hidden="true" />
+                          <span>Updating Password...</span>
+                        </span>
+                      ) : (
+                        <span>Set New Password</span>
+                      )}
+                    </button>
+                    {userPassForm.newPassword || userPassForm.confirmPassword ? (
+                      <button
+                        type="button"
+                        className="button button-text button-sm"
+                        disabled={busy}
+                        onClick={() => {
+                          setUserPassForm({ newPassword: '', confirmPassword: '' })
+                          setUserPassError('')
+                        }}
+                      >
+                        Clear
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             ) : null}
