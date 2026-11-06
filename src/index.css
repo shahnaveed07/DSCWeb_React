@@ -2574,11 +2574,15 @@ tbody tr:hover {
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
 .flex-wrap { flex-wrap: wrap; }
+.shrink-0 { flex-shrink: 0; }
 .gap-10 { gap: 10px; }
 .gap-12 { gap: 12px; }
+.m-0 { margin: 0; }
 .mb-8 { margin-bottom: 8px; }
 .mb-10 { margin-bottom: 10px; }
+.mb-12 { margin-bottom: 12px; }
 .mb-14 { margin-bottom: 14px; }
+.mb-16 { margin-bottom: 16px; }
 .mb-18 { margin-bottom: 18px; }
 .mb-20 { margin-bottom: 20px; }
 .mb-24 { margin-bottom: 24px; }
@@ -2586,6 +2590,7 @@ tbody tr:hover {
 .mt-4 { margin-top: 4px; }
 .mt-6 { margin-top: 6px; }
 .mt-14 { margin-top: 14px; }
+.mt-16 { margin-top: 16px; }
 .mt-36 { margin-top: 36px; }
 .my-8 { margin-top: 8px; margin-bottom: 8px; }
 .text-main { color: var(--text) !important; }
@@ -2599,6 +2604,315 @@ tbody tr:hover {
 .text-lg { font-size: 1.15rem; }
 .font-bold { font-weight: 700; }
 .font-semibold { font-weight: 600; }
+
+/* --------------------------------------------------------------------------
+   19C. FREE PANEL & OWNER DB COMPONENT CLASSES
+   -------------------------------------------------------------------------- */
+.free-panel-card {
+  width: min(520px, 100%);
+  text-align: center;
+}
+
+.free-panel-loader {
+  margin-top: 16px;
+}
+
+.free-panel-skeleton-row {
+  height: 44px;
+  margin-bottom: 12px;
+}
+
+.free-panel-skeleton-bar {
+  height: 24px;
+  margin-top: 16px;
+}
+
+.free-panel-cred-card {
+  background: var(--surface-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.free-panel-cred-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.free-panel-cred-row-divider {
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid var(--surface-border);
+}
+
+.free-panel-cred-info {
+  text-align: left;
+  min-width: 0;
+}
+
+.free-panel-cred-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: monospace;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.free-panel-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.free-panel-slots-count {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.is-available {
+  background: var(--success);
+}
+
+.progress-fill.is-full {
+  background: var(--danger);
+}
+
+.free-panel-status-title {
+  margin-bottom: 4px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.free-panel-download-wrap {
+  margin-top: 18px;
+}
+
+/* Owner DB Layout & Controls */
+.ownerdb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ownerdb-header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ownerdb-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.ownerdb-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1 1 500px;
+}
+
+.ownerdb-filter-field {
+  margin: 0 !important;
+  min-width: 200px;
+}
+
+.ownerdb-search-field {
+  margin: 0 !important;
+  flex: 1 1 240px;
+}
+
+.ownerdb-control {
+  min-height: 40px;
+  padding: 8px 12px;
+}
+
+.ownerdb-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ownerdb-page-indicator {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0 6px;
+}
+
+.ownerdb-table {
+  min-width: 680px;
+}
+
+.ownerdb-checkbox-col {
+  width: 40px;
+}
+
+.ownerdb-data-cell {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ownerdb-empty-cell {
+  text-align: center;
+  padding: 28px !important;
+  color: var(--muted) !important;
+}
+
+.db-code-cell {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-family: monospace;
+}
+
+.db-plan-cell {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.ownerdb-modal-card {
+  width: min(640px, 100%);
+}
+
+.ownerdb-record-summary {
+  background: var(--surface-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 0.88rem;
+}
+
+.ownerdb-section-heading {
+  font-size: 0.92rem;
+  color: var(--primary);
+  margin: 4px 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ownerdb-section-heading-success {
+  font-size: 0.92rem;
+  color: var(--success);
+  margin: 18px 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ownerdb-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.ownerdb-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+}
+
+.ownerdb-security-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--surface-border);
+}
+
+.ownerdb-security-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ownerdb-security-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ownerdb-password-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--surface-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+}
+
+.ownerdb-password-help {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.ownerdb-password-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.ownerdb-password-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ownerdb-modal-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.ownerdb-modal-delete-zone {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--surface-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ownerdb-delete-confirm-text {
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.ownerdb-delete-confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
 /* --------------------------------------------------------------------------
    20. RESPONSIVE BREAKPOINTS (ALL DEVICES)
@@ -2667,6 +2981,19 @@ tbody tr:hover {
 
   .table-wrap {
     font-size: 0.88rem;
+  }
+
+  .ownerdb-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ownerdb-filters {
+    flex: 1 1 auto;
+  }
+
+  .ownerdb-pagination {
+    justify-content: space-between;
   }
 }
 
@@ -2749,6 +3076,12 @@ tbody tr:hover {
   .home-cta-actions .button {
     width: 100%;
   }
+
+  .ownerdb-filter-field,
+  .ownerdb-search-field {
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
 }
 
 /* Mobile: Compact (375px–480px) */
@@ -2792,9 +3125,18 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 
-  .dashboard-header-flex {
+  .dashboard-header-flex,
+  .ownerdb-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .ownerdb-header-actions {
+    width: 100%;
+  }
+
+  .free-panel-cred-row {
+    flex-wrap: wrap;
   }
 }
 

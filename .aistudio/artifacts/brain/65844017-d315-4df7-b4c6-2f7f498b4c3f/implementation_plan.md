@@ -1,68 +1,63 @@
-# DSCWeb React — Feature-Parity Repair, Regression Fixes & Responsive Optimization
+# DSCWeb React — Second-Pass Repair: Owner DB Schema, FreePanel Normalization & UI Polish
 
-This plan restores complete functional parity between the legacy DSCWeb reference behavior and the modern React application, fixing regressions in FreePanel availability gating, User Dashboard order/expiry handling, Owner DB Free Users field mapping, and multi-viewport responsiveness while preserving the established DSC visual identity and architecture.
+This plan eliminates dynamic property leakage in the Owner Database Manager, introduces resilient alias-aware response normalization for the Free Panel, enforces safe database identifier resolution for destructive operations, and refines the global DSC visual layout across all viewports.
 
 ## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> The following product and UX decisions were confirmed during interactive clarification and govern the implementation:
+> The following product and UX decisions were confirmed during interactive clarification and govern this implementation pass:
 
-- **Confirmed Decision 1 — User Dashboard 404 (`NO ACTIVE ORDERS`) State**: When `/api/auth/my-order` returns HTTP `404`, display `NO ACTIVE ORDERS` in the order status statistics card, keep the License Key card visible with `"No Active Order"` placeholder text (with the copy button and software download card hidden), and do not show a false server error banner.
-- **Confirmed Decision 2 — Owner DB Free Users (`EnvName` & `CaptchaToken`) Preservation**: Maintain distinct, editable `EnvName` and `CaptchaToken` fields inside the Free Users edit modal so neither database column overwrites the other during updates.
-- **Confirmed Decision 3 — Responsive UI Optimization Scope**: Preserve the current DSC visual theme, colors, and component layout while fixing horizontal overflow, long key/credential wrapping, action button alignment, modal scrolling, and touch target spacing across mobile, tablet, and desktop viewports (`320px` to `1920px`).
+- **Confirmed Decision 1 — Free Users `CaptchaToken` Handling**: Hide `CaptchaToken` from the visible Free Users table columns and edit modal inputs, while silently preserving the record's original `CaptchaToken` value in the `PUT /api/admin/manage/free-user/update` payload so it is never lost or overwritten by `EnvName`.
+- **Confirmed Decision 2 — FreePanel Missing/Invalid Download URL**: When FreePanel credentials (`freeUser` and `freePass`) are valid but `freeLink` is missing, empty, or not a valid HTTP/HTTPS URL, render a disabled button labeled `"Download Link Unavailable"` instead of a broken `href="#"` anchor.
+- **Confirmed Decision 3 — Missing Database Record ID Safeguards**: Never fall back to array indices or usernames as database IDs for destructive operations. When a row lacks a valid database identifier, disable bulk-selection checkboxes and delete buttons for that row and display an `"ID Missing"` warning badge.
 
 ---
 
 ## 1. Overview & Core Concept
 
-- **What It Does**: Repairs behavioral regressions introduced during the React migration across public telemetry (`FreePanel`), authenticated client workflows (`UserDashboard`, `Checkout`, `ChangePassword`), and administrative consoles (`AdminDashboard`, `OwnerDB`, `GenerateKey`).
+- **What It Does**: Replaces raw `Object.keys(row)` column discovery in Owner DB with an explicit, allowlisted `TABLE_COLUMN_DEFINITIONS` schema per collection; upgrades FreePanel with a dedicated `normalizeFreePanelResponse(payload)` helper that resolves non-empty aliases across direct and wrapped payloads; and polishes the visual consistency and responsive behavior of headers, dashboards, tables, and modals.
 - **Target Audience / Persona**:
-  - **Public Evaluators**: Users checking real-time Free Panel slot capacity and evaluation credentials.
-  - **Subscribed Clients**: Customers tracking order verification, copying license keys, and downloading plan binaries.
-  - **Administrators & Owners**: Staff managing accounts, orders, hardware IDs, passwords, keys, and database collections.
-- **Key Value**: Eliminates false-positive UI states (such as exposing FreePanel slot bars and downloads when credentials are null/empty, or treating a `404` no-order response as a fatal error) and guarantees reliable data integrity across all user and admin workflows.
+  - **Owners & Administrators**: Managing database tables (`users`, `settings`, `freeSettings`, `freeusers`, `panelUpdates`, `keys`, `orders`, `admins`) without visual clutter, duplicate PascalCase/camelCase columns, raw JSON strings, or base64 image dumps.
+  - **Public & Subscribed Users**: Viewing accurate FreePanel credentials, slot telemetry, and verified download links across mobile, tablet, and desktop screens.
+- **Key Value**: Guarantees that only verified, human-labeled columns are rendered in Owner DB, prevents accidental record corruption or fabricated delete IDs, and ensures FreePanel accurately reflects live backend data regardless of property casing or empty alias strings.
 
 ---
 
 ## 2. User Experience & Visual Design
 
 - **Key User Flows**:
-  1. **FreePanel Credential Gating Flow**:
-     - Fetches `GET /api/public/free-panel`.
-     - Validates both `freeUser` and `freePass` (rejecting `null`, `undefined`, `""`, and whitespace-only strings).
-     - When credentials are valid: renders the complete availability card (username, password, copy buttons, slot usage progress bar, download action, and conditional `Slots Full` notice when `usedSlots >= maxSlots`).
-     - When either credential is missing/blank or the API errors: hides the entire availability section (credentials, slot telemetry, progress bar, and download button) and renders the clean offline notice (`Free Panel Not Available` — `The free panel is currently offline. Please check back later.`).
-  2. **User Dashboard Order & Expiry Flow**:
-     - Calls `GET /api/auth/my-order` with the user's JWT.
-     - If HTTP `404` is returned: treats it as a valid "no active order" state rather than an error; displays `NO ACTIVE ORDERS` in the status stat card, shows the License Key card in an empty state with `"No Active Order"` placeholder text, and hides key copy and binary download controls.
-     - Evaluates subscription expiry using explicit boolean `isExpired` when provided by the backend, falling back to parsing and comparing the actual expiry timestamp (`expiry` / `expiryTime`) against current time while safely ignoring null dates on pending/temporary plans.
-  3. **Owner DB & Admin Management Flow**:
-     - Preserves separate `EnvName` and `CaptchaToken` inputs when editing Free Users records so neither field clobbers the other on save.
-     - Retains full Owner security actions (HWID Reset, Force Password Reset, and Direct Set User Password) with scoped feedback and table refresh.
+  1. **Owner Database Explicit Schema & Safe CRUD Flow**:
+     - Selecting any of the 8 collections renders strictly its allowlisted columns from `TABLE_COLUMN_DEFINITIONS` with human-readable headers (e.g., `ID`, `Username`, `Plan`, `License Key`, `HWID`, `Ban Status`, `Failed Login Attempts`, `Lockout End`, `Expiry Date`, `Registration Date`, `Last Login` for `Users`).
+     - `System Settings` and `Free Panel Settings` share the settings endpoint but display separate, tailored column subsets (`Free Panel Settings` shows only `ID`, `Free Username`, `Free Password`, `Free Valid Days`, `Maximum Free Slots`, and `Free Download Link`), while saving either preserves the complete settings object.
+     - `Orders` displays `Order ID`, `Username`, `Plan`, `Duration`, `Amount`, `Transaction ID`, `Order Status`, and `Creation Date`, excluding raw `PaymentProofBase64` strings and password hashes.
+     - Rows with a valid database ID enable selection checkboxes and `Delete`; rows without a valid ID display an `ID Missing` badge and disable both bulk selection and deletion.
+  2. **FreePanel Normalization & Download Action Flow**:
+     - `normalizeFreePanelResponse(payload)` inspects direct payload properties or documented `data` / `Data` wrappers.
+     - Uses a non-empty alias resolver so an empty string in one alias (e.g. `freeUser: ""`) never shadows a populated alias (`FreeUser: "live_user"`).
+     - Rejects non-string/object values so `[object Object]` can never render as a credential.
+     - When credentials are valid and `freeLink` is a valid URL, renders the active download button; when `freeLink` is missing or invalid, renders a disabled `"Download Link Unavailable"` button while keeping credentials and slot telemetry visible.
 - **Visual Identity & Theme**:
-  - *Aesthetic Direction*: Utilitarian dark/light cybersecurity & licensing portal preserving DSC's established styling tokens (`--bg`, `--surface`, `--primary`, `--text`, `--muted`, `--success`, `--warning`, `--danger`).
-  - *Color Palette & Mood*: High-contrast dual-theme (dark default with light theme toggle) using semantic status indicators paired with explicit text labels.
-  - *Typography & Hierarchy*: Clean sans-serif UI labels paired with `monospace` and `tabular-nums` for license keys, credentials, slot counters, and timestamps.
-  - *Component Styling & Layout*: Responsive CSS grid and flex containers with safe word-breaking (`overflow-wrap: anywhere` / `word-break: break-all` on keys and hashes), controlled horizontal scrolling for dense Owner DB tables, and viewport-constrained modals (`max-height: 90vh`, internal scroll).
+  - *Aesthetic Direction*: Cohesive DSC dark/light technical portal matching the original DSCWeb contrast, borders, and cyan/teal accent hierarchy.
+  - *Color Palette & Mood*: Preserves `--bg`, `--surface`, `--surface-strong`, `--primary` (`#22b8cf` dark / `#0891a2` light), and semantic status badges (`good`, `warning`, `bad`).
+  - *Typography & Hierarchy*: Clean sans-serif headings and table headers paired with `monospace` and `tabular-nums` for IDs, keys, HWIDs, credentials, and slot counters.
+  - *Component Styling & Layout*: Reusable CSS classes for Owner DB toolbars, header action groups, modal footers, and credential cards (replacing scattered inline styles), with horizontal scrolling strictly contained inside `.table-wrap`.
 - **Interactive Feedback & Motion**:
-  - Skeleton shimmer placeholders during initial resource fetches.
-  - Inline button spinners (`is-loading`) and disabled states during mutations to prevent duplicate submissions.
-  - Instant clipboard feedback (`Copied!`) with automatic reset.
+  - Skeleton loading rows in Owner DB and FreePanel.
+  - Safe clipboard copy handler with try/catch fallback so clipboard permission errors never crash the UI, plus automatic timeout cleanup.
 
 ---
 
 ## 3. Key Product Decisions & Trade-Offs
 
-- **Decision 1: Strict Credential Gating on FreePanel**
-  - *Chosen Approach*: Require both non-empty trimmed `freeUser` and `freePass` strings before mounting the availability container, slot progress bar, or download link.
-  - *Why*: Matches the original DSCWeb business rule where the public evaluation panel is considered offline whenever the backend omits or clears the shared credentials.
-  - *Alternatives Considered*: Showing slot telemetry without credentials (rejected as a migration regression that misleads users into downloading an unusable archive).
-- **Decision 2: Structured 404 Handling in User Dashboard**
-  - *Chosen Approach*: Intercept `ApiError` with `status === 404` in `UserDashboardPage` as a first-class `hasNoOrder` state rather than letting it surface as a failed request banner.
-  - *Why*: A newly registered or unsubscribed account legitimately has no order record (`404` from `/api/auth/my-order`); displaying `NO ACTIVE ORDERS` in the status card and `"No Active Order"` in the key box provides clear guidance without alarming the user.
-- **Decision 3: Hybrid Expiry Calculation**
-  - *Chosen Approach*: Honor explicit boolean `data.isExpired` / `session.isExpired` when present, and otherwise compute `new Date(liveExpiry).getTime() <= Date.now()` when a valid date string exists and the order is not pending.
-  - *Why*: Protects against cases where the backend returns an expiry timestamp without pre-computing `isExpired`, while preventing pending orders without an assigned expiry date from appearing expired.
+- **Decision 1: Explicit Allowlisted `TABLE_COLUMN_DEFINITIONS` Over Dynamic Key Discovery**
+  - *Chosen Approach*: Define an explicit column array for each of the 8 Owner DB tables with `id`, `label`, `aliases`, and optional `format` type (`boolean`, `status`, `datetime`, `code`, `text`).
+  - *Why*: Prevents PascalCase/camelCase duplicate columns, hides sensitive/internal fields (`PasswordHash`, `PaymentProofBase64`, `CaptchaToken`), and stops nested objects from dumping raw JSON into table cells.
+- **Decision 2: Non-Empty Precedence Alias Resolution**
+  - *Chosen Approach*: Implement `resolveField(record, aliases)` that iterates through ordered alias keys (plus case-insensitive fallback among the known aliases) and returns the first value that is neither `null`, `undefined`, nor an empty/whitespace-only string.
+  - *Why*: Standard nullish coalescing (`a ?? b`) stops at `""`, causing blank values when a serializer emits both camelCase `""` and PascalCase `"value"`.
+- **Decision 3: Strict Database Identifier Extraction (`getDatabaseRecordId`)**
+  - *Chosen Approach*: Resolve only real primary key fields (`id`, `Id`, `userId`, `UserId`, `keyId`, `KeyId`, `orderId`, `OrderId`) and validate that the result is a non-empty string or finite number (`> 0` or valid identifier). Never fall back to `username` or the loop `index`.
+  - *Why*: Prevents accidental deletion of the wrong database row if a record is malformed or lacks an ID.
 
 ---
 
@@ -72,41 +67,43 @@ This plan restores complete functional parity between the legacy DSCWeb referenc
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                        DSCWeb React Application                         │
-├──────────────────────┬───────────────────────────┬──────────────────────┤
-│   Public & Catalog   │   Client Portal & Auth    │   Admin & Owner DB   │
-│  ┌────────────────┐  │  ┌─────────────────────┐  │  ┌────────────────┐  │
-│  │ FreePanelPage  │  │  │  UserDashboardPage  │  │  │AdminDashboard  │  │
-│  │ (Cred Gating & │  │  │ (404 No-Order State │  │  │(Users, Orders, │  │
-│  │  Slot States)  │  │  │  & Expiry Fallback) │  │  │ Keys, Security)│  │
-│  └───────┬────────┘  │  └──────────┬──────────┘  │  └───────┬────────┘  │
-│          │           │             │             │          │           │
-│  ┌───────▼────────┐  │  ┌──────────▼──────────┐  │  ┌───────▼────────┐  │
-│  │  ProductsPage  │  │  │    CheckoutPage     │  │  │AdminWorkspace  │  │
-│  │  & Static Info │  │  │ (Plan Normalization │  │  │ (8 Owner Tables│  │
-│  │     Pages      │  │  │  & UPI QR / Proof)  │  │  │ & FreeUsers)   │  │
-│  └───────┬────────┘  │  └──────────┬──────────┘  │  └───────┬────────┘  │
-└──────────┼───────────┴─────────────┼─────────────┴──────────┼───────────┘
-           │                         │                        │
-           ▼                         ▼                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│             useRemoteResource Hook & Session Auth Utilities             │
-│   (AbortController Cancellation, Stale Guard, JWT Claim Normalization)  │
-└────────────────────────────────────┬────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    Centralized API Client (dscApi)                      │
-│     (Bearer Auth, ProblemDetails Extraction, 400/401/403/404/500)       │
-└─────────────────────────────────────────────────────────────────────────┘
+│                     DSCWeb React — Second-Pass Architecture             │
+├────────────────────────────────────┬────────────────────────────────────┤
+│     Owner Database Console         │         FreePanel Module           │
+│  ┌──────────────────────────────┐  │  ┌──────────────────────────────┐  │
+│  │  TABLE_COLUMN_DEFINITIONS    │  │  │ normalizeFreePanelResponse() │  │
+│  │  (8 Explicit Table Schemas)  │  │  │ (Unwraps data/Data & picks   │  │
+│  └──────────────┬───────────────┘  │  │  first non-empty string/num) │  │
+│                 │                  │  └──────────────┬───────────────┘  │
+│  ┌──────────────▼───────────────┐  │                 │                  │
+│  │    resolveColumnValue() &    │  │  ┌──────────────▼───────────────┐  │
+│  │    getDatabaseRecordId()     │  │  │   FreePanel State Machine    │  │
+│  │  (Alias Resolver & Safe ID)  │  │  │  Loading -> Offline / Valid  │  │
+│  └──────────────┬───────────────┘  │  │  + Validated Download Link   │  │
+│                 │                  │  └──────────────┬───────────────┘  │
+│  ┌──────────────▼───────────────┐  │                 │                  │
+│  │   Scoped Edit & Delete DTO   │  │  ┌──────────────▼───────────────┐  │
+│  │  (Preserves full Settings &  │  │  │ Safe Clipboard Copy Handler  │  │
+│  │   silent CaptchaToken save)  │  │  │ (Try/Catch + Timer Cleanup)  │  │
+│  └──────────────────────────────┘  │  └──────────────────────────────┘  │
+└────────────────────────────────────┴────────────────────────────────────┘
 ```
 
 - **Data Model & State**:
-  - **FreePanel State**: Normalized `{ freeUser, freePass, freeLink, usedSlots, maxSlots }` with derived `hasValidCredentials = Boolean(freeUser.trim() && freePass.trim())` and `isFull = maxSlots <= 0 || usedSlots >= maxSlots`.
-  - **User Dashboard State**: Distinguishes `loading`, `hasNoOrder` (`error?.status === 404` or empty order payload), `fatalError` (non-404 API/network errors), and active order states (`Pending`, `Approved`, `Rejected`).
-  - **Owner DB FreeUsers State**: Preserves `{ id, userId, Username, HWID, EnvName, CaptchaToken, IsBanned, FailedLoginAttempts }` independently across `openEdit` and `handleSaveEdit`.
+  - **`TABLE_COLUMN_DEFINITIONS`**:
+    - `users`: `id`, `username`, `plan`, `keyValue`, `hwid`, `isBanned`, `failedLoginAttempts`, `lockoutEnd`, `expiryTime`, `registrationTime`, `lastLoginTime`
+    - `settings`: `id`, `isMaintenanceMode`, `maintenanceReason`, `maxFreeSlots`, `latestVersion`, `updateUrl`, `showHomeDownloadBtn`, `freeValidDays`, `freeLink`, `streamerLink`, `sniperLink`, `specialLink`, `aimbotLink`, `premiumLink`, `customisedLink`
+    - `freeSettings`: `id`, `freeUsername`, `freePassword`, `freeValidDays`, `maxFreeSlots`, `freeLink`
+    - `freeusers`: `id`, `username`, `hwid`, `envName`, `isBanned`, `failedLoginAttempts`, `lockoutEnd`, `firstLoginTime`, `lastLoginTime`
+    - `keys`: `id`, `keyValue`, `plan`, `validDays`, `isUsed`, `createdAt`
+    - `orders`: `id`, `username`, `plan`, `days`, `amount`, `txnId`, `status`, `createdAt`
+    - `admins`: `id`, `username`, `role`, `isActive`
+    - `panelUpdates`: `update1`, `update2`, `update3`, `update4`
+  - **`normalizeFreePanelResponse(payload)`**:
+    - Unwraps `payload?.data` or `payload?.Data` if the root object does not directly contain credential/slot keys.
+    - Resolves `freeUser` from `['freeUser', 'FreeUser', 'freeUsername', 'FreeUsername']`, `freePass` from `['freePass', 'FreePass', 'freePassword', 'FreePassword']`, `freeLink` from `['freeLink', 'FreeLink']`, `usedSlots` from `['usedSlots', 'UsedSlots']`, and `maxSlots` from `['maxSlots', 'MaxSlots']`.
+    - Validates `hasValidCredentials` and `hasValidDownloadUrl` (`/^https?:\/\/\S+/i.test(freeLink)`).
 - **Interactive Component & State Mapping**:
-  - `FreePanelPage`: Renders loading skeleton -> evaluates `!error && hasValidCredentials` -> renders credentials + copy handlers + slot progress + download button (+ `Slots Full` warning if `isFull`), or renders `#freeOfflineMsg` (`Free Panel Not Available`) when `error || !hasValidCredentials`.
-  - `UserDashboardPage`: Evaluates `error?.status === 404` -> sets `hasNoOrder = true` -> renders `NO ACTIVE ORDERS` in `#dashOrderStatus`, renders `"No Active Order"` inside `#dashOrderKey` with `No Order` badge, and suppresses copy/download buttons. For non-404 errors, renders an explicit error alert with retry capability.
-  - `AdminWorkspacePage`: Separates `envName` and `captchaToken` state properties in `editForm` when `table === 'freeusers'`, rendering distinct labeled inputs in the edit modal and submitting both values accurately in `PUT /api/admin/manage/free-user/update`.
-  - `useRemoteResource`: Resets `data` to `initialData` when dependencies change or a new fetch cycle starts so stale data from a previous user/table never leaks across transitions.
+  - Search in Owner DB filters rows by inspecting only the resolved values of the active table's `TABLE_COLUMN_DEFINITIONS` so hidden internal fields (like base64 images or password hashes) never trigger false search matches.
+  - Bulk selection (`handleSelectAll`, `toggleSelectOne`) and `confirmDelete` check `getDatabaseRecordId(row)` and refuse to operate on rows where the ID is `null`.
+  - Editing a `freeusers` row populates `envName` from `EnvName`/`envName` while retaining the original `CaptchaToken`/`captchaToken` in state and submitting it untouched on save.

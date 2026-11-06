@@ -12,7 +12,10 @@ import {
   updateOwnerRecord,
 } from '../services/dscApi'
 import {
+  TABLE_COLUMN_DEFINITIONS,
+  getDatabaseRecordId,
   normalizeCollection,
+  resolveRecordField,
   toDatetimeLocal,
   toIsoOrNullFromDatetimeLocal,
 } from '../utils/format'
@@ -29,158 +32,133 @@ const TABLES = [
   ['admins', 'Admin Accounts'],
 ]
 
-const USER_COLUMN_ORDER = [
-  'id',
-  'username',
-  'plan',
-  'keyValue',
-  'hwid',
-  'isBanned',
-  'failedLoginAttempts',
-  'lockoutEnd',
-  'expiryTime',
-  'registrationTime',
-  'lastLoginTime',
-]
-
-const FREE_USER_COLUMN_ORDER = [
-  'id',
-  'username',
-  'hwid',
-  'CaptchaToken',
-  'isBanned',
-  'failedLoginAttempts',
-  'lockoutEnd',
-  'firstLoginTime',
-  'lastLoginTime',
-]
-
 function listFor(table, payload) {
   if (table === 'settings' || table === 'freeSettings' || table === 'panelUpdates') {
     if (table === 'settings' || table === 'freeSettings') return [mapSettingsRecord(payload)]
     const record = payload?.data && !Array.isArray(payload.data) ? payload.data : payload
     return Array.isArray(record) ? record : record && typeof record === 'object' ? [record] : []
   }
-  return normalizeCollection(payload, [table, table[0].toUpperCase() + table.slice(1), 'data', 'records', 'Records'])
+  return normalizeCollection(payload, [
+    table,
+    table[0].toUpperCase() + table.slice(1),
+    'data',
+    'Data',
+    'records',
+    'Records',
+  ])
 }
 
-function recordId(row, index) {
-  return (
-    row?.id ??
-    row?.Id ??
-    row?.userId ??
-    row?.UserId ??
-    row?.keyId ??
-    row?.KeyId ??
-    row?.orderId ??
-    row?.OrderId ??
-    row?.username ??
-    row?.Username ??
-    index
-  )
-}
+function renderCellValue(col, row) {
+  const val = resolveRecordField(row, col.aliases)
 
-function sortKeysForTable(table, keys) {
-  if (table === 'users') {
-    return [...keys].sort((a, b) => {
-      const idxA = USER_COLUMN_ORDER.findIndex((k) => k.toLowerCase() === a.toLowerCase())
-      const idxB = USER_COLUMN_ORDER.findIndex((k) => k.toLowerCase() === b.toLowerCase())
-      return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB)
-    })
-  }
-  if (table === 'freeusers') {
-    return [...keys].sort((a, b) => {
-      const idxA = FREE_USER_COLUMN_ORDER.findIndex((k) => k.toLowerCase() === a.toLowerCase())
-      const idxB = FREE_USER_COLUMN_ORDER.findIndex((k) => k.toLowerCase() === b.toLowerCase())
-      return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB)
-    })
-  }
-  return keys
-}
-
-function renderCellValue(key, val) {
-  if (val === true) {
+  if (val === true || (col.format === 'boolean' && String(val).toLowerCase() === 'true')) {
     return <span className="badge good">True</span>
   }
-  if (val === false) {
+  if (val === false || (col.format === 'boolean' && String(val).toLowerCase() === 'false')) {
     return <span className="badge bad">False</span>
   }
-  const strKey = String(key).toLowerCase()
-  if (strKey === 'status') {
+
+  if (val === null || val === undefined || val === '') {
+    return '—'
+  }
+
+  if (col.format === 'status') {
     const status = String(val).toLowerCase()
     if (status === 'approved') return <span className="badge good">Approved</span>
     if (status === 'pending') return <span className="badge warning">Pending</span>
     if (status === 'rejected') return <span className="badge bad">Rejected</span>
+    return <span className="badge">{String(val)}</span>
   }
-  if (strKey.includes('time') || strKey.includes('expiry')) {
-    if (val && !Number.isNaN(new Date(val).getTime())) {
-      return new Date(val).toLocaleString()
+
+  if (col.format === 'datetime') {
+    const parsed = new Date(val)
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toLocaleString()
     }
+    return String(val)
   }
-  if (val === null || val === undefined || val === '') {
-    return '—'
+
+  if (col.format === 'code') {
+    return <code className="db-code-cell">{String(val)}</code>
   }
-  if (typeof val === 'object') {
-    return JSON.stringify(val)
+
+  if (col.format === 'plan') {
+    return <span className="db-plan-cell">{String(val).toUpperCase()}</span>
   }
+
+  if (col.format === 'duration') {
+    const text = String(val).trim()
+    return /day/i.test(text) ? text : `${text} Days`
+  }
+
   return String(val)
 }
 
 function buildSettingsPayload(current, overrides = {}) {
+  const resolveSetting = (key, aliases, fallback) => {
+    if (overrides[key] !== undefined) return overrides[key]
+    const existing = resolveRecordField(current, aliases)
+    return existing !== undefined && existing !== '' ? existing : fallback
+  }
+
   return {
-    id: current?.id ?? current?.Id ?? 0,
-    isMaintenanceMode:
+    id: resolveRecordField(current, ['id', 'Id']) ?? 0,
+    isMaintenanceMode: Boolean(
       overrides.isMaintenanceMode ??
-      current?.isMaintenanceMode ??
-      current?.IsMaintenanceMode ??
-      false,
-    maintenanceReason:
-      overrides.maintenanceReason ??
-      current?.maintenanceReason ??
-      current?.MaintenanceReason ??
-      '',
-    maxFreeSlots: Number(
-      overrides.maxFreeSlots ?? current?.maxFreeSlots ?? current?.MaxFreeSlots ?? 20,
+        resolveRecordField(current, ['isMaintenanceMode', 'IsMaintenanceMode']) ??
+        false,
     ),
-    latestVersion:
-      overrides.latestVersion ??
-      current?.latestVersion ??
-      current?.LatestVersion ??
-      '1.0',
-    updateUrl:
-      overrides.updateUrl ?? current?.updateUrl ?? current?.UpdateUrl ?? '',
+    maintenanceReason: String(
+      resolveSetting('maintenanceReason', ['maintenanceReason', 'MaintenanceReason'], ''),
+    ),
+    maxFreeSlots: Number(
+      resolveSetting(
+        'maxFreeSlots',
+        ['maxFreeSlots', 'MaxFreeSlots', 'freeMaxSlots', 'FreeMaxSlots', 'maxSlots', 'MaxSlots'],
+        20,
+      ),
+    ),
+    latestVersion: String(
+      resolveSetting('latestVersion', ['latestVersion', 'LatestVersion'], '1.0'),
+    ),
+    updateUrl: String(resolveSetting('updateUrl', ['updateUrl', 'UpdateUrl'], '')),
     showHomeDownloadBtn: Boolean(
       overrides.showHomeDownloadBtn ??
-        current?.showHomeDownloadBtn ??
-        current?.ShowHomeDownloadBtn ??
+        resolveRecordField(current, ['showHomeDownloadBtn', 'ShowHomeDownloadBtn']) ??
         false,
     ),
     freeValidDays: Number(
-      overrides.freeValidDays ??
-        current?.freeValidDays ??
-        current?.FreeValidDays ??
-        30,
+      resolveSetting('freeValidDays', ['freeValidDays', 'FreeValidDays'], 30),
     ),
-    freeUsername:
-      overrides.freeUsername ?? current?.freeUsername ?? current?.FreeUsername ?? '',
-    freePassword:
-      overrides.freePassword ?? current?.freePassword ?? current?.FreePassword ?? '',
-    freeLink: overrides.freeLink ?? current?.freeLink ?? current?.FreeLink ?? '',
-    streamerLink:
-      overrides.streamerLink ?? current?.streamerLink ?? current?.StreamerLink ?? '',
-    sniperLink:
-      overrides.sniperLink ?? current?.sniperLink ?? current?.SniperLink ?? '',
-    specialLink:
-      overrides.specialLink ?? current?.specialLink ?? current?.SpecialLink ?? '',
-    aimbotLink:
-      overrides.aimbotLink ?? current?.aimbotLink ?? current?.AimbotLink ?? '',
-    premiumLink:
-      overrides.premiumLink ?? current?.premiumLink ?? current?.PremiumLink ?? '',
-    customisedLink:
-      overrides.customisedLink ??
-      current?.customisedLink ??
-      current?.CustomisedLink ??
-      '',
+    freeUsername: String(
+      resolveSetting(
+        'freeUsername',
+        ['freeUsername', 'FreeUsername', 'freeUser', 'FreeUser'],
+        '',
+      ),
+    ),
+    freePassword: String(
+      resolveSetting(
+        'freePassword',
+        ['freePassword', 'FreePassword', 'freePass', 'FreePass'],
+        '',
+      ),
+    ),
+    freeLink: String(resolveSetting('freeLink', ['freeLink', 'FreeLink'], '')),
+    streamerLink: String(
+      resolveSetting('streamerLink', ['streamerLink', 'StreamerLink'], ''),
+    ),
+    sniperLink: String(resolveSetting('sniperLink', ['sniperLink', 'SniperLink'], '')),
+    specialLink: String(
+      resolveSetting('specialLink', ['specialLink', 'SpecialLink'], ''),
+    ),
+    aimbotLink: String(resolveSetting('aimbotLink', ['aimbotLink', 'AimbotLink'], '')),
+    premiumLink: String(
+      resolveSetting('premiumLink', ['premiumLink', 'PremiumLink'], ''),
+    ),
+    customisedLink: String(
+      resolveSetting('customisedLink', ['customisedLink', 'CustomisedLink'], ''),
+    ),
   }
 }
 
@@ -204,6 +182,12 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   const [message, setMessage] = useState('')
   const [reloadKey, setReloadKey] = useState(0)
   const token = session?.token
+
+  const columns = useMemo(() => TABLE_COLUMN_DEFINITIONS[table] || [], [table])
+  const activeTableLabel = useMemo(
+    () => TABLES.find(([k]) => k === table)?.[1] || table,
+    [table],
+  )
 
   const load = useCallback(() => {
     setReloadKey((k) => k + 1)
@@ -247,15 +231,25 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
     if (!search.trim()) return records
     const q = search.trim().toLowerCase()
     return records.filter((row) =>
-      Object.values(row).some((val) => String(val ?? '').toLowerCase().includes(q)),
+      columns.some((col) => {
+        const val = resolveRecordField(row, col.aliases)
+        return String(val ?? '').toLowerCase().includes(q)
+      }),
     )
-  }, [records, search])
+  }, [records, search, columns])
 
   const pageSize = 15
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize))
   const visible = filtered.slice((page - 1) * pageSize, page * pageSize)
 
   const isDeletableTable = ['users', 'keys', 'admins', 'orders', 'freeusers'].includes(table)
+
+  const selectableVisibleIds = useMemo(() => {
+    if (!isDeletableTable) return []
+    return visible
+      .map((row) => getDatabaseRecordId(row))
+      .filter((id) => id !== null)
+  }, [visible, isDeletableTable])
 
   async function run(operation, successMsg, actionId = 'action') {
     setBusyAction(actionId)
@@ -290,15 +284,14 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
   function handleSelectAll(e) {
     if (e.target.checked) {
-      const next = new Set()
-      visible.forEach((row, i) => next.add(recordId(row, i)))
-      setSelectedIds(next)
+      setSelectedIds(new Set(selectableVisibleIds))
     } else {
       setSelectedIds(new Set())
     }
   }
 
   function toggleSelectOne(id) {
+    if (id === null || id === undefined || id === '') return
     const next = new Set(selectedIds)
     if (next.has(id)) next.delete(id)
     else next.add(id)
@@ -306,10 +299,10 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   }
 
   function handleBulkDelete() {
-    if (selectedIds.size === 0) return
-    const ids = Array.from(selectedIds)
+    const ids = Array.from(selectedIds).filter((id) => id !== null && id !== undefined && id !== '')
+    if (ids.length === 0) return
     setDeleteModal({
-      label: `${ids.length} selected record(s) from ${table.toUpperCase()}`,
+      label: `${ids.length} selected record(s) from ${activeTableLabel}`,
       action: async () => {
         const results = await Promise.allSettled(
           ids.map((id) => deleteOwnerRecord(token, table, id)),
@@ -324,8 +317,12 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   }
 
   function confirmDelete(id) {
+    if (id === null || id === undefined || id === '') {
+      setError('Cannot delete record: valid database identifier is missing.')
+      return
+    }
     setDeleteModal({
-      label: `record #${id} from ${table.toUpperCase()}`,
+      label: `record #${id} from ${activeTableLabel}`,
       action: () => deleteOwnerRecord(token, table, id),
     })
   }
@@ -344,64 +341,84 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
     setUserPasswordSuccess('')
     if (table === 'users') {
       setEditForm({
-        plan: row.plan ?? row.Plan ?? '',
-        expiryTime: toDatetimeLocal(row.expiryTime ?? row.ExpiryTime ?? ''),
-        isBanned: Boolean(row.isBanned ?? row.IsBanned ?? false),
+        plan: resolveRecordField(row, ['plan', 'Plan']) ?? '',
+        expiryTime: toDatetimeLocal(
+          resolveRecordField(row, ['expiryTime', 'ExpiryTime', 'expiry', 'Expiry']) ?? '',
+        ),
+        isBanned: Boolean(resolveRecordField(row, ['isBanned', 'IsBanned']) ?? false),
       })
     } else if (table === 'keys') {
       setEditForm({
-        plan: row.plan ?? row.Plan ?? '',
-        validDays: row.validDays ?? row.ValidDays ?? 0,
-        isUsed: Boolean(row.isUsed ?? row.IsUsed ?? false),
+        plan: resolveRecordField(row, ['plan', 'Plan']) ?? '',
+        validDays: resolveRecordField(row, ['validDays', 'ValidDays']) ?? 0,
+        isUsed: Boolean(resolveRecordField(row, ['isUsed', 'IsUsed']) ?? false),
       })
     } else if (table === 'admins') {
       setEditForm({
-        role: row.role ?? row.Role ?? '',
-        isActive: Boolean(row.isActive ?? row.IsActive ?? true),
+        role: resolveRecordField(row, ['role', 'Role']) ?? '',
+        isActive: Boolean(resolveRecordField(row, ['isActive', 'IsActive']) ?? true),
       })
     } else if (table === 'orders') {
       setEditForm({
-        status: row.status ?? row.Status ?? 'Pending',
+        status: resolveRecordField(row, ['status', 'Status']) ?? 'Pending',
       })
     } else if (table === 'settings') {
       setEditForm({
-        latestVersion: row.latestVersion ?? row.LatestVersion ?? '1.0',
-        updateUrl: row.updateUrl ?? row.UpdateUrl ?? '',
-        maintenanceReason: row.maintenanceReason ?? row.MaintenanceReason ?? '',
-        freeLink: row.freeLink ?? row.FreeLink ?? '',
-        streamerLink: row.streamerLink ?? row.StreamerLink ?? '',
-        sniperLink: row.sniperLink ?? row.SniperLink ?? '',
-        specialLink: row.specialLink ?? row.SpecialLink ?? '',
-        aimbotLink: row.aimbotLink ?? row.AimbotLink ?? '',
-        premiumLink: row.premiumLink ?? row.PremiumLink ?? '',
-        customisedLink: row.customisedLink ?? row.CustomisedLink ?? '',
+        latestVersion: resolveRecordField(row, ['latestVersion', 'LatestVersion']) ?? '1.0',
+        updateUrl: resolveRecordField(row, ['updateUrl', 'UpdateUrl']) ?? '',
+        maintenanceReason:
+          resolveRecordField(row, ['maintenanceReason', 'MaintenanceReason']) ?? '',
+        freeLink: resolveRecordField(row, ['freeLink', 'FreeLink']) ?? '',
+        streamerLink: resolveRecordField(row, ['streamerLink', 'StreamerLink']) ?? '',
+        sniperLink: resolveRecordField(row, ['sniperLink', 'SniperLink']) ?? '',
+        specialLink: resolveRecordField(row, ['specialLink', 'SpecialLink']) ?? '',
+        aimbotLink: resolveRecordField(row, ['aimbotLink', 'AimbotLink']) ?? '',
+        premiumLink: resolveRecordField(row, ['premiumLink', 'PremiumLink']) ?? '',
+        customisedLink: resolveRecordField(row, ['customisedLink', 'CustomisedLink']) ?? '',
       })
     } else if (table === 'freeSettings') {
       setEditForm({
-        freeUsername: row.freeUsername ?? row.FreeUsername ?? '',
-        freePassword: row.freePassword ?? row.FreePassword ?? '',
-        freeValidDays: row.freeValidDays ?? row.FreeValidDays ?? 30,
-        maxFreeSlots: row.maxFreeSlots ?? row.MaxFreeSlots ?? 20,
+        freeUsername:
+          resolveRecordField(row, ['freeUsername', 'FreeUsername', 'freeUser', 'FreeUser']) ?? '',
+        freePassword:
+          resolveRecordField(row, ['freePassword', 'FreePassword', 'freePass', 'FreePass']) ?? '',
+        freeValidDays: resolveRecordField(row, ['freeValidDays', 'FreeValidDays']) ?? 30,
+        maxFreeSlots:
+          resolveRecordField(row, [
+            'maxFreeSlots',
+            'MaxFreeSlots',
+            'freeMaxSlots',
+            'FreeMaxSlots',
+            'maxSlots',
+            'MaxSlots',
+          ]) ?? 20,
+        freeLink:
+          resolveRecordField(row, [
+            'freeLink',
+            'FreeLink',
+            'freeDownloadLink',
+            'FreeDownloadLink',
+          ]) ?? '',
         showHomeDownloadBtn: Boolean(
-          row.showHomeDownloadBtn ?? row.ShowHomeDownloadBtn ?? false,
+          resolveRecordField(row, ['showHomeDownloadBtn', 'ShowHomeDownloadBtn']) ?? false,
         ),
       })
     } else if (table === 'freeusers') {
       setEditForm({
-        username: row.username ?? row.Username ?? '',
-        hwid: row.hwid ?? row.HWID ?? '',
-        envName: row.EnvName ?? row.envName ?? '',
-        captchaToken: row.CaptchaToken ?? row.captchaToken ?? '',
-        isBanned: Boolean(row.isBanned ?? row.IsBanned ?? false),
+        username: resolveRecordField(row, ['username', 'Username']) ?? '',
+        hwid: resolveRecordField(row, ['hwid', 'HWID', 'Hwid']) ?? '',
+        envName: resolveRecordField(row, ['EnvName', 'envName']) ?? '',
+        captchaToken: resolveRecordField(row, ['CaptchaToken', 'captchaToken']) ?? '',
+        isBanned: Boolean(resolveRecordField(row, ['isBanned', 'IsBanned']) ?? false),
         failedLoginAttempts:
-          row.failedLoginAttempts ?? row.FailedLoginAttempts ?? 0,
+          resolveRecordField(row, ['failedLoginAttempts', 'FailedLoginAttempts']) ?? 0,
       })
     } else if (table === 'panelUpdates') {
       setEditForm({
-        update1: row.update1 ?? row.Update1 ?? '',
-        update2: row.update2 ?? row.Update2 ?? '',
-        update3: row.update3 ?? row.Update3 ?? '',
-        update4: row.update4 ?? row.Update4 ?? '',
+        update1: resolveRecordField(row, ['update1', 'Update1']) ?? '',
+        update2: resolveRecordField(row, ['update2', 'Update2']) ?? '',
+        update3: resolveRecordField(row, ['update3', 'Update3']) ?? '',
+        update4: resolveRecordField(row, ['update4', 'Update4']) ?? '',
       })
     }
   }
@@ -415,8 +432,8 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       return
     }
 
-    const id = editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId
-    if (id === undefined || id === null || id === '') {
+    const id = getDatabaseRecordId(editRecord)
+    if (id === null) {
       setUserPasswordError('Invalid user ID. Cannot update password.')
       return
     }
@@ -480,17 +497,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
     e.preventDefault()
     if (!editRecord) return
 
-    const editId =
-      editRecord.id ??
-      editRecord.Id ??
-      editRecord.userId ??
-      editRecord.UserId ??
-      editRecord.keyId ??
-      editRecord.KeyId ??
-      editRecord.orderId ??
-      editRecord.OrderId ??
-      0
-
+    const editId = getDatabaseRecordId(editRecord) ?? 0
     let payload = {}
 
     if (table === 'users') {
@@ -522,10 +529,8 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         userId: editId,
         status: editForm.status || 'Pending',
       }
-    } else if (table === 'settings') {
-      payload = buildSettingsPayload(cachedSettings, editForm)
-    } else if (table === 'freeSettings') {
-      payload = buildSettingsPayload(cachedSettings, editForm)
+    } else if (table === 'settings' || table === 'freeSettings') {
+      payload = buildSettingsPayload({ ...cachedSettings, ...editRecord }, editForm)
     } else if (table === 'freeusers') {
       payload = {
         id: editId,
@@ -556,49 +561,41 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   }
 
   async function toggleMaint() {
-    const isM = Boolean(cachedSettings?.isMaintenanceMode ?? cachedSettings?.IsMaintenanceMode)
+    const isM = Boolean(
+      resolveRecordField(cachedSettings, ['isMaintenanceMode', 'IsMaintenanceMode']),
+    )
     await run(async () => {
       const res = await toggleMaintenance(token, !isM)
       setCachedSettings((cur) => ({
         ...cur,
-        isMaintenanceMode: Boolean(res?.isMaintenanceMode ?? res?.IsMaintenanceMode ?? !isM),
+        isMaintenanceMode: Boolean(
+          resolveRecordField(res, ['isMaintenanceMode', 'IsMaintenanceMode']) ?? !isM,
+        ),
       }))
     }, `Maintenance mode turned ${!isM ? 'ON' : 'OFF'}.`, 'maintenance')
   }
 
-  const columns = useMemo(() => {
-    if (!records.length) return []
-    const uniqueKeys = new Set()
-    records.forEach((row) => Object.keys(row).forEach((k) => uniqueKeys.add(k)))
-    return sortKeysForTable(table, Array.from(uniqueKeys))
-  }, [records, table])
-
-  const editId = editRecord
-    ? editRecord.id ??
-      editRecord.Id ??
-      editRecord.userId ??
-      editRecord.UserId ??
-      editRecord.keyId ??
-      editRecord.KeyId ??
-      editRecord.orderId ??
-      editRecord.OrderId ??
-      0
-    : 0
+  const editId = editRecord ? getDatabaseRecordId(editRecord) : null
+  const isMaintenanceOn = Boolean(
+    resolveRecordField(cachedSettings, ['isMaintenanceMode', 'IsMaintenanceMode']),
+  )
 
   return (
     <div className="center-wrap">
       <section className="panel">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+        <div className="ownerdb-header">
           <div>
             <span className="hero-eyebrow">Database Console</span>
             <h1 className="auth-title mt-6">Owner Database Manager</h1>
-            <p className="auth-subtitle mb-0">Direct record management for DSC database collections.</p>
+            <p className="auth-subtitle mb-0">
+              Direct record management for DSC database collections.
+            </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="ownerdb-header-actions">
             <button
               type="button"
-              className={`button button-sm ${cachedSettings?.isMaintenanceMode ? 'button-danger' : 'button-secondary'} ${busyAction === 'maintenance' ? 'is-loading' : ''}`}
+              className={`button button-sm ${isMaintenanceOn ? 'button-danger' : 'button-secondary'} ${busyAction === 'maintenance' ? 'is-loading' : ''}`}
               disabled={busy}
               onClick={toggleMaint}
             >
@@ -608,7 +605,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   <span>Updating...</span>
                 </span>
               ) : (
-                <span>Maintenance: {cachedSettings?.isMaintenanceMode ? 'ACTIVE' : 'OFF'}</span>
+                <span>Maintenance: {isMaintenanceOn ? 'ACTIVE' : 'OFF'}</span>
               )}
             </button>
             <button
@@ -630,14 +627,14 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         </div>
 
         {/* Toolbar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <label className="field" style={{ margin: 0 }}>
+        <div className="ownerdb-toolbar">
+          <div className="ownerdb-filters">
+            <label className="field ownerdb-filter-field">
               <span className="micro-label">SELECT TABLE</span>
               <select
                 value={table}
                 onChange={(e) => handleTableChange(e.target.value)}
-                style={{ padding: '8px 12px', borderRadius: '6px' }}
+                className="ownerdb-control"
               >
                 {TABLES.map(([key, label]) => (
                   <option key={key} value={key}>
@@ -647,7 +644,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
               </select>
             </label>
 
-            <label className="field" style={{ margin: 0, minWidth: '220px' }}>
+            <label className="field ownerdb-filter-field ownerdb-search-field">
               <span className="micro-label">SEARCH RECORDS</span>
               <input
                 value={search}
@@ -655,13 +652,13 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   setSearch(e.target.value)
                   setPage(1)
                 }}
-                placeholder="Search values..."
-                style={{ padding: '8px 12px', borderRadius: '6px' }}
+                placeholder={`Filter ${activeTableLabel.toLowerCase()}...`}
+                className="ownerdb-control db-search-input"
               />
             </label>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className="ownerdb-pagination">
             {isDeletableTable && selectedIds.size > 0 ? (
               <button
                 type="button"
@@ -681,7 +678,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             >
               Prev
             </button>
-            <span style={{ fontSize: '0.88rem', color: 'var(--muted)' }}>
+            <span className="ownerdb-page-indicator">
               Page {page} of {pageCount} ({filtered.length} Total)
             </span>
             <button
@@ -696,93 +693,122 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         </div>
 
         {message ? (
-          <div className="form-success" style={{ marginBottom: '16px' }}>
+          <div className="form-success mb-16">
             {message}
           </div>
         ) : null}
 
         {error ? (
-          <div className="form-error" style={{ marginBottom: '16px' }}>
+          <div className="form-error mb-16" role="alert">
             {error}
           </div>
         ) : null}
 
         {/* Data Table */}
         <div className="table-wrap">
-          <table>
+          <table className="ownerdb-table">
             <thead>
               <tr>
                 {isDeletableTable ? (
-                  <th style={{ width: '40px' }}>
+                  <th className="ownerdb-checkbox-col">
                     <input
                       type="checkbox"
-                      checked={visible.length > 0 && selectedIds.size === visible.length}
+                      aria-label="Select all records on this page"
+                      disabled={selectableVisibleIds.length === 0}
+                      checked={
+                        selectableVisibleIds.length > 0 &&
+                        selectableVisibleIds.every((id) => selectedIds.has(id))
+                      }
                       onChange={handleSelectAll}
                     />
                   </th>
                 ) : null}
-                {columns.length > 0 ? (
-                  columns.map((key) => <th key={key}>{key.toUpperCase()}</th>)
-                ) : (
-                  <th>RECORDS</th>
-                )}
-                <th>ACTIONS</th>
+                {columns.map((col) => (
+                  <th key={col.id}>{col.label}</th>
+                ))}
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '30px', color: 'var(--muted)' }}>
+                  <td colSpan={columns.length + (isDeletableTable ? 2 : 1)} className="ownerdb-empty-cell">
                     Loading database records...
                   </td>
                 </tr>
-              ) : visible.map((row, index) => {
-                const id = recordId(row, index)
-                const isSelected = selectedIds.has(id)
-                return (
-                  <tr key={`${id}-${index}`}>
-                    {isDeletableTable ? (
+              ) : (
+                visible.map((row, index) => {
+                  const dbId = getDatabaseRecordId(row)
+                  const hasValidId = dbId !== null
+                  const rowKey = hasValidId ? `${table}-${dbId}` : `${table}-row-${index}`
+                  const isSelected = hasValidId && selectedIds.has(dbId)
+
+                  return (
+                    <tr key={rowKey}>
+                      {isDeletableTable ? (
+                        <td className="ownerdb-checkbox-col">
+                          <input
+                            type="checkbox"
+                            aria-label={hasValidId ? `Select record ${dbId}` : 'Record ID missing'}
+                            disabled={!hasValidId}
+                            checked={isSelected}
+                            onChange={() => toggleSelectOne(dbId)}
+                          />
+                        </td>
+                      ) : null}
+                      {columns.map((col) => (
+                        <td key={col.id} className="ownerdb-data-cell">
+                          {renderCellValue(col, row)}
+                        </td>
+                      ))}
                       <td>
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleSelectOne(id)}
-                        />
-                      </td>
-                    ) : null}
-                    {columns.map((k) => (
-                      <td key={k} style={{ maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {renderCellValue(k, row[k])}
-                      </td>
-                    ))}
-                    <td>
-                      <div className="row-actions">
-                        <button
-                          type="button"
-                          className="button button-secondary button-sm"
-                          onClick={() => openEdit(row)}
-                        >
-                          Edit / Manage
-                        </button>
-                        {isDeletableTable ? (
+                        <div className="row-actions">
                           <button
                             type="button"
-                            className="button button-danger button-sm"
-                            disabled={busy}
-                            onClick={() => confirmDelete(id)}
+                            className="button button-secondary button-sm"
+                            onClick={() => openEdit(row)}
                           >
-                            Delete
+                            Edit / Manage
                           </button>
-                        ) : null}
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
+                          {isDeletableTable ? (
+                            hasValidId ? (
+                              <button
+                                type="button"
+                                className="button button-danger button-sm"
+                                disabled={busy}
+                                onClick={() => confirmDelete(dbId)}
+                              >
+                                Delete
+                              </button>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  className="button button-danger button-sm"
+                                  disabled
+                                  title="Cannot delete record without a valid database ID"
+                                >
+                                  Delete
+                                </button>
+                                <span
+                                  className="badge warning"
+                                  title="Record lacks a valid database identifier"
+                                >
+                                  ID Missing
+                                </span>
+                              </>
+                            )
+                          ) : null}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
               {!loading && !visible.length ? (
                 <tr>
-                  <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '30px', color: 'var(--muted)' }}>
-                    No matching records found in table "{table}".
+                  <td colSpan={columns.length + (isDeletableTable ? 2 : 1)} className="ownerdb-empty-cell">
+                    No matching records found in "{activeTableLabel}".
                   </td>
                 </tr>
               ) : null}
@@ -794,20 +820,22 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       {/* Edit Record Modal (Table-Specific Form Controls) */}
       {editRecord ? (
         <div className="modal-overlay open" role="dialog" aria-modal="true">
-          <form className="modal-card form-stack" style={{ maxWidth: '680px' }} onSubmit={handleSaveEdit}>
+          <form className="modal-card form-stack ownerdb-modal-card" onSubmit={handleSaveEdit}>
             <div>
-              <span className="micro-label">TABLE: {table.toUpperCase()}</span>
+              <span className="micro-label">TABLE: {activeTableLabel.toUpperCase()}</span>
               <h2 className="mt-4 mb-0">
-                Edit {TABLES.find(([k]) => k === table)?.[1] || table} {editId ? `(ID: ${editId})` : ''}
+                Edit {activeTableLabel} {editId !== null ? `(ID: ${editId})` : ''}
               </h2>
             </div>
 
             {/* USERS FORM */}
             {table === 'users' ? (
               <>
-                <div style={{ background: 'var(--surface-hover)', padding: '12px 14px', borderRadius: '8px', fontSize: '0.88rem' }}>
-                  <strong>Username:</strong> {editRecord.username ?? editRecord.Username ?? '—'} &nbsp;|&nbsp;{' '}
-                  <strong>HWID:</strong> {editRecord.hwid ?? editRecord.HWID ?? '—'}
+                <div className="ownerdb-record-summary">
+                  <strong>Username:</strong>{' '}
+                  {resolveRecordField(editRecord, ['username', 'Username']) ?? '—'} &nbsp;|&nbsp;{' '}
+                  <strong>HWID:</strong>{' '}
+                  <code>{resolveRecordField(editRecord, ['hwid', 'HWID', 'Hwid']) ?? '—'}</code>
                 </div>
 
                 <label className="field">
@@ -820,7 +848,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                 </label>
 
                 <label className="field">
-                  <span>Expiry Date & Time</span>
+                  <span>Expiry Date &amp; Time</span>
                   <input
                     type="datetime-local"
                     value={editForm.expiryTime || ''}
@@ -844,8 +872,11 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {/* KEYS FORM */}
             {table === 'keys' ? (
               <>
-                <div style={{ background: 'var(--surface-hover)', padding: '12px 14px', borderRadius: '8px', fontSize: '0.88rem' }}>
-                  <strong>Key:</strong> <code>{editRecord.keyValue ?? editRecord.KeyValue ?? editRecord.key ?? '—'}</code>
+                <div className="ownerdb-record-summary">
+                  <strong>Key:</strong>{' '}
+                  <code>
+                    {resolveRecordField(editRecord, ['keyValue', 'KeyValue', 'key', 'Key']) ?? '—'}
+                  </code>
                 </div>
 
                 <label className="field">
@@ -884,8 +915,9 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {/* ADMINS FORM */}
             {table === 'admins' ? (
               <>
-                <div style={{ background: 'var(--surface-hover)', padding: '12px 14px', borderRadius: '8px', fontSize: '0.88rem' }}>
-                  <strong>Admin Username:</strong> {editRecord.username ?? editRecord.Username ?? '—'}
+                <div className="ownerdb-record-summary">
+                  <strong>Admin Username:</strong>{' '}
+                  {resolveRecordField(editRecord, ['username', 'Username']) ?? '—'}
                 </div>
 
                 <label className="field">
@@ -913,11 +945,16 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {/* ORDERS FORM */}
             {table === 'orders' ? (
               <>
-                <div style={{ background: 'var(--surface-hover)', padding: '12px 14px', borderRadius: '8px', fontSize: '0.88rem' }}>
-                  <strong>User:</strong> {editRecord.username ?? editRecord.Username ?? '—'} &nbsp;|&nbsp;{' '}
-                  <strong>Plan:</strong> {editRecord.plan ?? editRecord.Plan ?? '—'} &nbsp;|&nbsp;{' '}
-                  <strong>Amount:</strong> {editRecord.amount ?? editRecord.Amount ?? '—'} &nbsp;|&nbsp;{' '}
-                  <strong>Txn ID:</strong> <code>{editRecord.txnId ?? editRecord.TxnId ?? '—'}</code>
+                <div className="ownerdb-record-summary">
+                  <strong>User:</strong>{' '}
+                  {resolveRecordField(editRecord, ['username', 'Username']) ?? '—'} &nbsp;|&nbsp;{' '}
+                  <strong>Plan:</strong> {resolveRecordField(editRecord, ['plan', 'Plan']) ?? '—'}{' '}
+                  &nbsp;|&nbsp; <strong>Amount:</strong>{' '}
+                  {resolveRecordField(editRecord, ['amount', 'Amount']) ?? '—'} &nbsp;|&nbsp;{' '}
+                  <strong>Txn ID:</strong>{' '}
+                  <code>
+                    {resolveRecordField(editRecord, ['txnId', 'TxnId', 'transactionId']) ?? '—'}
+                  </code>
                 </div>
 
                 <label className="field">
@@ -937,9 +974,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {/* SYSTEM SETTINGS FORM */}
             {table === 'settings' ? (
               <>
-                <h4 style={{ margin: '14px 0 6px', borderBottom: '1px solid var(--border)', paddingBottom: '6px', color: 'var(--primary)' }}>
-                  System & Maintenance
-                </h4>
+                <h4 className="ownerdb-section-heading">System &amp; Maintenance</h4>
 
                 <label className="field">
                   <span>Latest Panel Version</span>
@@ -968,9 +1003,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   />
                 </label>
 
-                <h4 style={{ margin: '18px 0 6px', borderBottom: '1px solid var(--border)', paddingBottom: '6px', color: 'var(--primary)' }}>
-                  Panel Download Links
-                </h4>
+                <h4 className="ownerdb-section-heading mt-16">Panel Download Links</h4>
 
                 <label className="field">
                   <span>Free Panel Link</span>
@@ -1047,7 +1080,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {/* FREE SETTINGS FORM */}
             {table === 'freeSettings' ? (
               <>
-                <h4 style={{ margin: '14px 0 6px', borderBottom: '1px solid var(--border)', paddingBottom: '6px', color: 'var(--success)' }}>
+                <h4 className="ownerdb-section-heading ownerdb-section-heading-success">
                   Free Panel Configurations
                 </h4>
 
@@ -1087,12 +1120,23 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   />
                 </label>
 
-                <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', cursor: 'pointer' }}>
+                <label className="field">
+                  <span>Free Panel Download Link</span>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={editForm.freeLink || ''}
+                    onChange={(e) => setEditForm({ ...editForm, freeLink: e.target.value })}
+                  />
+                </label>
+
+                <label className="checkbox-label ownerdb-checkbox-label">
                   <input
                     type="checkbox"
                     checked={Boolean(editForm.showHomeDownloadBtn)}
-                    onChange={(e) => setEditForm({ ...editForm, showHomeDownloadBtn: e.target.checked })}
-                    style={{ width: '18px', height: '18px' }}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, showHomeDownloadBtn: e.target.checked })
+                    }
                   />
                   <span>Show Download Button on Home Page</span>
                 </label>
@@ -1128,14 +1172,6 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                 </label>
 
                 <label className="field">
-                  <span>Captcha / Verification Token (CaptchaToken)</span>
-                  <input
-                    value={editForm.captchaToken || ''}
-                    onChange={(e) => setEditForm({ ...editForm, captchaToken: e.target.value })}
-                  />
-                </label>
-
-                <label className="field">
                   <span>Ban Status</span>
                   <select
                     value={String(Boolean(editForm.isBanned))}
@@ -1152,7 +1188,9 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                     type="number"
                     min="0"
                     value={editForm.failedLoginAttempts ?? 0}
-                    onChange={(e) => setEditForm({ ...editForm, failedLoginAttempts: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, failedLoginAttempts: e.target.value })
+                    }
                   />
                 </label>
               </>
@@ -1161,9 +1199,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             {/* PANEL UPDATES FORM */}
             {table === 'panelUpdates' ? (
               <>
-                <h4 style={{ margin: '14px 0 6px', borderBottom: '1px solid var(--border)', paddingBottom: '6px', color: 'var(--primary)' }}>
-                  Update Panel Status
-                </h4>
+                <h4 className="ownerdb-section-heading">Update Panel Status</h4>
 
                 <label className="field">
                   <span>Aimbot Status</span>
@@ -1200,18 +1236,18 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             ) : null}
 
             {table === 'users' && editRecord ? (
-              <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--surface-border)' }}>
-                <span className="micro-label" style={{ display: 'block', marginBottom: '8px' }}>OWNER SECURITY ACTIONS</span>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <div className="ownerdb-security-section">
+                <span className="micro-label ownerdb-security-label">OWNER SECURITY ACTIONS</span>
+                <div className="ownerdb-security-buttons">
                   <button
                     type="button"
                     className={`button button-secondary button-sm ${busyAction === 'resetHwid' ? 'is-loading' : ''}`}
-                    disabled={busy}
+                    disabled={busy || editId === null}
                     onClick={() => {
-                      const id = editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId
+                      if (editId === null) return
                       run(
-                        () => resetUserHwid(token, id),
-                        `HWID successfully reset for user #${id}.`,
+                        () => resetUserHwid(token, editId),
+                        `HWID successfully reset for user #${editId}.`,
                         'resetHwid',
                       )
                     }}
@@ -1221,12 +1257,12 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                   <button
                     type="button"
                     className={`button button-danger button-sm ${busyAction === 'forceReset' ? 'is-loading' : ''}`}
-                    disabled={busy}
+                    disabled={busy || editId === null}
                     onClick={() => {
-                      const id = editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId
+                      if (editId === null) return
                       run(
-                        () => forceUserPasswordReset(token, id),
-                        `Password reset successfully enforced for user #${id}.`,
+                        () => forceUserPasswordReset(token, editId),
+                        `Password reset successfully enforced for user #${editId}.`,
                         'forceReset',
                       )
                     }}
@@ -1236,26 +1272,28 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                 </div>
 
                 {/* Direct Set User Password Section */}
-                <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px dashed var(--surface-border)' }}>
-                  <span className="micro-label" style={{ display: 'block', marginBottom: '6px' }}>SET NEW USER PASSWORD</span>
-                  <p style={{ color: 'var(--muted)', fontSize: '0.85rem', margin: '0 0 12px 0' }}>
-                    Directly assign a new password for account #{editRecord.id ?? editRecord.Id ?? editRecord.userId ?? editRecord.UserId} ({editRecord.username ?? editRecord.Username ?? 'user'}). This takes effect immediately without requiring user action.
+                <div className="ownerdb-password-box">
+                  <span className="micro-label ownerdb-security-label">SET NEW USER PASSWORD</span>
+                  <p className="ownerdb-password-help">
+                    Directly assign a new password for account #{editId ?? '—'} (
+                    {resolveRecordField(editRecord, ['username', 'Username']) ?? 'user'}). This takes
+                    effect immediately without requiring user action.
                   </p>
 
                   {userPasswordSuccess ? (
-                    <div className="form-success" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                    <div className="form-success mb-12 text-sm">
                       {userPasswordSuccess}
                     </div>
                   ) : null}
 
                   {userPasswordError ? (
-                    <div className="form-error" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                    <div className="form-error mb-12 text-sm">
                       {userPasswordError}
                     </div>
                   ) : null}
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '12px' }}>
-                    <label className="field" style={{ margin: 0 }}>
+                  <div className="ownerdb-password-grid">
+                    <label className="field m-0">
                       <span>New Password (min 6 characters)</span>
                       <PasswordInput
                         value={userPasswordForm.newPassword}
@@ -1276,7 +1314,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                       />
                     </label>
 
-                    <label className="field" style={{ margin: 0 }}>
+                    <label className="field m-0">
                       <span>Confirm New Password</span>
                       <PasswordInput
                         value={userPasswordForm.confirmPassword}
@@ -1285,7 +1323,10 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                         minLength={6}
                         disabled={busy}
                         onChange={(e) => {
-                          setUserPasswordForm((prev) => ({ ...prev, confirmPassword: e.target.value }))
+                          setUserPasswordForm((prev) => ({
+                            ...prev,
+                            confirmPassword: e.target.value,
+                          }))
                           setUserPasswordError('')
                         }}
                         onKeyDown={(e) => {
@@ -1298,11 +1339,11 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="ownerdb-password-actions">
                     <button
                       type="button"
                       className={`button button-secondary button-sm ${busyAction === 'setUserPassword' ? 'is-loading' : ''}`}
-                      disabled={busy}
+                      disabled={busy || editId === null}
                       onClick={handleSetUserPassword}
                     >
                       {busyAction === 'setUserPassword' ? (
@@ -1333,7 +1374,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
             ) : null}
 
             {/* Buttons */}
-            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+            <div className="ownerdb-modal-actions">
               <button
                 className={`button button-primary ${busyAction === 'save' ? 'is-loading' : ''}`}
                 disabled={busy}
@@ -1355,11 +1396,11 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
             {/* Optional Delete Button inside edit modal for deletable tables */}
             {isDeletableTable ? (
-              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '16px', marginTop: '16px' }}>
+              <div className="ownerdb-modal-delete-zone">
                 <button
                   type="button"
                   className="button button-danger button-full"
-                  disabled={busy}
+                  disabled={busy || editId === null}
                   onClick={() => {
                     const id = editId
                     closeEdit()
@@ -1384,10 +1425,10 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
               </svg>
             </div>
             <h2 className="modal-title modal-title-large text-reject-state">Confirm Deletion</h2>
-            <p style={{ color: 'var(--muted)', margin: '14px 0 22px' }}>
+            <p className="ownerdb-delete-confirm-text">
               Permanently delete {deleteModal.label}? This database operation cannot be reversed.
             </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <div className="ownerdb-delete-confirm-actions">
               <button
                 type="button"
                 className={`button button-danger ${busyAction === 'delete' ? 'is-loading' : ''}`}
