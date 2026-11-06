@@ -1762,6 +1762,9 @@ textarea {
   font-size: 1.35rem;
   font-weight: 800;
   color: var(--text);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-variant-numeric: tabular-nums;
 }
 
 .dash-actions {
@@ -1826,14 +1829,15 @@ tbody tr:hover {
 
 .row-actions .btn,
 .row-actions .button {
-  padding: 5px 10px !important;
+  padding: 6px 12px !important;
   font-size: 0.82rem !important;
-  min-height: 28px !important;
+  min-height: 32px !important;
 }
 
 .db-search-input {
   flex: 1;
-  min-width: 240px;
+  min-width: min(240px, 100%);
+  max-width: 100%;
 }
 
 /* --------------------------------------------------------------------------
@@ -2774,6 +2778,23 @@ tbody tr:hover {
 
   .header-actions {
     gap: 6px;
+  }
+
+  .modal-overlay {
+    padding: 12px;
+  }
+
+  .modal-card {
+    padding: 18px 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 

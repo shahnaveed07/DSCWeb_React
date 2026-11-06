@@ -58,3 +58,26 @@ export function toIsoOrNullFromDatetimeLocal(localStr) {
   const date = new Date(localStr)
   return Number.isNaN(date.getTime()) ? null : date.toISOString()
 }
+
+export function evaluateSubscriptionExpiry({ data, session, liveExpiry, isPending, isNoOrder }) {
+  if (typeof data?.isExpired === 'boolean') {
+    return data.isExpired
+  }
+  if (typeof data?.IsExpired === 'boolean') {
+    return data.IsExpired
+  }
+  if (typeof session?.isExpired === 'boolean') {
+    return session.isExpired
+  }
+
+  if (!liveExpiry || isPending || isNoOrder) {
+    return false
+  }
+
+  const parsedTime = new Date(liveExpiry).getTime()
+  if (Number.isNaN(parsedTime)) {
+    return false
+  }
+
+  return parsedTime <= Date.now()
+}

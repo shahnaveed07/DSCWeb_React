@@ -390,7 +390,8 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       setEditForm({
         username: row.username ?? row.Username ?? '',
         hwid: row.hwid ?? row.HWID ?? '',
-        captchaToken: row.EnvName ?? row.envName ?? row.CaptchaToken ?? row.captchaToken ?? '',
+        envName: row.EnvName ?? row.envName ?? '',
+        captchaToken: row.CaptchaToken ?? row.captchaToken ?? '',
         isBanned: Boolean(row.isBanned ?? row.IsBanned ?? false),
         failedLoginAttempts:
           row.failedLoginAttempts ?? row.FailedLoginAttempts ?? 0,
@@ -531,8 +532,8 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         userId: editId,
         Username: editForm.username,
         HWID: editForm.hwid,
-        EnvName: editForm.captchaToken,
-        CaptchaToken: editForm.captchaToken,
+        EnvName: editForm.envName ?? '',
+        CaptchaToken: editForm.captchaToken ?? '',
         IsBanned: Boolean(editForm.isBanned),
         FailedLoginAttempts: Number(editForm.failedLoginAttempts) || 0,
       }
@@ -1120,6 +1121,14 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
                 <label className="field">
                   <span>PC Name / Environment (EnvName)</span>
+                  <input
+                    value={editForm.envName || ''}
+                    onChange={(e) => setEditForm({ ...editForm, envName: e.target.value })}
+                  />
+                </label>
+
+                <label className="field">
+                  <span>Captcha / Verification Token (CaptchaToken)</span>
                   <input
                     value={editForm.captchaToken || ''}
                     onChange={(e) => setEditForm({ ...editForm, captchaToken: e.target.value })}

@@ -6,10 +6,13 @@ export function useRemoteResource(loader, deps = [], options = {}) {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(Boolean(enabled))
   const loaderRef = useRef(loader)
+  const initialDataRef = useRef(initialData)
   loaderRef.current = loader
+  initialDataRef.current = initialData
 
   useEffect(() => {
     if (!enabled) {
+      setLoading(false)
       return undefined
     }
 
@@ -23,9 +26,11 @@ export function useRemoteResource(loader, deps = [], options = {}) {
       .then((result) => {
         if (!active) return
         setData(result)
+        setError(null)
       })
       .catch((nextError) => {
         if (!active || nextError?.name === 'AbortError') return
+        setData(initialDataRef.current)
         setError(nextError)
       })
       .finally(() => {

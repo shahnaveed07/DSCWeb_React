@@ -7,16 +7,17 @@ import {
   getSecureDownload,
   isAuthError,
 } from '../services/dscApi'
-import { formatDateTime } from '../utils/format'
+import { evaluateSubscriptionExpiry, formatDateTime } from '../utils/format'
 
 export function UserDashboardPage({ session, onSessionInvalid }) {
   const [copiedKey, setCopiedKey] = useState(false)
   const [downloadError, setDownloadError] = useState('')
   const [downloadLoading, setDownloadLoading] = useState(false)
+  const [reloadCount, setReloadCount] = useState(0)
 
   const { data, error, loading } = useRemoteResource(
     (signal) => getCurrentOrder(session.token, signal),
-    [session?.token],
+    [session?.token, reloadCount],
     { enabled: Boolean(session?.token) },
   )
 
@@ -29,24 +30,54 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
       <div className="center-wrap">
         <section className="panel" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <div className="skeleton-line" style={{ height: '24px', width: '200px', margin: '0 auto 16px', borderRadius: '4px' }} />
-          <div className="skeleton-line" style={{ height: '40px', width: '320px', margin: '0 auto 20px', borderRadius: '8px' }} />
+          <div className="skeleton-line" style={{ height: '40px', width: 'min(320px, 100%)', margin: '0 auto 20px', borderRadius: '8px' }} />
           <p style={{ color: 'var(--muted)' }}>Retrieving your order and subscription status...</p>
         </section>
       </div>
     )
   }
 
-  const liveStatus = String(data?.status || 'Pending').trim()
-  const isApproved = liveStatus.toLowerCase() === 'approved'
-  const isRejected = liveStatus.toLowerCase() === 'rejected'
-  const isPending = !isApproved && !isRejected
+  const is404NoOrder = error?.status === 404
+  const fatalError = error && !is404NoOrder && !isAuthError(error) ? error : null
 
-  const livePlan = String(data?.plan || session?.plan || 'Temp').trim()
+  const rawStatus = String(data?.status ?? data?.Status ?? '').trim()
+  const hasOrderData = Boolean(
+    !is404NoOrder &&
+      !fatalError &&
+      data &&
+      typeof data === 'object' &&
+      (rawStatus || data.plan || data.Plan || data.key || data.Key || data.orderId || data.id),
+  )
+  const isNoOrder = is404NoOrder || (!fatalError && !hasOrderData)
+
+  const liveStatus = isNoOrder ? 'NO ACTIVE ORDERS' : rawStatus || 'Pending'
+  const normalizedStatus = liveStatus.toLowerCase()
+  const isApproved = !isNoOrder && normalizedStatus === 'approved'
+  const isRejected = !isNoOrder && normalizedStatus === 'rejected'
+  const isPending = !isNoOrder && !fatalError && !isApproved && !isRejected
+
+  const livePlan = String(data?.plan ?? data?.Plan ?? session?.plan ?? 'Temp').trim() || 'Temp'
   const isFreePlan = livePlan.toLowerCase() === 'free'
-  const liveExpiry = data?.expiry || data?.expiryTime || session?.expiry
-  const isExpired = Boolean(data?.isExpired || session?.isExpired)
-  const orderKey = String(data?.key || '').trim()
-  const keyUsed = Boolean(data?.isKeyUsed)
+  const liveExpiry =
+    data?.expiry ??
+    data?.Expiry ??
+    data?.expiryTime ??
+    data?.ExpiryTime ??
+    session?.expiry ??
+    null
+
+  const isExpired = evaluateSubscriptionExpiry({
+    data,
+    session,
+    liveExpiry,
+    isPending,
+    isNoOrder,
+  })
+
+  const orderKey = isNoOrder
+    ? ''
+    : String(data?.key ?? data?.Key ?? data?.licenseKey ?? data?.LicenseKey ?? '').trim()
+  const keyUsed = Boolean(data?.isKeyUsed ?? data?.IsKeyUsed)
 
   async function handleCopyKey() {
     if (!orderKey) return
@@ -56,28 +87,31 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
   }
 
   async function handleDownload() {
+    if (!isApproved) return
     setDownloadLoading(true)
     setDownloadError('')
 
     try {
       const downloadPlan = livePlan.toLowerCase() === 'aimassist' ? 'aimbot' : livePlan.toLowerCase()
-      const payload = await getSecureDownload(
-        session.token,
-        downloadPlan,
-      )
+      const payload = await getSecureDownload(session.token, downloadPlan)
+      const downloadUrl = payload?.url ?? payload?.Url
 
-      if (!payload?.url) {
+      if (!downloadUrl) {
         throw new Error('Download URL could not be retrieved.')
       }
 
       const link = document.createElement('a')
-      link.href = payload.url
+      link.href = downloadUrl
       link.target = '_blank'
       link.rel = 'noopener noreferrer'
       document.body.appendChild(link)
       link.click()
       link.remove()
     } catch (downloadIssue) {
+      if (isAuthError(downloadIssue)) {
+        onSessionInvalid()
+        return
+      }
       setDownloadError(
         extractApiMessage(
           downloadIssue.payload,
@@ -89,15 +123,33 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
     }
   }
 
+  const statusColorClass = isNoOrder
+    ? 'text-muted'
+    : isApproved
+      ? 'text-success'
+      : isRejected
+        ? 'text-danger'
+        : 'text-warning'
+
+  const statusIconSymbol = isNoOrder
+    ? '📋'
+    : isApproved
+      ? '✅'
+      : isRejected
+        ? '❌'
+        : '⏳'
+
   return (
     <div className="center-wrap">
       <section className="panel">
         <div className="dashboard-header-flex">
           <div>
             <span className="hero-eyebrow">Client Portal</span>
-            <h1 className="auth-title mt-6">Welcome, {String(session.username || 'User').toUpperCase()}</h1>
+            <h1 className="auth-title mt-6">
+              Welcome, {String(session?.username || 'User').toUpperCase()}
+            </h1>
           </div>
-          <div className="flex gap-10">
+          <div className="flex gap-10 flex-wrap">
             {!isFreePlan ? (
               <NavLink to="/pages/change" className="button button-secondary button-sm">
                 Change Password
@@ -108,6 +160,28 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
             </NavLink>
           </div>
         </div>
+
+        {/* Fatal API / Network Error Banner (Non-404) */}
+        {fatalError ? (
+          <div className="form-error mb-24 flex items-center justify-between flex-wrap gap-12" role="alert">
+            <div>
+              <strong>Unable to Load Order Status</strong>
+              <p className="mt-4 text-sm text-main">
+                {extractApiMessage(
+                  fatalError.payload,
+                  fatalError.message || 'Could not retrieve your order details at this time.',
+                )}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="button button-secondary button-sm"
+              onClick={() => setReloadCount((c) => c + 1)}
+            >
+              Retry
+            </button>
+          </div>
+        ) : null}
 
         {/* Status Alerts */}
         {isPending ? (
@@ -149,7 +223,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
           <div className="stat-card">
             <p className="stat-label">Username</p>
             <div id="dashUsername" className="stat-value">
-              {String(session.username || 'User').toUpperCase()}
+              {String(session?.username || 'User').toUpperCase()}
             </div>
           </div>
 
@@ -174,11 +248,11 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
           <div className="stat-card" id="status-card">
             <p className="stat-label">
-              <span id="statusIcon">{isApproved ? '✅' : isRejected ? '❌' : '⏳'}</span> Order Status
+              <span id="statusIcon">{statusIconSymbol}</span> Order Status
             </p>
             <div
               id="dashOrderStatus"
-              className={`stat-value ${isApproved ? 'text-success' : isRejected ? 'text-danger' : 'text-warning'}`}
+              className={`stat-value ${statusColorClass}`}
             >
               {liveStatus.toUpperCase()}
             </div>
@@ -187,10 +261,20 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
 
         {/* License Key Card */}
         <div className="card mb-24" id="key-card">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-10 flex-wrap gap-10">
             <span className="micro-label">LICENSE KEY</span>
-            <span className={`badge ${isApproved ? (keyUsed ? 'warning' : 'good') : 'warning'}`}>
-              {isApproved ? (keyUsed ? 'Used' : 'Active') : 'Pending'}
+            <span
+              className={`badge ${
+                isNoOrder
+                  ? 'warning'
+                  : isApproved
+                    ? keyUsed
+                      ? 'warning'
+                      : 'good'
+                    : 'warning'
+              }`}
+            >
+              {isNoOrder ? 'No Order' : isApproved ? (keyUsed ? 'Used' : 'Active') : 'Pending'}
             </span>
           </div>
 
@@ -198,10 +282,12 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
             id="dashOrderKey"
             className={`license-key-box ${orderKey ? '' : 'is-empty'}`}
           >
-            {orderKey || 'Key will be issued upon admin approval'}
+            {isNoOrder
+              ? 'No Active Order'
+              : orderKey || 'Key will be issued upon admin approval'}
           </div>
 
-          {orderKey ? (
+          {!isNoOrder && orderKey ? (
             <div className="mt-14">
               <button
                 id="copyDashKeyBtn"
@@ -216,7 +302,7 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
         </div>
 
         {/* Download Section */}
-        {isApproved ? (
+        {!isNoOrder && isApproved ? (
           <div className="card">
             <span className="micro-label">SOFTWARE DOWNLOAD</span>
             <h3 className="my-8 text-lg font-bold">Verified Panel Package</h3>

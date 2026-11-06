@@ -14,13 +14,28 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
 
   async function submit(event) {
     event.preventDefault()
-    setLoading(true)
     setError('')
     setKey('')
 
+    const normalizedPlan = String(plan || '').trim().toLowerCase()
+    if (!plans.includes(normalizedPlan)) {
+      setError('Please select a valid software plan.')
+      return
+    }
+
+    const parsedDays = Number(validDays)
+    if (!validDays || !Number.isInteger(parsedDays) || parsedDays < 1) {
+      setError('Valid days must be a positive whole number (at least 1 day).')
+      return
+    }
+
+    setLoading(true)
+
     try {
-      const result = await generateAdminKey(session.token, plan, Number(validDays))
-      const issued = String(result?.key || '').trim()
+      const result = await generateAdminKey(session.token, normalizedPlan, parsedDays)
+      const issued = String(
+        result?.key ?? result?.Key ?? result?.licenseKey ?? result?.LicenseKey ?? '',
+      ).trim()
       if (!issued) throw new Error('Server returned an invalid key.')
       setKey(issued)
     } catch (issue) {
@@ -35,6 +50,7 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
   }
 
   async function copyKey() {
+    if (!key) return
     await navigator.clipboard.writeText(key)
     setCopied(true)
     window.setTimeout(() => setCopied(false), 1400)
@@ -68,6 +84,7 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
             <input
               required
               min="1"
+              step="1"
               type="number"
               placeholder="e.g. 30"
               value={validDays}
@@ -102,6 +119,7 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
                 fontSize: '1.15rem',
                 letterSpacing: '0.05em',
                 wordBreak: 'break-all',
+                overflowWrap: 'anywhere',
                 margin: '10px 0 16px',
                 color: 'var(--primary)',
                 fontWeight: 700,
