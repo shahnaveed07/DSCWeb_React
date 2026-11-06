@@ -56,6 +56,7 @@ This document establishes the verified communication contracts between the **DSC
 | **Delete Order Record** | `DELETE` | `/api/admin/orders/delete/{id}` | `AdminController.DeleteOrder` | JWT Bearer | `Owner` | **Path Param:** `id` (int)<br>**Headers:** `Authorization: Bearer <token>` | `200 OK`<br>`{ message: string }` | `401 Unauthorized`<br>`403 Forbidden` | `deleteOwnerRecord(token, 'orders', id)` | `AdminWorkspacePage.jsx` (Table: `orders`) | **Matched** | Permanent removal with modal confirmation; supports bulk deletion. |
 | **System Settings Query** | `GET` | `/api/admin/settings/all` | `AdminController.GetSettings` | JWT Bearer | `Admin` / `Owner` | **Headers:** `Authorization: Bearer <token>` | `200 OK`<br>`SettingsDto` or `SettingsDto[]` | `401 Unauthorized` | `getAdminSnapshot(token)`, `getOwnerTable(token, 'settings')` | `AdminDashboardPage.jsx`, `AdminWorkspacePage.jsx` | **Matched** | Normalizes single object or collection responses via `mapSettingsRecord`. |
 | **System Settings Update** | `PUT` | `/api/admin/settings/update` | `AdminController.UpdateSettings` | JWT Bearer | `Owner` | **Headers:** `Authorization: Bearer <token>`<br>**Body:** `SettingsUpdateDto` | `200 OK`<br>`{ message: string }` | `400 Bad Request`<br>`401 Unauthorized`<br>`403 Forbidden` | `updateOwnerRecord(token, 'settings', record)` | `AdminWorkspacePage.jsx` (Tables: `settings`, `freeSettings`) | **Matched** | Updates version, download URLs, free panel limits, and homepage download button visibility. |
+| **Free Panel User Sync** | `POST` | `/api/admin/free-panel/sync-user` | `AdminController.SyncFreePanelUser` | JWT Bearer | `Owner` | **Headers:** `Authorization: Bearer <token>`<br>**Body:** `SyncFreePanelUserDto` | `200 OK`<br>`{ status: "created" \| "updated" \| "disabled", message: string }` | `400 Bad Request`<br>`401 Unauthorized`<br>`403 Forbidden`<br>`409 Conflict`<br>`500 Server Error` | `syncFreePanelUser(token, syncPayload)` | `AdminWorkspacePage.jsx` (Table: `freeSettings`) | **Matched & Implemented** | Creates, updates, or disables the `Plan = "free"` user in `Users` table with BCrypt-hashed password and calculated expiry after saving Free Panel Settings. |
 | **Maintenance Mode Toggle** | `POST` | `/api/admin/maintenance/toggle` | `AdminController.ToggleMaintenance` | JWT Bearer | `Owner` | **Headers:** `Authorization: Bearer <token>`<br>**Body:** `{ isMaintenanceMode }` | `200 OK`<br>`{ isMaintenanceMode: boolean }` | `401 Unauthorized`<br>`403 Forbidden` | `toggleMaintenance(token, isMaintenance)` | `AdminDashboardPage.jsx`, `AdminWorkspacePage.jsx` | **Matched & Remediated** | Guarded behind `ownerAccess` check; standard admins see read-only badge. |
 | **License Keys List** | `GET` | `/api/admin/keys` | `AdminController.GetKeys` | JWT Bearer | `Owner` | **Headers:** `Authorization: Bearer <token>` | `200 OK`<br>`KeyDto[]` | `401 Unauthorized`<br>`403 Forbidden` | `getOwnerTable(token, 'keys')` | `AdminWorkspacePage.jsx` (Table: `keys`) | **Matched** | Renders key value, plan, valid days, used status, and creation date. |
 | **Update License Key** | `PUT` | `/api/admin/manage/key` | `AdminController.UpdateKey` | JWT Bearer | `Owner` | **Headers:** `Authorization: Bearer <token>`<br>**Body:** `{ id, plan, validDays, isUsed }` | `200 OK`<br>`{ message: string }` | `400 Bad Request`<br>`401 Unauthorized`<br>`403 Forbidden` | `updateOwnerRecord(token, 'keys', record)` | `AdminWorkspacePage.jsx` (Table: `keys`) | **Matched** | Updates key entitlement parameters; refreshes workspace table. |
@@ -151,6 +152,148 @@ This document establishes the verified communication contracts between the **DSC
 }
 ```
 
+### F. Owner Free Panel User Provisioning (`POST /api/admin/free-panel/sync-user`)
+- **Headers:** `Authorization: Bearer <jwt_owner_token>`, `Content-Type: application/json`
+- **Body:**
+```json
+{
+  "username": "dsc_free_2026",
+  "Username": "dsc_free_2026",
+  "previousUsername": "dsc_free_old",
+  "PreviousUsername": "dsc_free_old",
+  "password": "FreePanelPassword123",
+  "Password": "FreePanelPassword123",
+  "plan": "free",
+  "Plan": "free",
+  "validDays": 7,
+  "ValidDays": 7,
+  "expiryTime": "2026-11-13T12:00:00.000Z",
+  "ExpiryTime": "2026-11-13T12:00:00.000Z",
+  "isBanned": false,
+  "IsBanned": false
+}
+```
+
+**Success Response (`200 OK`):**
+```json
+{
+  "status": "created",
+  "message": "Free Plan user 'dsc_free_2026' created in Users table.",
+  "userId": 501
+}
+```
+
+**ASP.NET Core 8 Controller & DTO Specification (`AdminController.cs`):**
+```csharp
+public class SyncFreePanelUserDto
+{
+    public string? Username { get; set; }
+    public string? PreviousUsername { get; set; }
+    public string? Password { get; set; }
+    public string Plan { get; set; } = "free";
+    public int ValidDays { get; set; } = 7;
+    public DateTime? ExpiryTime { get; set; }
+    public bool IsBanned { get; set; } = false;
+}
+
+[Authorize(Roles = "Owner")]
+[HttpPost("free-panel/sync-user")]
+public async Task<IActionResult> SyncFreePanelUser([FromBody] SyncFreePanelUserDto dto)
+{
+    var targetUsername = (dto.Username ?? string.Empty).Trim();
+    var previousUsername = (dto.PreviousUsername ?? string.Empty).Trim();
+
+    // Case 1: Blank username -> Turn Free Panel OFF and disable/expire previous free account
+    if (string.IsNullOrEmpty(targetUsername))
+    {
+        if (!string.IsNullOrEmpty(previousUsername))
+        {
+            var prevUser = await _db.Users.FirstOrDefaultAsync(
+                u => u.Username.ToLower() == previousUsername.ToLower() && u.Plan.ToLower() == "free");
+            if (prevUser != null)
+            {
+                prevUser.IsBanned = true;
+                prevUser.ExpiryDate = DateTime.UtcNow;
+                await _db.SaveChangesAsync();
+            }
+        }
+        return Ok(new { status = "disabled", message = "Free Panel user disabled." });
+    }
+
+    if (string.IsNullOrWhiteSpace(dto.Password) || dto.Password.Trim().Length < 6)
+        return BadRequest(new { message = "Password must be at least 6 characters long." });
+
+    if (dto.ValidDays < 1)
+        return BadRequest(new { message = "ValidDays must be at least 1." });
+
+    var expiryUtc = dto.ExpiryTime?.ToUniversalTime() ?? DateTime.UtcNow.AddDays(dto.ValidDays);
+    var existing = await _db.Users.FirstOrDefaultAsync(
+        u => u.Username.ToLower() == targetUsername.ToLower());
+
+    // Prevent overwriting paid accounts
+    if (existing != null && !string.Equals(existing.Plan, "free", StringComparison.OrdinalIgnoreCase))
+    {
+        return Conflict(new
+        {
+            message = $"Cannot use username '{targetUsername}' for Free Panel: it belongs to an existing paid ({existing.Plan}) account."
+        });
+    }
+
+    // Update existing Plan = "free" user idempotently
+    if (existing != null)
+    {
+        existing.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password.Trim());
+        existing.Plan = "free";
+        existing.ExpiryDate = expiryUtc;
+        existing.IsBanned = false;
+        existing.MustChangePassword = false;
+        await _db.SaveChangesAsync();
+
+        return Ok(new
+        {
+            status = "updated",
+            message = $"Existing Free Plan user '{targetUsername}' updated.",
+            userId = existing.Id
+        });
+    }
+
+    // Optionally disable previous free user if username was rotated
+    if (!string.IsNullOrEmpty(previousUsername) &&
+        !string.Equals(previousUsername, targetUsername, StringComparison.OrdinalIgnoreCase))
+    {
+        var oldFreeUser = await _db.Users.FirstOrDefaultAsync(
+            u => u.Username.ToLower() == previousUsername.ToLower() && u.Plan.ToLower() == "free");
+        if (oldFreeUser != null)
+        {
+            oldFreeUser.IsBanned = true;
+            oldFreeUser.ExpiryDate = DateTime.UtcNow;
+        }
+    }
+
+    // Create new Plan = "free" user in Users table (never store password in KeyValue)
+    var newUser = new User
+    {
+        Username = targetUsername,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password.Trim()),
+        Plan = "free",
+        ExpiryDate = expiryUtc,
+        HWID = string.Empty,
+        IsBanned = false,
+        MustChangePassword = false
+    };
+
+    _db.Users.Add(newUser);
+    await _db.SaveChangesAsync();
+
+    return Ok(new
+    {
+        status = "created",
+        message = $"Free Plan user '{targetUsername}' created in Users table.",
+        userId = newUser.Id
+    });
+}
+```
+
 ---
 
 ## 4. Cross-Origin Resource Sharing (CORS) & Network Verification Guide
@@ -190,3 +333,4 @@ curl -i -X OPTIONS "https://dscauth.onrender.com/api/auth/login" \
 - Header: `Access-Control-Allow-Headers: Content-Type, Accept`
 
 If the preflight returns HTTP 500 without `Access-Control-Allow-Origin`, the browser reports `Failed to fetch / Response to preflight request doesn't pass access control check`. The frontend API client in `src/services/dscApi.js` catches this safely and informs the user of temporary connection unavailability without crashing or displaying invalid credentials.
+

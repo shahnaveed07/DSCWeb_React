@@ -907,4 +907,638 @@ describe('Audit Remediation & Verification Suite', () => {
       expect(stored.mustChangePassword).toBe(true)
     })
   })
+
+  describe('Free Panel Settings -> Free Plan User Synchronization (15 Regression Cases)', () => {
+    const baseSettingsPayload = {
+      id: 1,
+      LatestVersion: '2.5',
+      MaintenanceReason: 'System nominal',
+      IsMaintenanceMode: false,
+      StreamerLink: 'https://downloads.dscweb.me/streamer.zip',
+      SniperLink: 'https://downloads.dscweb.me/sniper.zip',
+      SpecialLink: 'https://downloads.dscweb.me/special.zip',
+      AimbotLink: 'https://downloads.dscweb.me/aimbot.zip',
+      PremiumLink: 'https://downloads.dscweb.me/premium.zip',
+      CustomisedLink: 'https://downloads.dscweb.me/customised.zip',
+      FreeLink: 'https://downloads.dscweb.me/free.zip',
+      FreeUser: 'free_prev',
+      FreePass: 'prev_pass_123',
+      FreeValidDays: 7,
+      MaxFreeSlots: 20,
+      ShowHomeDownloadBtn: true,
+    }
+
+    async function openFreeSettingsEditModal() {
+      render(
+        <MemoryRouter>
+          <AdminWorkspacePage
+            session={{ token: 'mock-owner-token', role: 'Owner', username: 'owner1' }}
+            onSessionInvalid={vi.fn()}
+          />
+        </MemoryRouter>
+      )
+      const tableSelect = screen.getByRole('combobox')
+      fireEvent.change(tableSelect, { target: { value: 'freeSettings' } })
+      await waitFor(() => {
+        expect(screen.getByText('free_prev')).toBeTruthy()
+      })
+      fireEvent.click(screen.getByRole('button', { name: /Edit \/ Manage/i }))
+    }
+
+    it('Cases 1, 2, 3, 4, 5, 14, 15: creates new free user with trimmed username, separate password (never KeyValue), plan=free, calculated expiry, Owner token, and preserves all download URLs', async () => {
+      let usersCallCount = 0
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          usersCallCount += 1
+          const rows =
+            usersCallCount >= 3
+              ? [
+                  {
+                    id: 501,
+                    Username: 'dsc_free_2026',
+                    Plan: 'free',
+                    ExpiryDate: new Date(Date.now() + 14 * 86400000).toISOString(),
+                    HWID: '',
+                    IsBanned: false,
+                    MustChangePassword: false,
+                  },
+                ]
+              : []
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => rows,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/update') && init?.method === 'PUT') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Settings updated.' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/free-panel/sync-user') && init?.method === 'POST') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ status: 'created', message: 'Free user created.' }),
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      const beforeSaveTime = Date.now()
+      await openFreeSettingsEditModal()
+
+      fireEvent.change(screen.getByDisplayValue('free_prev'), {
+        target: { value: '  dsc_free_2026  ' },
+      })
+      fireEvent.change(screen.getByDisplayValue('prev_pass_123'), {
+        target: { value: 'NewFreePass#99' },
+      })
+      fireEvent.change(screen.getByDisplayValue('7'), {
+        target: { value: '14' },
+      })
+
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Free Panel settings saved and Free Plan user "dsc_free_2026" \(Plan: FREE\) was created in Users\./i
+          )
+        ).toBeTruthy()
+      })
+
+      // Case 1 & 4: Automatically switched to Users table and displays new user with Plan FREE
+      expect(screen.getByText('dsc_free_2026')).toBeTruthy()
+      expect(screen.getByText('FREE')).toBeTruthy()
+
+      // Case 15: Verify settings update preserved all existing download links and system settings
+      const settingsPutCall = fetchSpy.mock.calls.find(([url]) =>
+        String(url).includes('/api/admin/settings/update')
+      )
+      expect(settingsPutCall).toBeTruthy()
+      const settingsBody = JSON.parse(settingsPutCall[1].body)
+      expect(settingsBody.freeUsername).toBe('dsc_free_2026')
+      expect(settingsBody.freePassword).toBe('NewFreePass#99')
+      expect(settingsBody.freeValidDays).toBe(14)
+      expect(settingsBody.streamerLink).toBe('https://downloads.dscweb.me/streamer.zip')
+      expect(settingsBody.sniperLink).toBe('https://downloads.dscweb.me/sniper.zip')
+      expect(settingsBody.specialLink).toBe('https://downloads.dscweb.me/special.zip')
+      expect(settingsBody.aimbotLink).toBe('https://downloads.dscweb.me/aimbot.zip')
+      expect(settingsBody.premiumLink).toBe('https://downloads.dscweb.me/premium.zip')
+      expect(settingsBody.customisedLink).toBe('https://downloads.dscweb.me/customised.zip')
+      expect(settingsBody.freeLink).toBe('https://downloads.dscweb.me/free.zip')
+
+      // Cases 2, 3, 4, 5, 14: Verify sync-user endpoint payload & authorization
+      const syncCall = fetchSpy.mock.calls.find(([url]) =>
+        String(url).includes('/api/admin/free-panel/sync-user')
+      )
+      expect(syncCall).toBeTruthy()
+      expect(syncCall[1].headers.Authorization).toBe('Bearer mock-owner-token')
+
+      const syncBody = JSON.parse(syncCall[1].body)
+      expect(syncBody.username).toBe('dsc_free_2026')
+      expect(syncBody.Username).toBe('dsc_free_2026')
+      expect(syncBody.password).toBe('NewFreePass#99')
+      expect(syncBody.Password).toBe('NewFreePass#99')
+      // Never put password into KeyValue or PasswordHash
+      expect(syncBody.keyValue).toBeUndefined()
+      expect(syncBody.KeyValue).toBeUndefined()
+      expect(syncBody.passwordHash).toBeUndefined()
+      expect(syncBody.PasswordHash).toBeUndefined()
+      expect(syncBody.plan).toBe('free')
+      expect(syncBody.Plan).toBe('free')
+      expect(syncBody.validDays).toBe(14)
+      expect(syncBody.isBanned).toBe(false)
+
+      const expiryMs = Date.parse(syncBody.expiryTime)
+      const expectedMin = beforeSaveTime + 14 * 86400000 - 5000
+      const expectedMax = Date.now() + 14 * 86400000 + 5000
+      expect(expiryMs).toBeGreaterThanOrEqual(expectedMin)
+      expect(expiryMs).toBeLessThanOrEqual(expectedMax)
+    })
+
+    it('Case 6: updates existing free user without creating duplicates (and supports fallback to /api/admin/user/update + /set-password when sync endpoint returns 404)', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => [
+              {
+                id: 77,
+                Username: 'free_prev',
+                Plan: 'free',
+                ExpiryDate: '2026-01-01T00:00:00Z',
+                IsBanned: true,
+              },
+            ],
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/update')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Settings updated.' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/free-panel/sync-user')) {
+          return {
+            ok: false,
+            status: 404,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Endpoint not found' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/user/update') && init?.method === 'PUT') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'User updated.' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/user/77/set-password') && init?.method === 'POST') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Password updated.' }),
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      fireEvent.change(screen.getByDisplayValue('prev_pass_123'), {
+        target: { value: 'RotatedPass789' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Free Panel settings saved and existing Free Plan user "free_prev" \(Plan: FREE\) was updated in Users\./i
+          )
+        ).toBeTruthy()
+      })
+
+      const userUpdateCall = fetchSpy.mock.calls.find(([url]) =>
+        String(url).includes('/api/admin/user/update')
+      )
+      expect(userUpdateCall).toBeTruthy()
+      const updateBody = JSON.parse(userUpdateCall[1].body)
+      expect(updateBody.id).toBe(77)
+      expect(updateBody.plan).toBe('free')
+      expect(updateBody.isBanned).toBe(false)
+
+      const setPassCall = fetchSpy.mock.calls.find(([url]) =>
+        String(url).includes('/api/admin/user/77/set-password')
+      )
+      expect(setPassCall).toBeTruthy()
+      expect(JSON.parse(setPassCall[1].body)).toEqual({ newPassword: 'RotatedPass789' })
+    })
+
+    it('Case 7: blocks operation before updating settings or user when username belongs to an existing paid plan account', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => [
+              {
+                id: 12,
+                Username: 'vip_sniper_pro',
+                Plan: 'sniper',
+                ExpiryDate: '2027-05-01T00:00:00Z',
+                IsBanned: false,
+              },
+            ],
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      fireEvent.change(screen.getByDisplayValue('free_prev'), {
+        target: { value: 'vip_sniper_pro' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Cannot use username "vip_sniper_pro" for Free Panel: it belongs to an existing paid \(SNIPER\) user account\./i
+          )
+        ).toBeTruthy()
+      })
+
+      // Neither settings update nor sync-user was called
+      expect(
+        fetchSpy.mock.calls.some(([url]) => String(url).includes('/api/admin/settings/update'))
+      ).toBe(false)
+      expect(
+        fetchSpy.mock.calls.some(([url]) =>
+          String(url).includes('/api/admin/free-panel/sync-user')
+        )
+      ).toBe(false)
+    })
+
+    it('Cases 8, 9, 10: validates missing username, missing/short password, and invalid duration or slots before making API calls', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => [],
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      const userField = screen.getByDisplayValue('free_prev')
+      const passField = screen.getByDisplayValue('prev_pass_123')
+      const daysField = screen.getByDisplayValue('7')
+      const saveBtn = screen.getByRole('button', { name: /Save Changes/i })
+
+      // Case 8a: Missing username when password is provided
+      fireEvent.change(userField, { target: { value: '   ' } })
+      fireEvent.click(saveBtn)
+      expect(
+        await screen.findByText(
+          /Global Free Username is required when a Free Password is provided/i
+        )
+      ).toBeTruthy()
+
+      // Case 9a: Missing password when username is provided
+      fireEvent.change(userField, { target: { value: 'valid_free_user' } })
+      fireEvent.change(passField, { target: { value: '   ' } })
+      fireEvent.click(saveBtn)
+      expect(
+        await screen.findByText(
+          /Global Free Password is required when configuring a Free Panel username/i
+        )
+      ).toBeTruthy()
+
+      // Case 9b: Short password (< 6 chars)
+      fireEvent.change(passField, { target: { value: '12345' } })
+      fireEvent.click(saveBtn)
+      expect(
+        await screen.findByText(/Global Free Password must be at least 6 characters long/i)
+      ).toBeTruthy()
+
+      // Case 10: Invalid duration (0 days)
+      fireEvent.change(passField, { target: { value: 'ValidPass123' } })
+      fireEvent.change(daysField, { target: { value: '0' } })
+      fireEvent.click(saveBtn)
+      expect(
+        await screen.findByText(
+          /Free User Valid Days must be a positive integer \(at least 1 day\)/i
+        )
+      ).toBeTruthy()
+
+      expect(
+        fetchSpy.mock.calls.some(([url]) => String(url).includes('/api/admin/settings/update'))
+      ).toBe(false)
+    })
+
+    it('Case 8b: clearing both username and password saves blank settings (Free Panel OFF) and disables previous free user', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => [
+              { id: 88, Username: 'free_prev', Plan: 'free', IsBanned: false },
+            ],
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/update') && init?.method === 'PUT') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Settings cleared.' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/free-panel/sync-user') && init?.method === 'POST') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ status: 'disabled' }),
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      fireEvent.change(screen.getByDisplayValue('free_prev'), { target: { value: '' } })
+      fireEvent.change(screen.getByDisplayValue('prev_pass_123'), { target: { value: '' } })
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Free Panel settings saved \(Free Panel OFF\) and previous Free Plan user account was disabled\./i
+          )
+        ).toBeTruthy()
+      })
+
+      const syncCall = fetchSpy.mock.calls.find(([url]) =>
+        String(url).includes('/api/admin/free-panel/sync-user')
+      )
+      expect(syncCall).toBeTruthy()
+      const syncBody = JSON.parse(syncCall[1].body)
+      expect(syncBody.username).toBe('')
+      expect(syncBody.previousUsername).toBe('free_prev')
+      expect(syncBody.isBanned).toBe(true)
+    })
+
+    it('Case 11: does NOT show success when settings save succeeds but user creation fails', async () => {
+      vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => [],
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/update') && init?.method === 'PUT') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Settings updated.' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/free-panel/sync-user')) {
+          return {
+            ok: false,
+            status: 500,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ detail: 'Database insertion failed for Users table.' }),
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      fireEvent.change(screen.getByDisplayValue('free_prev'), {
+        target: { value: 'new_free_candidate' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Settings were saved, but Free Plan user provisioning failed: Database insertion failed for Users table\./i
+          )
+        ).toBeTruthy()
+      })
+
+      expect(
+        screen.queryByText(/Free Panel settings saved and Free Plan user/i)
+      ).toBeNull()
+    })
+
+    it('Case 12: reports UI refresh failure gracefully when user creation succeeds but reloading Users table fails', async () => {
+      let usersCallCount = 0
+      vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          usersCallCount += 1
+          if (usersCallCount >= 3) {
+            return {
+              ok: false,
+              status: 500,
+              headers: new Headers({ 'content-type': 'application/json' }),
+              json: async () => ({ message: 'Temporary database timeout' }),
+            }
+          }
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => [],
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/update') && init?.method === 'PUT') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Settings updated.' }),
+          }
+        }
+        if (strUrl.includes('/api/admin/free-panel/sync-user') && init?.method === 'POST') {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ status: 'created' }),
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      fireEvent.change(screen.getByDisplayValue('free_prev'), {
+        target: { value: 'created_but_refresh_err' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Free Panel settings were saved and Free Plan user "created_but_refresh_err" was created, but refreshing the Users table failed/i
+          )
+        ).toBeTruthy()
+      })
+    })
+
+    it('Case 13: blocks unauthorized Admin (HTTP 403 Forbidden) with Owner privileges error', async () => {
+      vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+        const strUrl = String(url)
+        if (strUrl.includes('/api/admin/users')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => [],
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/all')) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => baseSettingsPayload,
+          }
+        }
+        if (strUrl.includes('/api/admin/settings/update')) {
+          return {
+            ok: false,
+            status: 403,
+            headers: new Headers({ 'content-type': 'application/json' }),
+            json: async () => ({ message: 'Access denied: Owner privileges required.' }),
+          }
+        }
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: async () => ({}),
+        }
+      })
+
+      await openFreeSettingsEditModal()
+      fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/Access denied: Owner privileges required\./i)).toBeTruthy()
+      })
+    })
+  })
 })

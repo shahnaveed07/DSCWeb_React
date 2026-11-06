@@ -367,6 +367,37 @@ export function updateOwnerRecord(token, table, record) {
   return request(path, { method, token, body: record })
 }
 
+export function syncFreePanelUser(token, syncPayload) {
+  const username = String(syncPayload?.username ?? '').trim()
+  const previousUsername = String(syncPayload?.previousUsername ?? '').trim()
+  const password = String(syncPayload?.password ?? '')
+  const validDays = Number(syncPayload?.validDays) || 30
+  const expiryTime =
+    syncPayload?.expiryTime ?? new Date(Date.now() + validDays * 86400000).toISOString()
+  const isBanned = Boolean(syncPayload?.isBanned)
+
+  return request('/api/admin/free-panel/sync-user', {
+    method: 'POST',
+    token,
+    body: {
+      username,
+      Username: username,
+      previousUsername,
+      PreviousUsername: previousUsername,
+      password,
+      Password: password,
+      plan: 'free',
+      Plan: 'free',
+      validDays,
+      ValidDays: validDays,
+      expiryTime,
+      ExpiryTime: expiryTime,
+      isBanned,
+      IsBanned: isBanned,
+    },
+  })
+}
+
 export function deleteOwnerRecord(token, table, id) {
   const paths = {
     users: `/api/admin/user/delete/${encodeURIComponent(id)}`,

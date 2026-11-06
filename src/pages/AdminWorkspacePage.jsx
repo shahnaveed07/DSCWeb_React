@@ -1,14 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   deleteOwnerRecord,
   extractApiMessage,
   forceUserPasswordReset,
+  getFreePanelStatus,
   getOwnerTable,
   isAuthError,
   mapSettingsRecord,
   resetUserHwid,
   setUserPassword,
+  syncFreePanelUser,
   toggleMaintenance,
+  updateAdminUser,
   updateOwnerRecord,
 } from '../services/dscApi'
 import {
@@ -144,7 +147,13 @@ function buildSettingsPayload(current, overrides = {}) {
         '',
       ),
     ),
-    freeLink: String(resolveSetting('freeLink', ['freeLink', 'FreeLink'], '')),
+    freeLink: String(
+      resolveSetting(
+        'freeLink',
+        ['freeLink', 'FreeLink', 'freeDownloadLink', 'FreeDownloadLink'],
+        '',
+      ),
+    ),
     streamerLink: String(
       resolveSetting('streamerLink', ['streamerLink', 'StreamerLink'], ''),
     ),
@@ -181,6 +190,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [reloadKey, setReloadKey] = useState(0)
+  const skipNextFetchRef = useRef(false)
   const token = session?.token
 
   const columns = useMemo(() => TABLE_COLUMN_DEFINITIONS[table] || [], [table])
@@ -194,6 +204,10 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   }, [])
 
   useEffect(() => {
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false
+      return
+    }
     let ignore = false
     async function fetchData() {
       if (!token) return
@@ -493,9 +507,251 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
     }
   }
 
+  async function handleSaveFreeSettings() {
+    const trimmedUsername = String(editForm.freeUsername ?? '').trim()
+    const rawPassword = String(editForm.freePassword ?? '').trim()
+    const validDaysNum = Number(editForm.freeValidDays)
+    const maxSlotsNum = Number(editForm.maxFreeSlots)
+    const previousUsername = String(
+      resolveRecordField({ ...cachedSettings, ...editRecord }, [
+        'freeUsername',
+        'FreeUsername',
+        'freeUser',
+        'FreeUser',
+      ]) ?? '',
+    ).trim()
+
+    if (!trimmedUsername && rawPassword) {
+      setError(
+        'Global Free Username is required when a Free Password is provided. Leave both blank to turn Free Panel off.',
+      )
+      return
+    }
+
+    if (trimmedUsername && !rawPassword) {
+      setError('Global Free Password is required when configuring a Free Panel username.')
+      return
+    }
+
+    if (trimmedUsername && rawPassword.length < 6) {
+      setError('Global Free Password must be at least 6 characters long.')
+      return
+    }
+
+    if (!Number.isInteger(validDaysNum) || validDaysNum < 1) {
+      setError('Free User Valid Days must be a positive integer (at least 1 day).')
+      return
+    }
+
+    if (!Number.isInteger(maxSlotsNum) || maxSlotsNum < 1) {
+      setError('Max Free Panel Slots must be a positive integer (at least 1 slot).')
+      return
+    }
+
+    const payload = buildSettingsPayload(
+      { ...cachedSettings, ...editRecord },
+      {
+        ...editForm,
+        freeUsername: trimmedUsername,
+        freePassword: trimmedUsername ? rawPassword : '',
+        freeValidDays: validDaysNum,
+        maxFreeSlots: maxSlotsNum,
+      },
+    )
+
+    setBusyAction('save')
+    setError('')
+    setMessage('')
+
+    try {
+      // Inspect existing Users table to prevent paid-account conflicts and detect existing free accounts
+      const usersPayload = await getOwnerTable(token, 'users')
+      const currentUsers = listFor('users', usersPayload)
+
+      const existingUser = trimmedUsername
+        ? currentUsers.find(
+            (u) =>
+              String(resolveRecordField(u, ['username', 'Username']) ?? '')
+                .trim()
+                .toLowerCase() === trimmedUsername.toLowerCase(),
+          )
+        : null
+
+      if (existingUser) {
+        const existingPlan = String(resolveRecordField(existingUser, ['plan', 'Plan']) ?? '')
+          .trim()
+          .toLowerCase()
+        if (existingPlan && existingPlan !== 'free') {
+          throw new Error(
+            `Cannot use username "${trimmedUsername}" for Free Panel: it belongs to an existing paid (${existingPlan.toUpperCase()}) user account.`,
+          )
+        }
+      }
+
+      // Step A — Persist global Free Panel settings
+      await updateOwnerRecord(token, 'freeSettings', payload)
+      setCachedSettings((prev) => ({ ...prev, ...payload }))
+
+      // Step B — Create, update, or disable the corresponding Free Plan user in the Users table
+      const expiryTimeIso = trimmedUsername
+        ? new Date(Date.now() + validDaysNum * 86400000).toISOString()
+        : new Date(0).toISOString()
+
+      const syncMode = !trimmedUsername ? 'disable' : existingUser ? 'update' : 'create'
+      let accountOutcome =
+        syncMode === 'create' ? 'created' : syncMode === 'update' ? 'updated' : 'disabled'
+
+      try {
+        const syncRes = await syncFreePanelUser(token, {
+          username: trimmedUsername,
+          previousUsername,
+          password: trimmedUsername ? rawPassword : '',
+          plan: 'free',
+          validDays: validDaysNum,
+          expiryTime: expiryTimeIso,
+          isBanned: !trimmedUsername,
+        })
+        const reportedStatus = String(syncRes?.status || syncRes?.action || '').toLowerCase()
+        if (['created', 'updated', 'disabled', 'existed', 'unchanged'].includes(reportedStatus)) {
+          accountOutcome = reportedStatus
+        }
+      } catch (syncError) {
+        if (syncError?.status === 401) {
+          onSessionInvalid()
+          return
+        }
+        if (syncError?.status === 403) {
+          throw new Error(
+            extractApiMessage(
+              syncError?.payload,
+              'Access denied: Owner privileges required to provision Free Plan users.',
+            ),
+          )
+        }
+
+        const canFallbackToExistingUserEndpoints =
+          (syncError?.status === 404 || syncError?.status === 405) &&
+          (syncMode === 'update' || syncMode === 'disable')
+
+        if (canFallbackToExistingUserEndpoints) {
+          if (syncMode === 'update' && existingUser) {
+            const existingId = getDatabaseRecordId(existingUser)
+            if (existingId === null) {
+              throw new Error(
+                `Settings were saved, but could not update existing free user "${trimmedUsername}" because its database ID is missing.`,
+              )
+            }
+            await updateAdminUser(token, {
+              id: existingId,
+              userId: existingId,
+              plan: 'free',
+              expiryTime: expiryTimeIso,
+              isBanned: false,
+            })
+            await setUserPassword(token, existingId, rawPassword)
+            accountOutcome = 'updated'
+          } else if (syncMode === 'disable') {
+            const prevFreeUser = previousUsername
+              ? currentUsers.find(
+                  (u) =>
+                    String(resolveRecordField(u, ['username', 'Username']) ?? '')
+                      .trim()
+                      .toLowerCase() === previousUsername.toLowerCase() &&
+                    String(resolveRecordField(u, ['plan', 'Plan']) ?? '')
+                      .trim()
+                      .toLowerCase() === 'free',
+                )
+              : null
+            const prevId = prevFreeUser ? getDatabaseRecordId(prevFreeUser) : null
+            if (prevId !== null) {
+              await updateAdminUser(token, {
+                id: prevId,
+                userId: prevId,
+                plan: 'free',
+                expiryTime: new Date(0).toISOString(),
+                isBanned: true,
+              })
+            }
+            accountOutcome = 'disabled'
+          }
+        } else {
+          const detail = extractApiMessage(
+            syncError?.payload,
+            syncError?.message || 'Could not synchronize the Free Plan user account.',
+          )
+          throw new Error(
+            `Settings were saved, but Free Plan user provisioning failed: ${detail}`,
+          )
+        }
+      }
+
+      // Close modal and refresh public FreePanel status + Users table
+      setEditRecord(null)
+      getFreePanelStatus().catch(() => {})
+
+      let refreshFailed = false
+      try {
+        const refreshedUsersPayload = await getOwnerTable(token, 'users')
+        const refreshedUsers = listFor('users', refreshedUsersPayload)
+        skipNextFetchRef.current = true
+        setRecords(refreshedUsers)
+        setTable('users')
+        setPage(1)
+      } catch (refreshError) {
+        if (refreshError?.status === 401) {
+          onSessionInvalid()
+          return
+        }
+        refreshFailed = true
+      }
+
+      if (refreshFailed) {
+        setError(
+          `Free Panel settings were saved and Free Plan user "${trimmedUsername || previousUsername || 'free'}" was ${accountOutcome}, but refreshing the Users table failed. Click Reload Table to view the updated records.`,
+        )
+      } else if (!trimmedUsername || accountOutcome === 'disabled') {
+        setMessage(
+          'Free Panel settings saved (Free Panel OFF) and previous Free Plan user account was disabled.',
+        )
+      } else if (accountOutcome === 'updated') {
+        setMessage(
+          `Free Panel settings saved and existing Free Plan user "${trimmedUsername}" (Plan: FREE) was updated in Users.`,
+        )
+      } else if (accountOutcome === 'existed' || accountOutcome === 'unchanged') {
+        setMessage(
+          `Free Panel settings saved. Free Plan user "${trimmedUsername}" (Plan: FREE) already existed in Users.`,
+        )
+      } else {
+        setMessage(
+          `Free Panel settings saved and Free Plan user "${trimmedUsername}" (Plan: FREE) was created in Users.`,
+        )
+      }
+    } catch (issue) {
+      if (issue?.status === 401) {
+        onSessionInvalid()
+      } else if (issue?.status === 403) {
+        setError(
+          extractApiMessage(
+            issue?.payload,
+            'Access denied: Owner privileges required for this action.',
+          ),
+        )
+      } else {
+        setError(extractApiMessage(issue?.payload, issue?.message || 'The request failed.'))
+      }
+    } finally {
+      setBusyAction('')
+    }
+  }
+
   async function handleSaveEdit(e) {
     e.preventDefault()
     if (!editRecord) return
+
+    if (table === 'freeSettings') {
+      await handleSaveFreeSettings()
+      return
+    }
 
     const editId = getDatabaseRecordId(editRecord) ?? 0
     let payload = {}
@@ -529,7 +785,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
         userId: editId,
         status: editForm.status || 'Pending',
       }
-    } else if (table === 'settings' || table === 'freeSettings') {
+    } else if (table === 'settings') {
       payload = buildSettingsPayload({ ...cachedSettings, ...editRecord }, editForm)
     } else if (table === 'freeusers') {
       payload = {
@@ -553,7 +809,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
 
     await run(async () => {
       await updateOwnerRecord(token, table, payload)
-      if (table === 'settings' || table === 'freeSettings') {
+      if (table === 'settings') {
         setCachedSettings((prev) => ({ ...prev, ...payload }))
       }
       setEditRecord(null)
@@ -820,7 +1076,11 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
       {/* Edit Record Modal (Table-Specific Form Controls) */}
       {editRecord ? (
         <div className="modal-overlay open" role="dialog" aria-modal="true">
-          <form className="modal-card form-stack ownerdb-modal-card" onSubmit={handleSaveEdit}>
+          <form
+            className="modal-card form-stack ownerdb-modal-card"
+            onSubmit={handleSaveEdit}
+            noValidate
+          >
             <div>
               <span className="micro-label">TABLE: {activeTableLabel.toUpperCase()}</span>
               <h2 className="mt-4 mb-0">
