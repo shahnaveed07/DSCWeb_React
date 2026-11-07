@@ -7,67 +7,79 @@
    1. TOKENS & CSS VARIABLES — BLACK & GOLD CENTRALIZED SYSTEM
    -------------------------------------------------------------------------- */
 :root {
-  /* Core Colors — Black-First Dark Theme (60% Deep Black / 30% Charcoal Surfaces) */
-  --bg: #09090b;
-  --bg-soft: #0e0e11;
-  --surface: #121216;
-  --surface-solid: #16161b;
-  --surface-strong: #1a1a20;
-  --surface-elevated: #202027;
-  --surface-border: #24242c;
-  --surface-border-strong: #343440;
-  --surface-hover: #1e1e25;
+  color-scheme: dark;
+
+  /* Core Colors — True Black & Charcoal Baseline */
+  --bg: #050505;
+  --bg-soft: #0A0A0A;
+  --header-bg: #080808;
+  --footer-bg: #080808;
+  --surface: #111111;
+  --surface-solid: #111111;
+  --surface-strong: #171717;
+  --surface-elevated: #171717;
+  --surface-hover: #171717;
+  --surface-border: #292929;
+  --surface-border-strong: #383838;
 
   /* Aliases & Component Compatibility */
-  --surface-muted: var(--bg-soft);
-  --card-bg: #121216;
-  --card-border: #24242c;
-  --card-hover-border: rgba(212, 175, 55, 0.42);
-  --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --footer-bg: #0c0c0f;
-  --input-bg: #0e0e12;
-  --input-placeholder: #71717a;
+  --surface-muted: #0A0A0A;
+  --card-bg: #111111;
+  --card-border: #292929;
+  --card-hover-border: #51421D;
+  --card-hover-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+  --input-bg: #0A0A0A;
+  --input-placeholder: #737373;
 
   /* Borders */
-  --border: #24242c;
-  --border-strong: #343440;
-  --border-hover: rgba(212, 175, 55, 0.45);
-  --line: #24242c;
-  --line-strong: #343440;
+  --border: #292929;
+  --border-strong: #383838;
+  --border-hover: #51421D;
+  --gold-border-subtle: #51421D;
+  --line: #292929;
+  --line-strong: #383838;
 
   /* Typography */
-  --text: #f8f8fa;
-  --text-secondary: #a1a1aa;
-  --text-soft: #a1a1aa;
-  --text-muted: #84848f;
-  --muted: #a1a1aa;
-  --text-disabled: #63636e;
-  --highlight-text: #ffffff;
-  --panel-name: #ffffff;
+  --text: #F5F5F5;
+  --text-secondary: #A3A3A3;
+  --text-soft: #A3A3A3;
+  --text-muted: #A3A3A3;
+  --muted: #A3A3A3;
+  --text-disabled: #666666;
+  --highlight-text: #FFFFFF;
+  --panel-name: #FFFFFF;
 
-  /* Brand Accents — Classic Metallic Gold & Champagne Gold (Restrained 10% Budget) */
-  --primary: #d4af37;
-  --primary-hover: #e5c158;
-  --primary-strong: #b89225;
-  --primary-active: #9a7b1c;
-  --primary-text: #ffffff;
-  --secondary: #e5c158;
+  /* Brand Accents — Refined Metallic Gold Palette */
+  --primary: #D4AF37;
+  --primary-hover: #F5D76E;
+  --primary-strong: #B8860B;
+  --primary-active: #98730F;
+  --primary-text: #080808;
+  --secondary: #F5D76E;
 
-  /* Primary Button Fills — Antique Gold for High-Contrast White Text */
-  --button-primary-bg: #9a7b1c;
-  --button-primary-hover: #b08d24;
-  --button-primary-active: #7d6315;
-  --button-primary-border: rgba(229, 193, 88, 0.35);
+  /* Primary Button Fills — Metallic Gold with Near-Black High-Contrast Text */
+  --button-primary-bg: #D4AF37;
+  --button-primary-hover: #F5D76E;
+  --button-primary-active: #98730F;
+  --button-primary-border: #B8860B;
+
+  /* Secondary Button Fills — Dark Charcoal with Muted Gold Border */
+  --button-secondary-bg: #111111;
+  --button-secondary-hover-bg: #171717;
+  --button-secondary-border: #51421D;
+  --button-secondary-hover-border: #D4AF37;
+  --button-secondary-text: #F5F5F5;
+  --button-secondary-hover-text: #F5D76E;
 
   --primary-soft: rgba(212, 175, 55, 0.12);
-  --primary-soft-strong: rgba(212, 175, 55, 0.2);
-  --primary-soft-border: rgba(212, 175, 55, 0.32);
-  --primary-border: rgba(212, 175, 55, 0.32);
+  --primary-soft-strong: rgba(212, 175, 55, 0.22);
+  --primary-soft-border: #51421D;
+  --primary-border: #51421D;
 
   --accent: var(--primary);
   --accent-strong: var(--primary-strong);
-  --link-color: #e5c158;
-  --eyebrow-color: #d4af37;
+  --link-color: #D4AF37;
+  --eyebrow-color: #D4AF37;
 
   /* Semantic Status Colors (Green, Yellow, Red Preserved) */
   --danger: #ef4444;
@@ -88,12 +100,12 @@
 
   /* Elite Tier Accent */
   --elite-bg: rgba(212, 175, 55, 0.08);
-  --elite-border: #d4af37;
+  --elite-border: #D4AF37;
   --elite-shadow: rgba(212, 175, 55, 0.2);
   --elite-shadow-hover: rgba(212, 175, 55, 0.36);
-  --elite-text-slate: #e2e8f0;
-  --elite-text-gold: #d4af37;
-  --elite-text-gold-light: #e5c158;
+  --elite-text-slate: #F5F5F5;
+  --elite-text-gold: #D4AF37;
+  --elite-text-gold-light: #F5D76E;
 
   /* Controls & Layout */
   --control-height: 40px;
@@ -107,10 +119,10 @@
   --section-gap: 36px;
 
   /* Shadows & Elevation */
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.28);
-  --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.32);
-  --ring: 0 0 0 2px rgba(212, 175, 55, 0.35);
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --ring: 0 0 0 2px rgba(212, 175, 55, 0.45);
   --surface-blur: 0px;
   --card-blur: 0px;
   --soft-blur: 0px;
@@ -119,90 +131,102 @@
   --footer-blur: 0px;
 
   /* Overlays & Toasts */
-  --toast-info-bg: rgba(28, 28, 36, 0.95);
-  --toast-info-color: #e5c158;
-  --toast-success-bg: rgba(21, 128, 61, 0.9);
+  --toast-info-bg: #171717;
+  --toast-info-color: #F5D76E;
+  --toast-success-bg: rgba(21, 128, 61, 0.92);
   --toast-success-color: #dcfce7;
-  --toast-error-bg: rgba(153, 27, 27, 0.9);
+  --toast-error-bg: rgba(153, 27, 27, 0.92);
   --toast-error-color: #fee2e2;
 
-  --tooltip-bg: #1a1a20;
-  --tooltip-color: #e5c158;
-  --tooltip-border: rgba(212, 175, 55, 0.35);
-  --tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --credentials-bg: #0e0e12;
+  --tooltip-bg: #171717;
+  --tooltip-color: #F5D76E;
+  --tooltip-border: #51421D;
+  --tooltip-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  --credentials-bg: #0A0A0A;
 
   --alert-warning-bg: rgba(245, 158, 11, 0.12);
   --alert-danger-bg: rgba(239, 68, 68, 0.12);
-  --skeleton-bg: linear-gradient(90deg, rgba(32, 32, 40, 0.55) 25%, rgba(52, 52, 64, 0.85) 50%, rgba(32, 32, 40, 0.55) 75%);
-  --seo-bg: rgba(255, 255, 255, 0.025);
-  --seo-border: rgba(255, 255, 255, 0.08);
+  --skeleton-bg: linear-gradient(90deg, #111111 25%, #1f1f1f 50%, #111111 75%);
+  --seo-bg: #0A0A0A;
+  --seo-border: #292929;
 }
 
 /* --------------------------------------------------------------------------
    LIGHT THEME VARIABLES — BLACK & GOLD LIGHT THEME
    -------------------------------------------------------------------------- */
 :root[data-theme="light"] {
-  /* Surfaces & Backgrounds */
-  --bg: #f7f7f5;
-  --bg-soft: #efefeb;
-  --surface: #ffffff;
-  --surface-solid: #ffffff;
-  --surface-strong: #fafaf8;
-  --surface-elevated: #ffffff;
-  --surface-border: #e4e4de;
-  --surface-border-strong: #cccbc2;
-  --surface-hover: #f3f3ef;
+  color-scheme: light;
 
-  --surface-muted: var(--bg-soft);
-  --card-bg: #ffffff;
-  --card-border: #e4e4de;
-  --card-hover-border: rgba(154, 123, 28, 0.45);
-  --card-hover-shadow: 0 6px 16px rgba(18, 18, 21, 0.07);
-  --footer-bg: #efefeb;
-  --input-bg: #ffffff;
-  --input-placeholder: #84848f;
+  /* Surfaces & Backgrounds */
+  --bg: #FAF8F2;
+  --bg-soft: #F2EFE7;
+  --header-bg: #FFFFFF;
+  --footer-bg: #F2EFE7;
+  --surface: #FFFFFF;
+  --surface-solid: #FFFFFF;
+  --surface-strong: #F7F5EE;
+  --surface-elevated: #FFFFFF;
+  --surface-hover: #F4F1E8;
+  --surface-border: #E2DEC9;
+  --surface-border-strong: #C8B273;
+
+  --surface-muted: #F2EFE7;
+  --card-bg: #FFFFFF;
+  --card-border: #E2DEC9;
+  --card-hover-border: #B8860B;
+  --card-hover-shadow: 0 8px 20px rgba(20, 20, 20, 0.08);
+  --input-bg: #FFFFFF;
+  --input-placeholder: #78756E;
 
   /* Borders */
-  --border: #e4e4de;
-  --border-strong: #cccbc2;
-  --border-hover: rgba(154, 123, 28, 0.5);
-  --line: #e4e4de;
-  --line-strong: #cccbc2;
+  --border: #E2DEC9;
+  --border-strong: #C8B273;
+  --border-hover: #B8860B;
+  --gold-border-subtle: #C8B273;
+  --line: #E2DEC9;
+  --line-strong: #C8B273;
 
   /* Typography */
-  --text: #121215;
-  --text-secondary: #52525b;
-  --text-soft: #52525b;
-  --text-muted: #6b6b76;
-  --muted: #52525b;
-  --text-disabled: #8a8a96;
-  --highlight-text: #09090b;
-  --panel-name: #09090b;
+  --text: #141414;
+  --text-secondary: #52504A;
+  --text-soft: #52504A;
+  --text-muted: #66635B;
+  --muted: #52504A;
+  --text-disabled: #8C887E;
+  --highlight-text: #050505;
+  --panel-name: #050505;
 
-  /* Brand Accents — Antique & Metallic Gold (Light Mode Contrast Balanced) */
-  --primary: #9a7b1c;
-  --primary-hover: #7d6315;
-  --primary-strong: #7d6315;
-  --primary-active: #634e10;
-  --primary-text: #ffffff;
-  --secondary: #b89225;
+  /* Brand Accents — Muted Metallic Gold (Light Mode Contrast Balanced) */
+  --primary: #98730F;
+  --primary-hover: #B8860B;
+  --primary-strong: #7D5E0A;
+  --primary-active: #634A07;
+  --primary-text: #080808;
+  --secondary: #B8860B;
 
-  /* Primary Button Fills — Antique Gold with White Text */
-  --button-primary-bg: #9a7b1c;
-  --button-primary-hover: #7d6315;
-  --button-primary-active: #634e10;
-  --button-primary-border: #7d6315;
+  /* Primary Button Fills — Metallic Gold with Near-Black Text */
+  --button-primary-bg: #D4AF37;
+  --button-primary-hover: #F5D76E;
+  --button-primary-active: #B8860B;
+  --button-primary-border: #98730F;
 
-  --primary-soft: rgba(154, 123, 28, 0.1);
-  --primary-soft-strong: rgba(154, 123, 28, 0.16);
-  --primary-soft-border: rgba(154, 123, 28, 0.28);
-  --primary-border: rgba(154, 123, 28, 0.28);
+  /* Secondary Button Fills — Clean White/Charcoal with Muted Gold Border */
+  --button-secondary-bg: #FFFFFF;
+  --button-secondary-hover-bg: #F7F5EE;
+  --button-secondary-border: #C8B273;
+  --button-secondary-hover-border: #98730F;
+  --button-secondary-text: #141414;
+  --button-secondary-hover-text: #7D5E0A;
+
+  --primary-soft: rgba(184, 134, 11, 0.12);
+  --primary-soft-strong: rgba(184, 134, 11, 0.2);
+  --primary-soft-border: #C8B273;
+  --primary-border: #C8B273;
 
   --accent: var(--primary);
   --accent-strong: var(--primary-strong);
-  --link-color: #9a7b1c;
-  --eyebrow-color: #9a7b1c;
+  --link-color: #98730F;
+  --eyebrow-color: #98730F;
 
   /* Semantic Status Colors */
   --danger: #dc2626;
@@ -222,19 +246,19 @@
   --warning-border: rgba(217, 119, 6, 0.22);
 
   /* Elite Tier Accent */
-  --elite-bg: rgba(154, 123, 28, 0.08);
-  --elite-border: #9a7b1c;
-  --elite-shadow: rgba(154, 123, 28, 0.12);
-  --elite-shadow-hover: rgba(154, 123, 28, 0.24);
-  --elite-text-slate: #334155;
-  --elite-text-gold: #9a7b1c;
-  --elite-text-gold-light: #b89225;
+  --elite-bg: rgba(212, 175, 55, 0.1);
+  --elite-border: #B8860B;
+  --elite-shadow: rgba(184, 134, 11, 0.14);
+  --elite-shadow-hover: rgba(184, 134, 11, 0.26);
+  --elite-text-slate: #141414;
+  --elite-text-gold: #98730F;
+  --elite-text-gold-light: #B8860B;
 
   /* Shadows */
-  --shadow: 0 6px 18px rgba(18, 18, 21, 0.08);
-  --shadow-sm: 0 2px 8px rgba(18, 18, 21, 0.05);
-  --shadow-card: 0 4px 14px rgba(18, 18, 21, 0.06);
-  --ring: 0 0 0 2px rgba(154, 123, 28, 0.28);
+  --shadow: 0 6px 18px rgba(20, 20, 20, 0.08);
+  --shadow-sm: 0 2px 8px rgba(20, 20, 20, 0.05);
+  --shadow-card: 0 4px 14px rgba(20, 20, 20, 0.06);
+  --ring: 0 0 0 2px rgba(184, 134, 11, 0.35);
   --surface-blur: 0px;
   --card-blur: 0px;
   --soft-blur: 0px;
@@ -243,24 +267,24 @@
   --footer-blur: 0px;
 
   /* Overlays & Toasts */
-  --toast-info-bg: rgba(250, 245, 224, 0.96);
-  --toast-info-color: #634e10;
+  --toast-info-bg: #FFFFFF;
+  --toast-info-color: #7D5E0A;
   --toast-success-bg: rgba(187, 247, 208, 0.96);
   --toast-success-color: #14532d;
   --toast-error-bg: rgba(254, 202, 202, 0.96);
   --toast-error-color: #7f1d1d;
 
-  --tooltip-bg: #ffffff;
-  --tooltip-color: var(--primary-strong);
-  --tooltip-border: var(--primary);
-  --tooltip-shadow: 0 8px 20px rgba(18, 18, 21, 0.12);
-  --credentials-bg: #efefeb;
+  --tooltip-bg: #FFFFFF;
+  --tooltip-color: #7D5E0A;
+  --tooltip-border: #C8B273;
+  --tooltip-shadow: 0 8px 20px rgba(20, 20, 20, 0.12);
+  --credentials-bg: #F2EFE7;
 
   --alert-warning-bg: rgba(217, 119, 6, 0.1);
   --alert-danger-bg: rgba(220, 38, 38, 0.1);
-  --skeleton-bg: linear-gradient(90deg, #e4e4de 25%, #d4d4cc 50%, #e4e4de 75%);
-  --seo-bg: #ffffff;
-  --seo-border: #e4e4de;
+  --skeleton-bg: linear-gradient(90deg, #ECE8DC 25%, #DDD7C6 50%, #ECE8DC 75%);
+  --seo-bg: #FFFFFF;
+  --seo-border: #E2DEC9;
 }
 
 /* --------------------------------------------------------------------------
@@ -397,7 +421,7 @@ button, a {
   padding: 10px 18px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--surface-border);
-  background: var(--surface-solid);
+  background: var(--header-bg, #080808);
   box-shadow: var(--shadow-sm);
   position: relative;
   z-index: 50;
@@ -663,37 +687,40 @@ button {
 
 .button-primary,
 .btn-primary {
-  background-color: var(--button-primary-bg, var(--primary));
-  color: var(--primary-text) !important;
-  border-color: var(--button-primary-border, var(--primary));
+  background-color: var(--button-primary-bg, #D4AF37);
+  color: var(--primary-text, #080808) !important;
+  border-color: var(--button-primary-border, #B8860B);
   font-weight: 700;
 }
 
 .button-primary:hover:not(:disabled),
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--button-primary-hover, var(--primary-hover));
-  border-color: var(--primary);
-  color: var(--primary-text) !important;
+  background-color: var(--button-primary-hover, #F5D76E);
+  border-color: var(--button-primary-hover, #F5D76E);
+  color: var(--primary-text, #080808) !important;
 }
 
 .button-primary:active:not(:disabled),
 .btn-primary:active:not(:disabled) {
-  background-color: var(--button-primary-active, var(--primary-active));
+  background-color: var(--button-primary-active, #98730F);
+  border-color: var(--button-primary-active, #98730F);
+  color: var(--primary-text, #080808) !important;
 }
 
 .button-secondary,
 .btn-secondary,
 .btn-neutral {
-  background-color: var(--surface-hover);
-  color: var(--text) !important;
-  border-color: var(--border);
+  background-color: var(--button-secondary-bg, #111111);
+  color: var(--button-secondary-text, var(--text)) !important;
+  border-color: var(--button-secondary-border, #51421D);
 }
 
 .button-secondary:hover:not(:disabled),
 .btn-secondary:hover:not(:disabled),
 .btn-neutral:hover:not(:disabled) {
-  background-color: var(--surface-elevated);
-  border-color: var(--border-strong);
+  background-color: var(--button-secondary-hover-bg, #171717);
+  border-color: var(--button-secondary-hover-border, #D4AF37);
+  color: var(--button-secondary-hover-text, #F5D76E) !important;
 }
 
 .button-ghost,

@@ -8,6 +8,25 @@ function isExternal(target) {
   return /^https?:\/\//.test(String(target || ''))
 }
 
+export const THEME_STORAGE_KEY = 'dscThemePreferenceV2'
+
+function resolveInitialTheme() {
+  if (typeof document === 'undefined') return 'dark'
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY)
+    if (saved === 'light' || saved === 'dark') {
+      return saved
+    }
+  } catch {
+    // Ignore localStorage access errors.
+  }
+  const currentAttr = document.documentElement.getAttribute('data-theme')
+  if (currentAttr === 'light' || currentAttr === 'dark') {
+    return currentAttr
+  }
+  return 'dark'
+}
+
 export function SiteHeader({ session, systemStatus, onLogout, compact = false, wide = false }) {
   const location = useLocation()
   const menuRef = useRef(null)
@@ -16,12 +35,7 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false, w
 
   const isOwner = Boolean(session?.isOwner || verifiedOwner)
 
-  const [theme, setThemeState] = useState(() => {
-    if (typeof document === 'undefined') return 'dark'
-    const currentTheme = document.documentElement.getAttribute('data-theme')
-    if (currentTheme === 'light' || currentTheme === 'dark') return currentTheme
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  })
+  const [theme, setThemeState] = useState(resolveInitialTheme)
 
   // Check and keep owner permission updated for admin sessions
   useEffect(() => {
@@ -59,12 +73,13 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false, w
   }, [location.pathname, session, isOwner, onLogout])
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
+    const validTheme = theme === 'light' ? 'light' : 'dark'
+    document.documentElement.setAttribute('data-theme', validTheme)
+    document.documentElement.style.colorScheme = validTheme
 
-    try {
-      localStorage.setItem('siteTheme', theme)
-    } catch {
-      // Ignore localStorage access errors.
+    const metaTheme = document.querySelector('meta[name="theme-color"]')
+    if (metaTheme) {
+      metaTheme.setAttribute('content', validTheme === 'light' ? '#FAF8F2' : '#050505')
     }
   }, [theme])
 
@@ -89,7 +104,15 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false, w
   }, [])
 
   function toggleTheme() {
-    setThemeState((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'))
+    setThemeState((currentTheme) => {
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme)
+      } catch {
+        // Ignore localStorage access errors.
+      }
+      return nextTheme
+    })
   }
 
   return (

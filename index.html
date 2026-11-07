@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark" style="color-scheme: dark;">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -12,7 +12,7 @@
     <meta name="keywords" content="Dark Skull Corporation, DSC, dscweb, software panels, desktop utilities, android apps, QR scanner, mind matrix, software licensing" />
     <meta name="author" content="Dark Skull Corporation" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#050505" />
     <meta name="google-site-verification" content="Hw79fkwrion-b4AozRAnpjjcOAv9kHsCs40eEAq00c4" />
     <link rel="canonical" href="https://dscweb.me/" />
 
@@ -56,19 +56,20 @@
 
     <script>
       (() => {
+        let resolvedTheme = 'dark'
         try {
-          const savedTheme = localStorage.getItem('siteTheme')
-          const preferredTheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light'
-
+          const savedTheme = localStorage.getItem('dscThemePreferenceV2')
           if (savedTheme === 'light' || savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', savedTheme)
-          } else {
-            document.documentElement.setAttribute('data-theme', preferredTheme)
+            resolvedTheme = savedTheme
           }
         } catch {
-          // Ignore localStorage access errors.
+          // Ignore localStorage access errors; default remains dark.
+        }
+        document.documentElement.setAttribute('data-theme', resolvedTheme)
+        document.documentElement.style.colorScheme = resolvedTheme
+        const metaTheme = document.querySelector('meta[name="theme-color"]')
+        if (metaTheme) {
+          metaTheme.setAttribute('content', resolvedTheme === 'light' ? '#FAF8F2' : '#050505')
         }
       })()
     </script>
