@@ -164,8 +164,8 @@ export function CheckoutPage() {
 
   if (!isValidPanel) {
     return (
-      <main className="center-wrap">
-        <section className="panel auth-card">
+      <div className="center-wrap auth-shell">
+        <section className="panel auth-card text-center">
           <h1 className="auth-title">Invalid Selection</h1>
           <p className="auth-subtitle">No valid panel was selected for checkout.</p>
           <div className="mt-20">
@@ -174,15 +174,15 @@ export function CheckoutPage() {
             </NavLink>
           </div>
         </section>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="center-wrap">
+    <div className="center-wrap">
       <FullScreenLoader active={loading} message="Processing order..." />
-      <section className="panel auth-card checkout-card" style={{ maxWidth: '880px', margin: '0 auto' }}>
-        <div className="logo-mark free-panel-icon-60 mb-15">
+      <section className="panel auth-card checkout-card">
+        <div className="logo-mark free-panel-icon-60 mb-14">
           <picture>
             <source srcSet="/images/dsclogo.webp" type="image/webp" />
             <img
@@ -196,14 +196,14 @@ export function CheckoutPage() {
         </div>
         <h1 className="auth-title">Complete Order</h1>
         <p className="auth-subtitle">
-          Selected: <strong id="displayPanelName" style={{ color: 'var(--primary)' }}>{panel.toUpperCase()} PANEL</strong>
+          Selected: <strong id="displayPanelName" className="text-primary">{panel.toUpperCase()} PANEL</strong>
         </p>
 
         <form id="checkoutForm" onSubmit={handleSubmit}>
-          <div className="checkout-grid" style={{ marginTop: '24px' }}>
+          <div className="checkout-grid mt-20">
             {/* Left Column: Plan, Duration, Pricing & Payment Info */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="card" style={{ padding: '20px' }}>
+            <div className="checkout-col">
+              <div className="checkout-summary-card">
                 <label className="field" htmlFor="selectDays">
                   <span className="micro-label">DURATION &amp; PLAN</span>
                   <select
@@ -218,41 +218,38 @@ export function CheckoutPage() {
                       </option>
                     ))}
                   </select>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--muted)', marginTop: '4px', display: 'block' }}>
+                  <span className="text-xs text-muted mt-4">
                     Note: For 1-day community evaluation, use the live Free Panel.
                   </span>
                 </label>
 
-                <div style={{ marginTop: '16px' }}>
+                <div className="mt-16">
                   <span className="micro-label">TOTAL AMOUNT</span>
-                  <div
-                    id="displayPrice"
-                    style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--primary)', marginTop: '4px' }}
-                  >
+                  <div id="displayPrice" className="checkout-price-value">
                     {priceDisplayText}
                   </div>
                 </div>
               </div>
 
               {requiresProof ? (
-                <div className="card" style={{ padding: '20px' }}>
+                <div className="checkout-summary-card checkout-qr-section">
                   <span className="micro-label">UPI PAYMENT</span>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--muted)', marginTop: '4px', marginBottom: '14px' }}>
+                  <p className="text-sm text-muted mt-4 mb-14">
                     Pay via any UPI application or scan the QR code below.
                   </p>
 
                   <a
                     id="upiPayBtn"
-                    className="button button-primary w-100"
+                    className="button button-primary w-100 mb-16"
                     href={upiUrl}
                   >
                     Pay with UPI App ({totalInr} INR)
                   </a>
 
-                  <div className="payment-qr-container" style={{ margin: '16px auto 0', display: 'block' }}>
+                  <div className="payment-qr-container">
                     {qrLoading ? (
                       <div id="qrLoading" className="qr-placeholder">
-                        <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>Generating QR...</span>
+                        <span className="text-xs text-muted">Generating QR...</span>
                       </div>
                     ) : null}
                     <img
@@ -260,11 +257,8 @@ export function CheckoutPage() {
                       alt="UPI QR Code"
                       src={qrCodeUrl}
                       onLoad={() => setQrLoading(false)}
-                      style={{
-                        display: qrLoading ? 'none' : 'block',
-                        margin: '0 auto',
-                        borderRadius: '8px',
-                      }}
+                      className={`qr-image ${qrLoading ? 'hidden' : ''}`}
+                      style={{ display: qrLoading ? 'none' : 'block' }}
                     />
                   </div>
                 </div>
@@ -272,8 +266,8 @@ export function CheckoutPage() {
             </div>
 
             {/* Right Column: Account Details & Screenshot Proof */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="card" style={{ padding: '20px' }}>
+            <div className="checkout-col">
+              <div className="checkout-summary-card">
                 <label className="field" htmlFor="regUsername">
                   <span className="micro-label">DESIRED USERNAME</span>
                   <input
@@ -313,7 +307,7 @@ export function CheckoutPage() {
                 </label>
 
                 {requiresProof ? (
-                  <div id="paymentProofGroup" style={{ marginTop: '16px' }}>
+                  <div id="paymentProofGroup" className="mt-16">
                     <label className="field" htmlFor="paymentProofImg">
                       <span className="micro-label">UPLOAD PAYMENT PROOF SCREENSHOT</span>
                       <input
@@ -368,6 +362,6 @@ export function CheckoutPage() {
           </div>
         </form>
       </section>
-    </main>
+    </div>
   )
 }

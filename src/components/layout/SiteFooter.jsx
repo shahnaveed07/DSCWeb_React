@@ -1,9 +1,7 @@
-export function SiteFooter() {
+export function SiteFooter({ wide = false }) {
   return (
     <footer id="dsc-footer" className="developer-footer">
-      <div className="footer-container">
-        
-
+      <div className={`footer-container ${wide ? 'footer-container-wide' : ''}`.trim()}>
         {/* Bottom Bar */}
         <div className="footer-bottom">
           <p className="footer-copyright">

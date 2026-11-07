@@ -28,10 +28,10 @@ export function UserDashboardPage({ session, onSessionInvalid }) {
   if (loading) {
     return (
       <div className="center-wrap">
-        <section className="panel" style={{ textAlign: 'center', padding: '48px 24px' }}>
-          <div className="skeleton-line" style={{ height: '24px', width: '200px', margin: '0 auto 16px', borderRadius: '4px' }} />
-          <div className="skeleton-line" style={{ height: '40px', width: 'min(320px, 100%)', margin: '0 auto 20px', borderRadius: '8px' }} />
-          <p style={{ color: 'var(--muted)' }}>Retrieving your order and subscription status...</p>
+        <section className="panel text-center">
+          <div className="skeleton-line skeleton-title" />
+          <div className="skeleton-line skeleton-bar" />
+          <p className="text-muted">Retrieving your order and subscription status...</p>
         </section>
       </div>
     )

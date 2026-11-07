@@ -132,7 +132,7 @@ export function AppsPage() {
       </section>
 
       {/* Applications Showcase */}
-      <div className="apps-list" style={{ marginTop: '32px' }}>
+      <div className="apps-list mt-36">
         {/* App 1: Interactive Calculator Tool */}
         <article className="app-card" id="calculator-tool">
           <div className="app-card-header">
@@ -155,7 +155,7 @@ export function AppsPage() {
             Use the working web version below directly in your browser, or request our portable Windows desktop executable.
           </p>
 
-          <div className="app-feature-grid" style={{ marginBottom: '24px' }}>
+          <div className="app-feature-grid mb-16">
             <div className="app-feature-item">
               <span className="app-feature-check">✓</span>
               <span>Zero-latency browser calculation</span>
@@ -175,52 +175,26 @@ export function AppsPage() {
           </div>
 
           {/* Embedded Working Web Calculator */}
-          <div
-            className="card"
-            style={{
-              maxWidth: '380px',
-              margin: '0 auto',
-              padding: '20px',
-              background: 'var(--surface-hover)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: 'var(--radius-lg)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span className="micro-label" style={{ color: 'var(--muted)' }}>DSC WEB CALCULATOR</span>
+          <div className="calc-widget">
+            <div className="calc-header">
+              <span className="micro-label m-0">DSC WEB CALCULATOR</span>
               <button
                 type="button"
                 onClick={handleCopyCalc}
                 className="button button-ghost button-sm"
-                style={{ fontSize: '0.76rem', padding: '2px 8px' }}
               >
                 {copiedResult ? 'Copied!' : 'Copy Result'}
               </button>
             </div>
 
             {/* Display screen */}
-            <div
-              style={{
-                background: 'var(--bg)',
-                border: '1px solid var(--surface-border)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '14px 16px',
-                textAlign: 'right',
-                fontSize: '1.8rem',
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                color: 'var(--primary)',
-                minHeight: '60px',
-                overflowX: 'auto',
-                marginBottom: '16px',
-              }}
-            >
+            <div className="calc-screen">
               {calcDisplay}
             </div>
 
             {/* Keypad */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-              <button type="button" className="button button-secondary" onClick={handleCalcClear} style={{ fontWeight: 700, color: 'var(--danger)' }}>C</button>
+            <div className="calc-keypad">
+              <button type="button" className="button button-secondary text-danger font-bold" onClick={handleCalcClear}>C</button>
               <button type="button" className="button button-secondary" onClick={handleCalcBackspace}>⌫</button>
               <button type="button" className="button button-secondary" onClick={() => handleCalcOperator('÷')}>÷</button>
               <button type="button" className="button button-secondary" onClick={() => handleCalcOperator('×')}>×</button>
@@ -238,21 +212,21 @@ export function AppsPage() {
               <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(1)}>1</button>
               <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(2)}>2</button>
               <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(3)}>3</button>
-              <button type="button" className="button button-primary" onClick={handleCalcEqual} style={{ gridRow: 'span 2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>=</button>
+              <button type="button" className="button button-primary calc-key-equal" onClick={handleCalcEqual}>=</button>
 
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(0)} style={{ gridColumn: 'span 2' }}>0</button>
+              <button type="button" className="button button-ghost calc-key-zero" onClick={() => handleCalcDigit(0)}>0</button>
               <button type="button" className="button button-ghost" onClick={handleCalcDecimal}>.</button>
             </div>
 
             {/* History reel */}
             {calcHistory.length > 0 ? (
-              <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--surface-border)' }}>
-                <span className="micro-label" style={{ display: 'block', marginBottom: '4px' }}>RECENT CALCULATIONS</span>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.78rem', color: 'var(--muted)', fontFamily: 'monospace' }}>
+              <div className="calc-history">
+                <span className="micro-label mb-4">RECENT CALCULATIONS</span>
+                <div className="calc-history-list">
                   {calcHistory.map((h, i) => (
-                    <li key={i} style={{ padding: '2px 0' }}>{h}</li>
+                    <div key={i} className="calc-history-item">{h}</div>
                   ))}
-                </ul>
+                </div>
               </div>
             ) : null}
           </div>
@@ -303,16 +277,7 @@ export function AppsPage() {
             </div>
           </div>
 
-          <div
-            style={{
-              marginTop: '16px',
-              padding: '12px 16px',
-              background: 'var(--surface-hover)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '0.82rem',
-              color: 'var(--muted)',
-            }}
-          >
+          <div className="app-notice-box">
             <strong>Permissions Transparency:</strong> Camera access is requested strictly when the scanner viewfinder is active. Storage permission is requested only when exporting a generated QR image file to your gallery. No location data or contacts are ever uploaded.
           </div>
         </article>
@@ -365,35 +330,35 @@ export function AppsPage() {
       </div>
 
       {/* Engineering Constitution & Quality Standards */}
-      <section className="seo-section" style={{ marginTop: '48px', marginBottom: '40px' }}>
+      <section className="seo-section">
         <div className="seo-container">
           <span className="badge good mb-8">Engineering Standards</span>
-          <h2 style={{ marginTop: '10px' }}>Our App Quality &amp; Privacy Constitution</h2>
-          <p style={{ color: 'var(--muted)', marginBottom: '24px' }}>
+          <h2>Our App Quality &amp; Privacy Constitution</h2>
+          <p className="mb-24">
             We design software around user respect and long-term reliability:
           </p>
 
-          <div className="card-grid columns-3" style={{ gap: '20px' }}>
+          <div className="card-grid columns-3">
             <article className="info-card">
               <span className="card-badge">PRIVACY FIRST</span>
-              <h3 style={{ marginTop: '8px' }}>Zero Background Mining</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>
+              <h3>Zero Background Mining</h3>
+              <p className="text-muted text-sm m-0">
                 Our applications never run background tracking processes, silently upload user contacts, or log device telemetry without explicit consent.
               </p>
             </article>
 
             <article className="info-card">
               <span className="card-badge">EFFICIENCY</span>
-              <h3 style={{ marginTop: '8px' }}>Low Resource Footprint</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>
+              <h3>Low Resource Footprint</h3>
+              <p className="text-muted text-sm m-0">
                 We engineer our binaries in native languages (C#, Kotlin, React) to ensure fast startup times, low battery consumption, and small APK/binary sizes.
               </p>
             </article>
 
             <article className="info-card">
               <span className="card-badge">TRANSPARENCY</span>
-              <h3 style={{ marginTop: '8px' }}>Open Verification</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>
+              <h3>Open Verification</h3>
+              <p className="text-muted text-sm m-0">
                 We communicate release notes honestly on GitHub and Discord, and maintain transparent permissions for all published Android packages.
               </p>
             </article>

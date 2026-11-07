@@ -9,12 +9,13 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
   const compactHeader = /^\/pages\/(ulogin|alogin|freepanel|checkout|udash|change|adash|ownerdb|generatekey)/i.test(
     cleanPath,
   )
-
+  const wideWorkspace = /^\/pages\/(adash|ownerdb)/i.test(cleanPath)
 
   return (
     <div className="app-shell">
       <SiteHeader
         compact={compactHeader}
+        wide={wideWorkspace}
         session={session}
         systemStatus={systemStatus}
         onLogout={onLogout}
@@ -22,7 +23,7 @@ export function SiteLayout({ session, systemStatus, onLogout }) {
       <main className="main-shell">
         <Outlet />
       </main>
-      <SiteFooter/>
+      <SiteFooter wide={wideWorkspace} />
     </div>
   )
 }

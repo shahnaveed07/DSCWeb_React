@@ -837,7 +837,7 @@ export function AdminWorkspacePage({ session, onSessionInvalid }) {
   )
 
   return (
-    <div className="center-wrap">
+    <div className="workspace-wrap">
       <section className="panel">
         <div className="ownerdb-header">
           <div>

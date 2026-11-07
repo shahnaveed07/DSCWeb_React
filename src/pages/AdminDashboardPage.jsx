@@ -255,20 +255,20 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
   }
 
   return (
-    <div className="center-wrap">
+    <div className="workspace-wrap">
       <section className="panel">
         {/* Header Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
+        <div className="admin-header-bar">
           <div>
             <span className="hero-eyebrow">Control Center</span>
             <h1 className="auth-title mt-6">Admin Dashboard</h1>
             <p className="auth-subtitle mb-0">
-              Active admin: <strong style={{ color: 'var(--primary)' }}>{String(session.username || 'admin').toUpperCase()}</strong>
+              Active admin: <strong className="text-primary">{String(session.username || 'admin').toUpperCase()}</strong>
               {ownerAccess ? ' • (Owner Access Verified)' : ''}
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="admin-header-actions">
             <NavLink to="/pages/generatekey" className="button button-primary button-sm">
               Generate Key
             </NavLink>
@@ -316,18 +316,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                 )}
               </button>
             ) : (
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  background: isMaintenance ? 'var(--danger-soft, #3a1515)' : 'var(--surface-border)',
-                  color: isMaintenance ? 'var(--danger)' : 'var(--muted)',
-                }}
-              >
+              <span className={`maint-status-pill ${isMaintenance ? 'is-active' : ''}`}>
                 Maint: {isMaintenance ? 'ON' : 'OFF'}
               </span>
             )}
@@ -376,15 +365,15 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
           </div>
           <div className="stat-card">
             <p className="stat-label">Permissions</p>
-            <div className="stat-value text-md text-secondary" style={{ fontSize: '1rem', marginTop: '6px' }}>
+            <div className="stat-value text-md text-secondary mt-6">
               {ownerAccess ? 'Full Owner' : 'Standard Admin'}
             </div>
           </div>
         </div>
 
         {/* Pending Orders Table */}
-        <div className="card mb-24" style={{ background: 'var(--surface-strong)', padding: '20px', borderRadius: '10px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+        <div className="card mb-24">
+          <div className="flex items-center justify-between mb-14 flex-wrap gap-10">
             <div>
               <span className="micro-label">APPROVAL QUEUE</span>
               <h3 className="mt-4 mb-0">Pending Orders ({orders.length})</h3>
@@ -455,7 +444,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                 })}
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan="8" style={{ textAlign: 'center', padding: '24px', color: 'var(--muted)' }}>
+                    <td colSpan="8" className="admin-empty-cell">
                       No pending orders to review.
                     </td>
                   </tr>
@@ -466,8 +455,8 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         </div>
 
         {/* Users Table */}
-        <div className="card" style={{ background: 'var(--surface-strong)', padding: '20px', borderRadius: '10px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+        <div className="card">
+          <div className="flex items-center justify-between mb-14 flex-wrap gap-10">
             <div>
               <span className="micro-label">DATABASE SNAPSHOT</span>
               <h3 className="mt-4 mb-0">Registered Users ({users.length})</h3>
@@ -500,7 +489,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                           {isBanned ? 'BANNED' : 'ACTIVE'}
                         </span>
                       </td>
-                      <td style={{ fontSize: '0.9rem' }}>
+                      <td className="text-sm">
                         {expiry && expiry !== '—' ? formatDateTime(expiry) : '—'}
                       </td>
                       <td>
@@ -539,7 +528,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                 })}
                 {users.length === 0 ? (
                   <tr>
-                    <td colSpan="5" style={{ textAlign: 'center', padding: '24px', color: 'var(--muted)' }}>
+                    <td colSpan="5" className="admin-empty-cell">
                       {loading ? 'Loading user data...' : 'No users found.'}
                     </td>
                   </tr>
@@ -570,7 +559,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               {orderModal.mode === 'approve' ? 'Approve Order?' : 'Reject Order?'}
             </h2>
 
-            <p style={{ color: 'var(--muted)', margin: '14px 0 22px' }}>
+            <p className="text-muted my-14">
               Are you sure you want to{' '}
               <strong className={orderModal.mode === 'approve' ? 'text-approve-state' : 'text-reject-state'}>
                 {orderModal.mode.toUpperCase()}
@@ -578,7 +567,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               order #{orderModal.orderId} for user <strong>{orderModal.username}</strong>?
             </p>
 
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <div className="modal-actions-center">
               <button
                 type="button"
                 className={`${orderModal.mode === 'approve' ? 'button button-success' : 'button button-danger'} ${busyAction === `order-${orderModal.mode}` ? 'is-loading' : ''}`}
@@ -617,10 +606,10 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               </svg>
             </div>
             <h2 className="modal-title modal-title-large text-reject-state">Confirm Deletion</h2>
-            <p style={{ color: 'var(--muted)', margin: '14px 0 22px' }}>
+            <p className="text-muted my-14">
               Permanently delete {deleteModal.label}? This action cannot be reversed.
             </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <div className="modal-actions-center">
               <button
                 type="button"
                 className={`button button-danger ${busyAction === 'delete' ? 'is-loading' : ''}`}
@@ -654,7 +643,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         <div className="modal-overlay open" role="dialog" aria-modal="true">
           <form className="modal-card form-stack" onSubmit={handleSaveUser}>
             <h2>Edit User Account</h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+            <p className="text-muted text-sm">
               Update access parameters for {getValue(editUser, ['username', 'Username'])}.
             </p>
 
@@ -694,7 +683,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               </select>
             </label>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+            <div className="modal-actions-row">
               <button
                 className={`button button-primary ${busyAction === 'saveUser' ? 'is-loading' : ''}`}
                 disabled={busy}
@@ -719,9 +708,9 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
             </div>
 
             {ownerAccess ? (
-              <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--surface-border)' }}>
-                <span className="micro-label" style={{ display: 'block', marginBottom: '8px' }}>OWNER SECURITY ACTIONS</span>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <div className="ownerdb-password-section">
+                <span className="micro-label block mb-8">OWNER SECURITY ACTIONS</span>
+                <div className="flex gap-10 flex-wrap">
                   <button
                     type="button"
                     className={`button button-secondary button-sm ${busyAction === 'resetHwid' ? 'is-loading' : ''}`}
@@ -755,26 +744,26 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                 </div>
 
                 {/* Direct Set User Password Section */}
-                <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px dashed var(--surface-border)' }}>
-                  <span className="micro-label" style={{ display: 'block', marginBottom: '6px' }}>SET NEW USER PASSWORD</span>
-                  <p style={{ color: 'var(--muted)', fontSize: '0.85rem', margin: '0 0 12px 0' }}>
+                <div className="ownerdb-password-section">
+                  <span className="micro-label block mb-6">SET NEW USER PASSWORD</span>
+                  <p className="text-muted text-sm mb-12">
                     Directly assign a new password for account #{editUser?.id ?? editUser?.Id ?? editUser?.userId ?? editUser?.UserId} ({getValue(editUser, ['username', 'Username'])}). This takes effect immediately without requiring user action.
                   </p>
 
                   {userPassSuccess ? (
-                    <div className="form-success" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                    <div className="form-success mb-12 text-sm">
                       {userPassSuccess}
                     </div>
                   ) : null}
 
                   {userPassError ? (
-                    <div className="form-error" style={{ marginBottom: '12px', fontSize: '0.88rem' }}>
+                    <div className="form-error mb-12 text-sm">
                       {userPassError}
                     </div>
                   ) : null}
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '12px' }}>
-                    <label className="field" style={{ margin: 0 }}>
+                  <div className="ownerdb-password-grid">
+                    <label className="field">
                       <span>New Password (min 6 characters)</span>
                       <PasswordInput
                         value={userPassForm.newPassword}
@@ -795,7 +784,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                       />
                     </label>
 
-                    <label className="field" style={{ margin: 0 }}>
+                    <label className="field">
                       <span>Confirm New Password</span>
                       <PasswordInput
                         value={userPassForm.confirmPassword}
@@ -817,7 +806,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="flex items-center gap-10">
                     <button
                       type="button"
                       className={`button button-secondary button-sm ${busyAction === 'setUserPassword' ? 'is-loading' : ''}`}
@@ -859,7 +848,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         <div className="modal-overlay open" role="dialog" aria-modal="true">
           <form className="modal-card form-stack" onSubmit={handleCreateAdmin}>
             <h2>Create New Admin Account</h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+            <p className="text-muted text-sm">
               Authorize a new administrator with control panel privileges.
             </p>
 
@@ -885,7 +874,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               />
             </label>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+            <div className="modal-actions-row">
               <button
                 className={`button button-primary ${busyAction === 'createAdmin' ? 'is-loading' : ''}`}
                 disabled={busy}
@@ -917,7 +906,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
         <div className="modal-overlay open" role="dialog" aria-modal="true">
           <form className="modal-card form-stack" onSubmit={handleChangePassword}>
             <h2>Change Admin Password</h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+            <p className="text-muted text-sm">
               Update your administrative account credentials.
             </p>
 
@@ -944,7 +933,7 @@ export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) 
               />
             </label>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+            <div className="modal-actions-row">
               <button
                 className={`button button-primary ${busyAction === 'changePass' ? 'is-loading' : ''}`}
                 disabled={busy}

@@ -8,7 +8,7 @@ function isExternal(target) {
   return /^https?:\/\//.test(String(target || ''))
 }
 
-export function SiteHeader({ session, systemStatus, onLogout, compact = false }) {
+export function SiteHeader({ session, systemStatus, onLogout, compact = false, wide = false }) {
   const location = useLocation()
   const menuRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -93,7 +93,9 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false })
   }
 
   return (
-    <header className={`site-header ${compact ? 'site-header-compact' : ''}`.trim()}>
+    <header
+      className={`site-header ${compact ? 'site-header-compact' : ''} ${wide ? 'site-header-wide' : ''}`.trim()}
+    >
       <NavLink className="logo-mark" to="/" aria-label="Dark Skull Corporation Home">
         <picture>
           <source srcSet="/images/dsclogo.webp" type="image/webp" />

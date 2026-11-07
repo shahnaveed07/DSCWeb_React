@@ -31,9 +31,9 @@ export function DownloadsPage({ systemStatus }) {
       </section>
 
       {/* Downloads Grid */}
-      <div className="downloads-grid" style={{ marginTop: '32px' }}>
+      <div className="downloads-grid mt-36">
         {/* Free Panel Package */}
-        <article className="download-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <article className="download-card">
           <div>
             <div className="download-card-meta">
               <span className="badge warning">COMMUNITY EVALUATION</span>
@@ -47,17 +47,7 @@ export function DownloadsPage({ systemStatus }) {
               Public test release of our desktop utility panel. Evaluate server connectivity, examine real-time slot telemetry, and test core interface responsiveness.
             </p>
 
-            <div
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--muted)',
-                background: 'var(--surface-hover)',
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-sm)',
-                marginBottom: '16px',
-                lineHeight: '1.4',
-              }}
-            >
+            <div className="download-status-box mt-14 mb-16">
               <strong>Status:</strong> {slotsAvailable ? 'Slots currently open for evaluation.' : 'Public pool is currently at capacity.'}
             </div>
           </div>
@@ -86,7 +76,7 @@ export function DownloadsPage({ systemStatus }) {
         </article>
 
         {/* Calculator Desktop & Web */}
-        <article className="download-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <article className="download-card">
           <div>
             <div className="download-card-meta">
               <span className="badge good">PRODUCTIVITY TOOL</span>
@@ -98,17 +88,7 @@ export function DownloadsPage({ systemStatus }) {
               Distraction-free mathematics utility with continuous calculation history, one-click clipboard copy, and instantaneous evaluation.
             </p>
 
-            <div
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--muted)',
-                background: 'var(--surface-hover)',
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-sm)',
-                marginBottom: '16px',
-                lineHeight: '1.4',
-              }}
-            >
+            <div className="download-status-box mt-14 mb-16">
               <strong>Availability:</strong> Run instantly in your browser on our Apps page, or request the portable Windows executable via Discord.
             </div>
           </div>
@@ -121,7 +101,7 @@ export function DownloadsPage({ systemStatus }) {
         </article>
 
         {/* QR Scanner Mobile */}
-        <article className="download-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <article className="download-card">
           <div>
             <div className="download-card-meta">
               <span className="badge warning">ANDROID RELEASE</span>
@@ -133,17 +113,7 @@ export function DownloadsPage({ systemStatus }) {
               Instant autofocus barcode detection and offline custom QR code creator for Android devices. Supports Wi-Fi networks, URLs, and contact vCards.
             </p>
 
-            <div
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--muted)',
-                background: 'var(--surface-hover)',
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-sm)',
-                marginBottom: '16px',
-                lineHeight: '1.4',
-              }}
-            >
+            <div className="download-status-box mt-14 mb-16">
               <strong>Requirements:</strong> Android 7.0 (Nougat) or newer. Zero external telemetry.
             </div>
           </div>
@@ -161,7 +131,7 @@ export function DownloadsPage({ systemStatus }) {
         </article>
 
         {/* Mind Matrix */}
-        <article className="download-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <article className="download-card">
           <div>
             <div className="download-card-meta">
               <span className="badge warning">MOBILE GAME</span>
@@ -173,17 +143,7 @@ export function DownloadsPage({ systemStatus }) {
               Progressive cognitive training puzzle game with pattern recognition drills, memory sequences, and reflex challenges.
             </p>
 
-            <div
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--muted)',
-                background: 'var(--surface-hover)',
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-sm)',
-                marginBottom: '16px',
-                lineHeight: '1.4',
-              }}
-            >
+            <div className="download-status-box mt-14 mb-16">
               <strong>Requirements:</strong> Android 6.0+ compatible. Fully playable offline.
             </div>
           </div>
@@ -202,18 +162,20 @@ export function DownloadsPage({ systemStatus }) {
       </div>
 
       {/* Authenticated Client Downloads Information */}
-      <section className="seo-section" style={{ marginTop: '48px' }}>
+      <section className="seo-section">
         <div className="seo-container">
           <span className="badge good mb-8">Client Portal</span>
-          <h2 style={{ marginTop: '10px' }}>Private &amp; Dedicated Software Downloads</h2>
-          <p style={{ color: 'var(--muted)', marginBottom: '16px' }}>
+          <h2>Private &amp; Dedicated Software Downloads</h2>
+          <p className="mb-16">
             Looking for your licensed software panel (Streamer, Special, Sniper, Aim Assist)?
           </p>
-          <div className="card" style={{ padding: '20px', background: 'var(--surface-hover)', border: '1px solid var(--surface-border)' }}>
-            <p style={{ margin: '0 0 12px', fontSize: '0.92rem', lineHeight: '1.5' }}>
-              Paid software panel builds are individually compiled and tied to your unique hardware token. Once your order payment is verified by our team, your personalized download link and authorization key are automatically made available inside your private <strong>Client Dashboard</strong>.
-            </p>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div className="portal-callout-card">
+            <div className="portal-callout-info">
+              <p className="portal-callout-desc">
+                Paid software panel builds are individually compiled and tied to your unique hardware token. Once your order payment is verified by our team, your personalized download link and authorization key are automatically made available inside your private <strong>Client Dashboard</strong>.
+              </p>
+            </div>
+            <div className="portal-callout-actions">
               <NavLink to="/pages/ulogin" className="button button-primary button-sm">
                 Sign In to Client Portal
               </NavLink>
@@ -226,16 +188,16 @@ export function DownloadsPage({ systemStatus }) {
       </section>
 
       {/* System Requirements & Verification Instructions */}
-      <section className="seo-section" style={{ marginTop: '32px', marginBottom: '40px' }}>
+      <section className="seo-section">
         <div className="seo-container">
           <span className="badge warning mb-8">Technical Requirements</span>
-          <h2 style={{ marginTop: '10px' }}>System Compatibility &amp; Installation Guide</h2>
+          <h2>System Compatibility &amp; Installation Guide</h2>
 
-          <div className="card-grid columns-2" style={{ gap: '20px', marginTop: '20px' }}>
+          <div className="card-grid columns-2 mt-20">
             <article className="info-card">
               <span className="card-badge">WINDOWS REQUIREMENTS</span>
-              <h3 style={{ marginTop: '8px' }}>Hardware &amp; Runtimes</h3>
-              <ul className="feature-list" style={{ marginTop: '10px' }}>
+              <h3>Hardware &amp; Runtimes</h3>
+              <ul className="feature-list">
                 <li>Operating System: Windows 10 or Windows 11 (64-bit architecture)</li>
                 <li>Runtime: Microsoft .NET Framework 4.8 or later installed</li>
                 <li>Dependencies: Visual C++ 2015–2022 Redistributable (x64)</li>
@@ -245,11 +207,11 @@ export function DownloadsPage({ systemStatus }) {
 
             <article className="info-card">
               <span className="card-badge">SMARTSCREEN NOTICE</span>
-              <h3 style={{ marginTop: '8px' }}>Indie Binary Verification</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: '1.5', marginTop: '10px' }}>
+              <h3>Indie Binary Verification</h3>
+              <p className="text-muted text-sm m-0">
                 Because Dark Skull Corporation distributes custom compiled binaries directly to users rather than through enterprise certificate stores, Windows Defender SmartScreen may display an &ldquo;Unrecognized app&rdquo; prompt.
               </p>
-              <p style={{ color: 'var(--muted)', fontSize: '0.88rem', lineHeight: '1.5', margin: '8px 0 0' }}>
+              <p className="text-muted text-sm m-0 mt-6">
                 Click <strong>More info</strong> and select <strong>Run anyway</strong>. You can verify SHA-256 hashes on our Discord server before executing.
               </p>
             </article>

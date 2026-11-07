@@ -133,7 +133,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
               aria-describedby={fieldErrors.username ? 'admin-username-error' : undefined}
             />
             {fieldErrors.username ? (
-              <span id="admin-username-error" className="field-error-text" style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '2px' }} role="alert">
+              <span id="admin-username-error" className="field-error-text" role="alert">
                 {fieldErrors.username}
               </span>
             ) : null}
@@ -153,7 +153,7 @@ export function AdminLoginPage({ session, onSessionChange }) {
               aria-describedby={fieldErrors.password ? 'admin-password-error' : undefined}
             />
             {fieldErrors.password ? (
-              <span id="admin-password-error" className="field-error-text" style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '2px' }} role="alert">
+              <span id="admin-password-error" className="field-error-text" role="alert">
                 {fieldErrors.password}
               </span>
             ) : null}

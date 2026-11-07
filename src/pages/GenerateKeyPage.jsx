@@ -111,20 +111,9 @@ export function GenerateKeyPage({ session, onSessionInvalid }) {
         </form>
 
         {key ? (
-          <article className="card mt-20" style={{ padding: '20px', background: 'var(--surface-hover)', textAlign: 'center' }}>
+          <article className="generated-key-card">
             <span className="micro-label">GENERATED KEY</span>
-            <div
-              style={{
-                fontFamily: 'monospace',
-                fontSize: '1.15rem',
-                letterSpacing: '0.05em',
-                wordBreak: 'break-all',
-                overflowWrap: 'anywhere',
-                margin: '10px 0 16px',
-                color: 'var(--primary)',
-                fontWeight: 700,
-              }}
-            >
+            <div className="generated-key-value">
               {key}
             </div>
             <button className="button button-secondary button-sm" onClick={copyKey} type="button">

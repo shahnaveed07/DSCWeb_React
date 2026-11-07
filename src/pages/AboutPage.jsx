@@ -58,25 +58,11 @@ export function AboutPage() {
       </section>
 
       {/* Stats Strip */}
-      <div
-        className="card"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '16px',
-          padding: '24px',
-          marginBottom: '36px',
-          background: 'var(--surface-hover)',
-          border: '1px solid var(--surface-border)',
-          borderRadius: 'var(--radius-lg)',
-        }}
-      >
+      <div className="about-stats-grid mb-32">
         {aboutStats.map((st) => (
-          <div key={st.label} style={{ textAlign: 'center' }}>
-            <span className="micro-label" style={{ color: 'var(--muted)', display: 'block', marginBottom: '4px' }}>
-              {st.label}
-            </span>
-            <strong style={{ fontSize: '1.25rem', color: 'var(--primary)' }}>{st.value}</strong>
+          <div key={st.label} className="about-stat-item text-center">
+            <span className="micro-label">{st.label}</span>
+            <div className="about-stat-value">{st.value}</div>
           </div>
         ))}
       </div>
@@ -93,10 +79,10 @@ export function AboutPage() {
       </div>
 
       {/* Engineering Standards */}
-      <section className="seo-section" style={{ marginTop: '36px', marginBottom: '32px' }}>
+      <section className="seo-section">
         <div className="seo-container">
           <h2>Engineering Principles</h2>
-          <div className="principles-grid-about" style={{ marginTop: '20px' }}>
+          <div className="principles-grid-about">
             {engineeringStandards.map((pr) => (
               <div key={pr.number} className="principle-item-about">
                 <span className="principle-item-num">{pr.number}</span>
@@ -107,11 +93,11 @@ export function AboutPage() {
           </div>
 
           {/* Technology & Architecture Section */}
-          <h2 style={{ marginTop: '40px' }}>Technology Stack &amp; Architecture</h2>
-          <p style={{ color: 'var(--muted)', lineHeight: '1.6' }}>
+          <h2 className="mt-36">Technology Stack &amp; Architecture</h2>
+          <p>
             Dark Skull Corporation builds applications across multiple software tiers using battle-tested technology:
           </p>
-          <ul className="feature-list" style={{ marginTop: '12px' }}>
+          <ul className="feature-list">
             <li>
               <strong>Windows Desktop Binaries:</strong> Developed in C# utilizing the Microsoft .NET Framework for low memory footprint, raw input processing, and native Windows API integration.
             </li>
@@ -127,8 +113,8 @@ export function AboutPage() {
           </ul>
 
           {/* Leadership & Bio */}
-          <h2 style={{ marginTop: '40px' }}>Developer Leadership</h2>
-          <p style={{ color: 'var(--muted)', lineHeight: '1.6' }}>
+          <h2 className="mt-36">Developer Leadership</h2>
+          <p>
             Dark Skull Corporation is founded and independently developed by{' '}
             <a
               href="https://naveedmushtaq.tech/"
@@ -140,7 +126,7 @@ export function AboutPage() {
             </a>
             . Naveed leads all aspects of software architecture, C# tool compilation, mobile application deployment, and community support.
           </p>
-          <p style={{ color: 'var(--muted)', lineHeight: '1.6', marginTop: '12px' }}>
+          <p>
             You can inspect public code repositories and open-source contributions on GitHub at{' '}
             <a
               href="https://github.com/shahnaveed07"

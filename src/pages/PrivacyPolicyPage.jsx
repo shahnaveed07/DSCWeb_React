@@ -20,7 +20,7 @@ export function PrivacyPolicyPage() {
         <p className="hero-copy">
           We believe in data minimization and transparent operation. This Privacy Policy details the technical information collected when you access DSCWeb (dscweb.me), use our Android applications, or license our desktop software panels.
         </p>
-        <p className="mt-8 text-sm" style={{ color: 'var(--muted)' }}>
+        <p className="mt-8 text-sm text-muted">
           <strong>Last Updated:</strong> October 2026 &nbsp;|&nbsp; <strong>Effective Date:</strong> August 2026
         </p>
       </section>
@@ -35,7 +35,7 @@ export function PrivacyPolicyPage() {
             <article className="info-card" key={section.title}>
               <h3>{section.title}</h3>
               {section.description ? (
-                <p className="text-sm mb-12" style={{ color: 'var(--muted)', lineHeight: '1.5' }}>
+                <p className="text-sm text-muted mb-12">
                   {section.description}
                 </p>
               ) : null}
@@ -45,7 +45,7 @@ export function PrivacyPolicyPage() {
                 ))}
               </ul>
               {section.note ? (
-                <p className="text-xs mt-12" style={{ color: 'var(--secondary)', lineHeight: '1.4' }}>
+                <p className="text-xs text-muted mt-12">
                   <strong>Note:</strong> {section.note}
                 </p>
               ) : null}
@@ -55,16 +55,16 @@ export function PrivacyPolicyPage() {
           {/* Contact Box */}
           <article className="info-card">
             <h3>Privacy Questions &amp; Data Deletion</h3>
-            <p className="text-sm mb-12" style={{ color: 'var(--muted)', lineHeight: '1.5' }}>
+            <p className="text-sm text-muted mb-12">
               To exercise your data privacy rights, request an export of your account records, or request complete deletion of your data:
             </p>
-            <p className="text-sm mb-8" style={{ lineHeight: '1.6' }}>
+            <p className="text-sm mb-8">
               <strong>Dark Skull Corporation</strong>
               <br />
               Lead Developer: Naveed Mushtaq
               <br />
               Official Email:{' '}
-              <a href="mailto:darkskullcorporation@gmail.com" style={{ color: 'var(--primary)' }}>
+              <a href="mailto:darkskullcorporation@gmail.com" className="text-primary">
                 darkskullcorporation@gmail.com
               </a>
               <br />
@@ -73,7 +73,7 @@ export function PrivacyPolicyPage() {
                 href="https://discord.gg/XB2Zjmsb7K"
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: 'var(--primary)' }}
+                className="text-primary"
               >
                 discord.gg/XB2Zjmsb7K ↗
               </a>

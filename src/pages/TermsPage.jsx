@@ -21,7 +21,7 @@ export function TermsPage() {
           Please read these terms carefully before accessing DSCWeb or licensing Dark Skull Corporation software.
           By purchasing, downloading, or running our software panels and mobile applications, you agree to comply with single-device licensing, respectful platform conduct, and security policies.
         </p>
-        <p className="mt-8 text-sm" style={{ color: 'var(--muted)' }}>
+        <p className="mt-8 text-sm text-muted">
           <strong>Last Updated:</strong> October 2026 &nbsp;|&nbsp; <strong>Effective Date:</strong> August 2026
         </p>
       </section>
@@ -37,27 +37,20 @@ export function TermsPage() {
             <article className="info-card" key={item.title}>
               <span className="card-badge">{item.label}</span>
               <h3>{item.title}</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>{item.body}</p>
+              <p className="text-sm text-muted m-0">{item.body}</p>
             </article>
           ))}
         </div>
 
         {/* Support & Dispute Resolution Box */}
-        <div
-          className="card"
-          style={{
-            marginTop: '32px',
-            padding: '24px',
-            background: 'var(--surface-hover)',
-            border: '1px solid var(--surface-border)',
-            borderRadius: 'var(--radius-lg)',
-          }}
-        >
-          <h3 style={{ margin: '0 0 10px', color: 'var(--text)' }}>Licensing Questions &amp; Dispute Resolution</h3>
-          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: '1.6', margin: '0 0 16px' }}>
-            If you have questions regarding these terms, need an authorized Hardware ID (HWID) reset due to an operating system reinstall or computer upgrade, or need clarification on software usage:
-          </p>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+        <div className="portal-callout-card mt-36">
+          <div className="portal-callout-info">
+            <h3 className="portal-callout-title">Licensing Questions &amp; Dispute Resolution</h3>
+            <p className="portal-callout-desc">
+              If you have questions regarding these terms, need an authorized Hardware ID (HWID) reset due to an operating system reinstall or computer upgrade, or need clarification on software usage:
+            </p>
+          </div>
+          <div className="portal-callout-actions">
             <a href="mailto:darkskullcorporation@gmail.com" className="button button-primary button-sm">
               Email Legal &amp; Licensing
             </a>

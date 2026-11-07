@@ -196,9 +196,9 @@ export function FreePanelPage() {
   }
 
   return (
-    <main className="center-wrap">
+    <div className="center-wrap auth-shell">
       <section className="panel auth-card free-panel-card">
-        <div className="logo-mark free-panel-icon-60 mb-15">
+        <div className="logo-mark free-panel-icon-60 mb-14">
           <picture>
             <source srcSet="/images/dsclogo.webp" type="image/webp" />
             <img
@@ -245,6 +245,6 @@ export function FreePanelPage() {
           </div>
         ) : null}
       </section>
-    </main>
+    </div>
   )
 }

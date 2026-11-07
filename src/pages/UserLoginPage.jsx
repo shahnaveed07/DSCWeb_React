@@ -139,7 +139,7 @@ export function UserLoginPage({ session, onSessionChange }) {
               aria-describedby={fieldErrors.username ? 'username-error' : undefined}
             />
             {fieldErrors.username ? (
-              <span id="username-error" className="field-error-text" style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '2px' }} role="alert">
+              <span id="username-error" className="field-error-text" role="alert">
                 {fieldErrors.username}
               </span>
             ) : null}
@@ -159,7 +159,7 @@ export function UserLoginPage({ session, onSessionChange }) {
               aria-describedby={fieldErrors.password ? 'password-error' : undefined}
             />
             {fieldErrors.password ? (
-              <span id="password-error" className="field-error-text" style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '2px' }} role="alert">
+              <span id="password-error" className="field-error-text" role="alert">
                 {fieldErrors.password}
               </span>
             ) : null}

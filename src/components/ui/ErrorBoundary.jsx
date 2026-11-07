@@ -28,26 +28,24 @@ export class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <main className="center-wrap" role="alert" aria-live="assertive">
-          <section className="panel auth-card" style={{ maxWidth: '560px', margin: '60px auto', textAlign: 'center' }}>
-            <div className="logo-mark mb-15" style={{ width: '56px', height: '56px', margin: '0 auto 16px' }}>
-              <picture>
-                <source srcSet="/images/dsclogo.webp" type="image/webp" />
-                <img
-                  src="/images/dsclogo.png"
-                  alt="Dark Skull Corporation"
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                  width="56"
-                  height="56"
-                />
-              </picture>
-            </div>
-            <span className="hero-eyebrow" style={{ color: 'var(--warning)' }}>Application Notice</span>
+        <main className="status-layout" role="alert" aria-live="assertive">
+          <section className="panel status-panel">
+            <picture>
+              <source srcSet="/images/dsclogo.webp" type="image/webp" />
+              <img
+                src="/images/dsclogo.png"
+                alt="Dark Skull Corporation"
+                className="status-logo"
+                width="72"
+                height="72"
+              />
+            </picture>
+            <span className="hero-eyebrow text-warning">Application Notice</span>
             <h1 className="auth-title mt-6">Something Went Wrong</h1>
-            <p className="auth-subtitle" style={{ color: 'var(--text-secondary)', marginTop: '8px', lineHeight: '1.6' }}>
+            <p className="auth-subtitle mt-6">
               An unexpected issue occurred while rendering this view. You can reload the application or return safely to the home page.
             </p>
-            <div className="flex gap-12 mt-25" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div className="status-actions">
               <button
                 type="button"
                 className="button button-primary"

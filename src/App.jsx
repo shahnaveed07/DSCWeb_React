@@ -30,8 +30,8 @@ const UserLoginPage = lazy(() => import('./pages/UserLoginPage').then((m) => ({ 
 
 function RouteLoadingFallback() {
   return (
-    <div className="center-wrap" style={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="spinner-inline" style={{ width: '28px', height: '28px' }} />
+    <div className="center-wrap route-loader-shell">
+      <div className="spinner-inline spinner-lg" />
     </div>
   )
 }
@@ -93,15 +93,15 @@ function OwnerGate({ session, children }) {
 
   if (ownerState === 'checking') {
     return (
-      <main className="center-wrap">
-        <section className="panel auth-card" style={{ maxWidth: '480px', margin: '60px auto', textAlign: 'center' }}>
-          <div className="spinner-inline" style={{ width: '28px', height: '28px', margin: '0 auto 16px' }} />
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>Verifying Permissions</h2>
-          <p style={{ color: 'var(--muted)', fontSize: '0.92rem' }}>
+      <div className="center-wrap auth-shell">
+        <section className="panel auth-card text-center">
+          <div className="spinner-inline spinner-lg mb-16" />
+          <h2 className="auth-title">Verifying Permissions</h2>
+          <p className="auth-subtitle m-0">
             Checking owner privileges for your administrative session...
           </p>
         </section>
-      </main>
+      </div>
     )
   }
 

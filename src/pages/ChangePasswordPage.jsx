@@ -62,9 +62,9 @@ export function ChangePasswordPage({ session, onSessionInvalid, onSessionUpdate 
         <h1>Change Password</h1>
 
         {mustChange ? (
-          <div className="form-error mb-16" style={{ background: 'var(--warning-soft)', borderColor: 'var(--warning-border)', color: 'var(--warning)' }}>
+          <div className="form-error mb-16 alert-warning-box">
             <strong>Password Reset Required</strong>
-            <p className="mt-4 text-sm text-main" style={{ margin: '4px 0 0' }}>
+            <p className="mt-4 text-sm text-main mb-0">
               Your account requires a new password before you can access the user dashboard and software downloads.
             </p>
           </div>

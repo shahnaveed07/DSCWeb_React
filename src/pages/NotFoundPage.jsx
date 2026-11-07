@@ -8,13 +8,13 @@ export function NotFoundPage() {
   })
   return (
     <section className="auth-shell">
-      <div className="auth-card" style={{ maxWidth: '520px', textAlign: 'center' }}>
+      <div className="auth-card text-center">
         <span className="hero-eyebrow">Error 404</span>
         <h1 className="mt-8">Page Not Found</h1>
         <p className="hero-copy mt-8">
           The page you are looking for is unavailable or has been relocated. Please return to the homepage or explore our active services.
         </p>
-        <div className="flex gap-12 mt-24" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="modal-actions-center mt-24">
           <Link className="button button-primary" to="/">
             Return Home
           </Link>

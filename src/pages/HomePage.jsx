@@ -23,24 +23,8 @@ export function HomePage({ systemStatus }) {
             <span className="hero-dot">·</span>
             <span className="hero-subkicker">Independent Software Studio</span>
             <span className="hero-dot">·</span>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                fontSize: '0.78rem',
-                color: isMaintenance ? 'var(--warning)' : 'var(--success)',
-                fontWeight: 600,
-              }}
-            >
-              <span
-                style={{
-                  width: '7px',
-                  height: '7px',
-                  borderRadius: '50%',
-                  backgroundColor: isMaintenance ? 'var(--warning)' : 'var(--success)',
-                }}
-              />
+            <span className={`status-pill-inline ${isMaintenance ? 'text-warning' : 'text-success'}`}>
+              <span className="status-dot-inline" />
               {isMaintenance ? 'System Maintenance' : 'Systems Operational'}
             </span>
           </div>

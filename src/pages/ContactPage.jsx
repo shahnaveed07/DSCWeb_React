@@ -92,9 +92,9 @@ ${form.message}
       </section>
 
       {/* Official Communication Channels Grid */}
-      <div className="channels-grid" style={{ marginTop: '32px' }}>
+      <div className="channels-grid mt-36">
         {contactChannels.map((c) => (
-          <article key={c.label} className="channel-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <article key={c.label} className="channel-card">
             <div>
               <span className="badge warning mb-10">{c.label}</span>
               <h2 className="channel-card-title">{c.title}</h2>
@@ -116,38 +116,27 @@ ${form.message}
       </div>
 
       {/* Working Contact Inquiry Form */}
-      <section className="seo-section" style={{ marginTop: '48px' }}>
+      <section className="seo-section">
         <div className="seo-container">
           <span className="badge good mb-8">Direct Message</span>
-          <h2 style={{ marginTop: '10px' }}>Send a Support Inquiry</h2>
-          <p style={{ color: 'var(--muted)', marginBottom: '24px' }}>
+          <h2>Send a Support Inquiry</h2>
+          <p className="mb-24">
             Fill in the details below. You can send it directly to our official support mailbox or copy the formatted text to paste into Discord support tickets.
           </p>
 
           {formSubmitted ? (
-            <div className="card" style={{ padding: '24px', background: 'var(--surface-hover)', border: '1px solid var(--primary-border, var(--surface-border))' }}>
+            <div className="inquiry-preview-card">
               <span className="badge good mb-8">INQUIRY PREPARED</span>
-              <h3 style={{ margin: '8px 0 12px', color: 'var(--text)' }}>Ready to Send</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: '1.5', margin: '0 0 16px' }}>
+              <h3 className="mt-6 mb-12 text-main">Ready to Send</h3>
+              <p className="text-muted text-sm mb-16">
                 Your inquiry has been compiled. Click below to launch your default email client, or copy the formatted message to send on Discord:
               </p>
 
-              <pre
-                style={{
-                  background: 'var(--bg)',
-                  border: '1px solid var(--surface-border)',
-                  borderRadius: 'var(--radius-sm)',
-                  padding: '14px',
-                  fontSize: '0.84rem',
-                  color: 'var(--text)',
-                  whiteSpace: 'pre-wrap',
-                  marginBottom: '20px',
-                }}
-              >
+              <pre className="inquiry-pre mb-20">
                 {formattedInquiry}
               </pre>
 
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <div className="flex gap-12 flex-wrap">
                 <a href={mailtoUrl} className="button button-primary">
                   Open Email Client (darkskullcorporation@gmail.com) ↗
                 </a>
@@ -167,8 +156,8 @@ ${form.message}
               </div>
             </div>
           ) : (
-            <form onSubmit={handleFormSubmit} style={{ maxWidth: '640px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+            <form onSubmit={handleFormSubmit} className="contact-form">
+              <div className="form-grid-2">
                 <label className="field" htmlFor="contactName">
                   <span className="micro-label">YOUR NAME *</span>
                   <input
@@ -194,7 +183,7 @@ ${form.message}
                 </label>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+              <div className="form-grid-2">
                 <label className="field" htmlFor="contactCategory">
                   <span className="micro-label">INQUIRY CATEGORY *</span>
                   <select
@@ -225,7 +214,7 @@ ${form.message}
                 </label>
               </div>
 
-              <label className="field" htmlFor="contactMessage" style={{ marginBottom: '20px' }}>
+              <label className="field mb-20" htmlFor="contactMessage">
                 <span className="micro-label">MESSAGE DETAILS *</span>
                 <textarea
                   id="contactMessage"
@@ -234,12 +223,11 @@ ${form.message}
                   placeholder="Include any relevant order IDs, hardware tokens, or detailed questions..."
                   value={form.message}
                   onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))}
-                  style={{ width: '100%', resize: 'vertical' }}
                 />
               </label>
 
               {formError ? (
-                <div className="form-error" style={{ marginBottom: '16px' }}>
+                <div className="form-error mb-16">
                   {formError}
                 </div>
               ) : null}
@@ -253,14 +241,14 @@ ${form.message}
       </section>
 
       {/* Order Verification Notice */}
-      <section className="seo-section" style={{ marginTop: '32px', marginBottom: '40px' }}>
+      <section className="seo-section">
         <div className="seo-container">
           <span className="badge warning mb-8">Order Notice</span>
-          <h2 style={{ marginTop: '10px' }}>Order &amp; Payment Verification Timeline</h2>
-          <p style={{ color: 'var(--muted)', lineHeight: '1.6' }}>
+          <h2>Order &amp; Payment Verification Timeline</h2>
+          <p>
             Orders placed via the checkout system undergo manual verification of uploaded screenshot payment proofs. Once confirmed by an administrator, your license key is unlocked immediately on your <strong>Client Dashboard</strong>.
           </p>
-          <p style={{ color: 'var(--muted)', lineHeight: '1.6', marginTop: '10px' }}>
+          <p>
             Typical verification takes between 15 minutes and 2 hours during active operating windows (UTC+0 to UTC+12). If your order remains pending after 24 hours, post your registered username and order details in our Discord <code>#order-help</code> channel for priority review.
           </p>
         </div>
