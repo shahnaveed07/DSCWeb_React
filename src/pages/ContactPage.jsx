@@ -4,16 +4,16 @@ import { contactChannels } from '../content/siteContent'
 
 export function ContactPage() {
   usePageMeta({
-    title: 'Contact Support & Developer Channels',
+    title: 'Contact Dark Skull Corporation | Website Projects, Apps, Games & Support',
     description:
-      'Get in touch with Dark Skull Corporation for software support, order verification, licensing assistance, or direct Discord community interaction.',
+      'Contact Dark Skull Corporation for custom website design and development inquiries, Android app and game inquiries, product orders, or technical support.',
     canonical: 'https://dscweb.me/pages/contact',
   })
 
   const [form, setForm] = useState({
     name: '',
     email: '',
-    category: 'order',
+    category: 'website',
     subject: '',
     message: '',
   })
@@ -22,11 +22,14 @@ export function ContactPage() {
   const [formError, setFormError] = useState('')
 
   const categoryLabels = {
+    website: 'Website Design & Development',
+    android: 'Android App Development Inquiry',
+    game: 'Game Development Inquiry',
     order: 'Order / Payment Verification',
     support: 'Technical & Software Support',
     freepanel: 'Free Panel Assistance',
-    custom: 'Custom Build & Enterprise Inquiry',
-    bug: 'Bug Report / Vulnerability',
+    custom: 'Custom Build & Studio Inquiry',
+    bug: 'Bug Report / Issue',
     general: 'General Question',
   }
 
@@ -84,10 +87,9 @@ ${form.message}
       {/* Header */}
       <section className="page-header-center">
         <span className="hero-eyebrow">Dark Skull Corporation</span>
-        <h1>Contact &amp; Developer Support</h1>
+        <h1>Contact &amp; Project Inquiries</h1>
         <p>
-          Have questions about your order, need technical assistance with software panels, or want to discuss a custom build?
-          Reach our team through our official Discord community, support email, or the inquiry form below.
+          Want to commission a custom website for your individual brand or business, inquire about Android application or game development, or get assistance with an order? Reach Dark Skull Corporation through our official channels or the inquiry form below.
         </p>
       </section>
 
@@ -119,9 +121,9 @@ ${form.message}
       <section className="seo-section">
         <div className="seo-container">
           <span className="badge good mb-8">Direct Message</span>
-          <h2>Send a Support Inquiry</h2>
+          <h2>Send a Project or Support Inquiry</h2>
           <p className="mb-24">
-            Fill in the details below. You can send it directly to our official support mailbox or copy the formatted text to paste into Discord support tickets.
+            We welcome inquiries for <strong>Website Design &amp; Development</strong>, <strong>Android App Development</strong>, <strong>Game Development</strong>, and product or order support. Fill in the details below to send directly to our official mailbox or copy for Discord.
           </p>
 
           {formSubmitted ? (
@@ -147,7 +149,7 @@ ${form.message}
                   type="button"
                   onClick={() => {
                     setFormSubmitted(false)
-                    setForm({ name: '', email: '', category: 'order', subject: '', message: '' })
+                    setForm({ name: '', email: '', category: 'website', subject: '', message: '' })
                   }}
                   className="button button-ghost"
                 >
@@ -192,11 +194,14 @@ ${form.message}
                     value={form.category}
                     onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
                   >
+                    <option value="website">Website Design &amp; Development</option>
+                    <option value="android">Android App Development Inquiry</option>
+                    <option value="game">Game Development Inquiry</option>
                     <option value="order">Order / Payment Verification</option>
                     <option value="support">Technical &amp; Software Support</option>
                     <option value="freepanel">Free Panel Assistance</option>
-                    <option value="custom">Custom Build &amp; Enterprise Inquiry</option>
-                    <option value="bug">Bug Report / Vulnerability</option>
+                    <option value="custom">Custom Build &amp; Studio Inquiry</option>
+                    <option value="bug">Bug Report / Issue</option>
                     <option value="general">General Question</option>
                   </select>
                 </label>

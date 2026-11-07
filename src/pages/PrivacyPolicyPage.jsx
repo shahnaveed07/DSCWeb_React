@@ -61,7 +61,7 @@ export function PrivacyPolicyPage() {
             <p className="text-sm mb-8">
               <strong>Dark Skull Corporation</strong>
               <br />
-              Lead Developer: Naveed Mushtaq
+              Founder &amp; Lead Developer: Naveed Mushtaq
               <br />
               Official Email:{' '}
               <a href="mailto:darkskullcorporation@gmail.com" className="text-primary">
@@ -75,7 +75,7 @@ export function PrivacyPolicyPage() {
                 rel="noreferrer"
                 className="text-primary"
               >
-                discord.gg/XB2Zjmsb7K ↗
+                Discord ↗
               </a>
             </p>
             <div className="mt-12">

@@ -12,9 +12,9 @@ const CATEGORIES = [
 
 export function ProductsPage() {
   usePageMeta({
-    title: 'Software Products & Panel Catalog',
+    title: 'Software Products Catalog | Dark Skull Corporation',
     description:
-      'Explore Dark Skull Corporation software panels and desktop utilities with transparent base pricing, hardware-bound licensing, and complete system requirements.',
+      'Browse the Dark Skull Corporation software catalog featuring transparent base pricing, flexible durations, and verified client portal delivery.',
     canonical: 'https://dscweb.me/pages/products',
   })
 
@@ -38,9 +38,9 @@ export function ProductsPage() {
       {/* Header */}
       <section className="page-header-center">
         <span className="hero-eyebrow">Dark Skull Corporation</span>
-        <h1>Software Products &amp; Utility Panels</h1>
+        <h1>Software Products Catalog</h1>
         <p>
-          High-performance desktop utilities engineered for zero bloat, low memory consumption, and hardware-bound license security. Every product includes transparent base pricing, duration options, and verified access.
+          Explore our available software catalog with transparent base pricing, flexible duration options, and verified Client Dashboard delivery. Looking for our Android apps, games, or custom website development? Visit our Apps or Contact pages.
         </p>
 
         {/* Filter Tabs */}

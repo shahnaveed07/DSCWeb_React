@@ -1,242 +1,32 @@
-import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 export function AppsPage() {
   usePageMeta({
-    title: 'Applications & Mobile Software Portfolio',
+    title: 'Android Applications & Mobile Games Portfolio | Dark Skull Corporation',
     description:
-      'Explore official mobile applications and software utilities developed by Dark Skull Corporation, including QR Scanner, Mind Matrix, and interactive productivity tools.',
+      'Explore official Android applications and mobile games developed by Dark Skull Corporation, including QR Scanner | Generator and Mind Matrix on Google Play.',
     canonical: 'https://dscweb.me/pages/apps',
   })
-
-  // Interactive Web Calculator State
-  const [calcDisplay, setCalcDisplay] = useState('0')
-  const [calcHistory, setCalcHistory] = useState([])
-  const [calcWaitingForOperand, setCalcWaitingForOperand] = useState(false)
-  const [calcPrevValue, setCalcPrevValue] = useState(null)
-  const [calcOperation, setCalcOperation] = useState(null)
-  const [copiedResult, setCopiedResult] = useState(false)
-
-  function handleCalcDigit(digit) {
-    if (calcWaitingForOperand) {
-      setCalcDisplay(String(digit))
-      setCalcWaitingForOperand(false)
-    } else {
-      setCalcDisplay(calcDisplay === '0' ? String(digit) : calcDisplay + digit)
-    }
-  }
-
-  function handleCalcDecimal() {
-    if (calcWaitingForOperand) {
-      setCalcDisplay('0.')
-      setCalcWaitingForOperand(false)
-      return
-    }
-    if (!calcDisplay.includes('.')) {
-      setCalcDisplay(calcDisplay + '.')
-    }
-  }
-
-  function handleCalcClear() {
-    setCalcDisplay('0')
-    setCalcPrevValue(null)
-    setCalcOperation(null)
-    setCalcWaitingForOperand(false)
-  }
-
-  function handleCalcBackspace() {
-    if (calcWaitingForOperand) return
-    if (calcDisplay.length > 1) {
-      setCalcDisplay(calcDisplay.slice(0, -1))
-    } else {
-      setCalcDisplay('0')
-    }
-  }
-
-  function handleCalcOperator(nextOp) {
-    const inputValue = parseFloat(calcDisplay)
-
-    if (calcPrevValue === null) {
-      setCalcPrevValue(inputValue)
-    } else if (calcOperation) {
-      const currentValue = calcPrevValue || 0
-      let computed = currentValue
-
-      if (calcOperation === '+') computed = currentValue + inputValue
-      if (calcOperation === '-') computed = currentValue - inputValue
-      if (calcOperation === '×' || calcOperation === '*') computed = currentValue * inputValue
-      if (calcOperation === '÷' || calcOperation === '/') {
-        computed = inputValue === 0 ? 'Error' : currentValue / inputValue
-      }
-
-      setCalcDisplay(String(computed))
-      setCalcPrevValue(computed)
-
-      if (computed !== 'Error') {
-        setCalcHistory((prev) => [
-          `${currentValue} ${calcOperation} ${inputValue} = ${computed}`,
-          ...prev.slice(0, 4),
-        ])
-      }
-    }
-
-    setCalcWaitingForOperand(true)
-    setCalcOperation(nextOp)
-  }
-
-  function handleCalcEqual() {
-    if (!calcOperation || calcPrevValue === null) return
-    const inputValue = parseFloat(calcDisplay)
-    let computed = calcPrevValue
-
-    if (calcOperation === '+') computed = calcPrevValue + inputValue
-    if (calcOperation === '-') computed = calcPrevValue - inputValue
-    if (calcOperation === '×' || calcOperation === '*') computed = calcPrevValue * inputValue
-    if (calcOperation === '÷' || calcOperation === '/') {
-      computed = inputValue === 0 ? 'Error' : calcPrevValue / inputValue
-    }
-
-    setCalcDisplay(String(computed))
-    if (computed !== 'Error') {
-      setCalcHistory((prev) => [
-        `${calcPrevValue} ${calcOperation} ${inputValue} = ${computed}`,
-        ...prev.slice(0, 4),
-      ])
-    }
-    setCalcPrevValue(null)
-    setCalcOperation(null)
-    setCalcWaitingForOperand(true)
-  }
-
-  async function handleCopyCalc() {
-    try {
-      await navigator.clipboard.writeText(calcDisplay)
-      setCopiedResult(true)
-      setTimeout(() => setCopiedResult(false), 1500)
-    } catch {
-      // Ignore clipboard write errors
-    }
-  }
 
   return (
     <div className="center-wrap">
       {/* Header */}
       <section className="page-header-center">
         <span className="hero-eyebrow">Dark Skull Corporation</span>
-        <h1>Applications &amp; Interactive Software</h1>
+        <h1>Android Applications &amp; Games</h1>
         <p>
-          Explore mobile applications, interactive tools, and lightweight desktop utilities
-          engineered for speed, minimal memory usage, and zero advertising bloat.
+          Explore official Android applications and mobile games designed and developed by Dark Skull Corporation with a focus on usability, performance, offline capability, and user privacy.
         </p>
       </section>
 
-      {/* Applications Showcase */}
+      {/* Applications & Games Showcase */}
       <div className="apps-list mt-36">
-        {/* App 1: Interactive Calculator Tool */}
-        <article className="app-card" id="calculator-tool">
-          <div className="app-card-header">
-            <div>
-              <span className="badge good">INTERACTIVE UTILITY &amp; DESKTOP APP</span>
-              <h2 className="app-card-title">Calculator</h2>
-            </div>
-            <div>
-              <NavLink to="/pages/downloads" className="button button-secondary">
-                View in Downloads
-              </NavLink>
-            </div>
-          </div>
-
-          <p className="app-card-tagline">
-            Ultra-fast mathematics utility for browser and desktop with instant expression parsing.
-          </p>
-          <p className="app-card-desc">
-            Designed for distraction-free calculations with zero telemetry or background data mining.
-            Use the working web version below directly in your browser, or request our portable Windows desktop executable.
-          </p>
-
-          <div className="app-feature-grid mb-16">
-            <div className="app-feature-item">
-              <span className="app-feature-check">✓</span>
-              <span>Zero-latency browser calculation</span>
-            </div>
-            <div className="app-feature-item">
-              <span className="app-feature-check">✓</span>
-              <span>Calculation history log</span>
-            </div>
-            <div className="app-feature-item">
-              <span className="app-feature-check">✓</span>
-              <span>One-click clipboard copy</span>
-            </div>
-            <div className="app-feature-item">
-              <span className="app-feature-check">✓</span>
-              <span>No intrusive ads or telemetry</span>
-            </div>
-          </div>
-
-          {/* Embedded Working Web Calculator */}
-          <div className="calc-widget">
-            <div className="calc-header">
-              <span className="micro-label m-0">DSC WEB CALCULATOR</span>
-              <button
-                type="button"
-                onClick={handleCopyCalc}
-                className="button button-ghost button-sm"
-              >
-                {copiedResult ? 'Copied!' : 'Copy Result'}
-              </button>
-            </div>
-
-            {/* Display screen */}
-            <div className="calc-screen">
-              {calcDisplay}
-            </div>
-
-            {/* Keypad */}
-            <div className="calc-keypad">
-              <button type="button" className="button button-secondary text-danger font-bold" onClick={handleCalcClear}>C</button>
-              <button type="button" className="button button-secondary" onClick={handleCalcBackspace}>⌫</button>
-              <button type="button" className="button button-secondary" onClick={() => handleCalcOperator('÷')}>÷</button>
-              <button type="button" className="button button-secondary" onClick={() => handleCalcOperator('×')}>×</button>
-
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(7)}>7</button>
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(8)}>8</button>
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(9)}>9</button>
-              <button type="button" className="button button-secondary" onClick={() => handleCalcOperator('-')}>−</button>
-
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(4)}>4</button>
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(5)}>5</button>
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(6)}>6</button>
-              <button type="button" className="button button-secondary" onClick={() => handleCalcOperator('+')}>+</button>
-
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(1)}>1</button>
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(2)}>2</button>
-              <button type="button" className="button button-ghost" onClick={() => handleCalcDigit(3)}>3</button>
-              <button type="button" className="button button-primary calc-key-equal" onClick={handleCalcEqual}>=</button>
-
-              <button type="button" className="button button-ghost calc-key-zero" onClick={() => handleCalcDigit(0)}>0</button>
-              <button type="button" className="button button-ghost" onClick={handleCalcDecimal}>.</button>
-            </div>
-
-            {/* History reel */}
-            {calcHistory.length > 0 ? (
-              <div className="calc-history">
-                <span className="micro-label mb-4">RECENT CALCULATIONS</span>
-                <div className="calc-history-list">
-                  {calcHistory.map((h, i) => (
-                    <div key={i} className="calc-history-item">{h}</div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </article>
-
-        {/* App 2: QR Scanner | Generator */}
+        {/* App 1: QR Scanner | Generator */}
         <article className="app-card">
           <div className="app-card-header">
             <div>
-              <span className="badge warning">ANDROID UTILITY</span>
+              <span className="badge warning">ANDROID APPLICATION</span>
               <h2 className="app-card-title">QR Scanner | Generator</h2>
             </div>
             <div>
@@ -282,7 +72,7 @@ export function AppsPage() {
           </div>
         </article>
 
-        {/* App 3: Mind Matrix */}
+        {/* App 2: Mind Matrix */}
         <article className="app-card">
           <div className="app-card-header">
             <div>
@@ -329,39 +119,56 @@ export function AppsPage() {
         </article>
       </div>
 
-      {/* Engineering Constitution & Quality Standards */}
+      {/* Studio Quality & Privacy Constitution */}
       <section className="seo-section">
         <div className="seo-container">
-          <span className="badge good mb-8">Engineering Standards</span>
-          <h2>Our App Quality &amp; Privacy Constitution</h2>
+          <span className="badge good mb-8">Studio Standards</span>
+          <h2>Our App &amp; Game Quality Constitution</h2>
           <p className="mb-24">
-            We design software around user respect and long-term reliability:
+            We design Android applications, games, and digital products around user respect and long-term reliability:
           </p>
 
           <div className="card-grid columns-3">
             <article className="info-card">
               <span className="card-badge">PRIVACY FIRST</span>
-              <h3>Zero Background Mining</h3>
+              <h3>Scoped Permissions</h3>
               <p className="text-muted text-sm m-0">
-                Our applications never run background tracking processes, silently upload user contacts, or log device telemetry without explicit consent.
+                Our Android applications and games request only the permissions required for user-invoked features and never harvest personal contacts or background telemetry.
               </p>
             </article>
 
             <article className="info-card">
-              <span className="card-badge">EFFICIENCY</span>
-              <h3>Low Resource Footprint</h3>
+              <span className="card-badge">PERFORMANCE</span>
+              <h3>Offline-Ready &amp; Fast</h3>
               <p className="text-muted text-sm m-0">
-                We engineer our binaries in native languages (C#, Kotlin, React) to ensure fast startup times, low battery consumption, and small APK/binary sizes.
+                We build our mobile apps and games for responsive touch feedback, low battery consumption, and reliable offline operation.
               </p>
             </article>
 
             <article className="info-card">
-              <span className="card-badge">TRANSPARENCY</span>
-              <h3>Open Verification</h3>
+              <span className="card-badge">CUSTOM PROJECTS</span>
+              <h3>Websites on Request</h3>
               <p className="text-muted text-sm m-0">
-                We communicate release notes honestly on GitHub and Discord, and maintain transparent permissions for all published Android packages.
+                Alongside our Android apps and games, Dark Skull Corporation designs and develops custom websites for individuals, startups, and businesses on request.
               </p>
             </article>
+          </div>
+
+          <div className="portal-callout-card mt-24">
+            <div className="portal-callout-info">
+              <h3 className="portal-callout-title">Have an App, Game, or Website Project Inquiry?</h3>
+              <p className="portal-callout-desc">
+                Connect with <strong>Naveed Mushtaq </strong> and the Dark Skull Corporation team to discuss custom website development, Android applications, or studio collaborations.
+              </p>
+            </div>
+            <div className="portal-callout-actions">
+              <NavLink to="/pages/contact" className="button button-primary button-sm">
+                Contact Studio
+              </NavLink>
+              <NavLink to="/pages/downloads" className="button button-secondary button-sm">
+                Download Center
+              </NavLink>
+            </div>
           </div>
         </div>
       </section>

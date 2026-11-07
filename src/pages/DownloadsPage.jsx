@@ -5,9 +5,9 @@ import { getFreePanelStatus } from '../services/dscApi'
 
 export function DownloadsPage({ systemStatus }) {
   usePageMeta({
-    title: 'Download Center & Official Software Releases',
+    title: 'Download Center | Android Apps, Games & Official Releases — Dark Skull Corporation',
     description:
-      'Download verified software binaries, community evaluation panel packages, and Android tools from Dark Skull Corporation with complete system requirements and setup guidance.',
+      'Access official Android applications, mobile games on Google Play, and verified software releases from Dark Skull Corporation.',
     canonical: 'https://dscweb.me/pages/downloads',
   })
 
@@ -23,88 +23,19 @@ export function DownloadsPage({ systemStatus }) {
       {/* Header */}
       <section className="page-header-center">
         <span className="hero-eyebrow">Dark Skull Corporation</span>
-        <h1>Official Software &amp; Utility Downloads</h1>
+        <h1>Official Apps, Games &amp; Software Downloads</h1>
         <p>
-          Download verified builds, public releases, and community packages.
-          All binaries are checked for integrity, compiled for low memory usage, and supported on Windows and Android.
+          Access our published Android applications and games on Google Play, as well as verified community and client software releases.
         </p>
       </section>
 
       {/* Downloads Grid */}
       <div className="downloads-grid mt-36">
-        {/* Free Panel Package */}
-        <article className="download-card">
-          <div>
-            <div className="download-card-meta">
-              <span className="badge warning">COMMUNITY EVALUATION</span>
-              <span className="text-muted text-sm">
-                {loading ? 'Checking slots...' : `${usedSlots} / ${maxSlots} Slots Used`}
-              </span>
-            </div>
-
-            <h2 className="download-card-title">Free Panel Build</h2>
-            <p className="download-card-desc">
-              Public test release of our desktop utility panel. Evaluate server connectivity, examine real-time slot telemetry, and test core interface responsiveness.
-            </p>
-
-            <div className="download-status-box mt-14 mb-16">
-              <strong>Status:</strong> {slotsAvailable ? 'Slots currently open for evaluation.' : 'Public pool is currently at capacity.'}
-            </div>
-          </div>
-
-          <div className="download-card-actions">
-            {freeLink ? (
-              <>
-                <a
-                  className="button button-primary w-100"
-                  href={freeLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span aria-hidden="true">📥 </span>Download Free Panel Package
-                </a>
-                <NavLink to="/pages/freepanel" className="button button-secondary w-100">
-                  View Shared Credentials
-                </NavLink>
-              </>
-            ) : (
-              <NavLink to="/pages/freepanel" className="button button-primary w-100">
-                Check Availability &amp; Credentials
-              </NavLink>
-            )}
-          </div>
-        </article>
-
-        {/* Calculator Desktop & Web */}
-        <article className="download-card">
-          <div>
-            <div className="download-card-meta">
-              <span className="badge good">PRODUCTIVITY TOOL</span>
-              <span className="text-success text-sm">Live Web &amp; Desktop</span>
-            </div>
-
-            <h2 className="download-card-title">Calculator Tool</h2>
-            <p className="download-card-desc">
-              Distraction-free mathematics utility with continuous calculation history, one-click clipboard copy, and instantaneous evaluation.
-            </p>
-
-            <div className="download-status-box mt-14 mb-16">
-              <strong>Availability:</strong> Run instantly in your browser on our Apps page, or request the portable Windows executable via Discord.
-            </div>
-          </div>
-
-          <div className="download-card-actions">
-            <NavLink to="/pages/apps" className="button button-primary w-100">
-              Launch Web Calculator
-            </NavLink>
-          </div>
-        </article>
-
         {/* QR Scanner Mobile */}
         <article className="download-card">
           <div>
             <div className="download-card-meta">
-              <span className="badge warning">ANDROID RELEASE</span>
+              <span className="badge warning">ANDROID APPLICATION</span>
               <span className="text-muted text-sm">Google Play Verified</span>
             </div>
 
@@ -120,7 +51,7 @@ export function DownloadsPage({ systemStatus }) {
 
           <div className="download-card-actions">
             <a
-              className="button button-secondary w-100"
+              className="button button-primary w-100"
               href="https://play.google.com/store/apps/details?id=com.dsc.qrscanner"
               target="_blank"
               rel="noopener noreferrer"
@@ -150,7 +81,7 @@ export function DownloadsPage({ systemStatus }) {
 
           <div className="download-card-actions">
             <a
-              className="button button-secondary w-100"
+              className="button button-primary w-100"
               href="https://play.google.com/store/apps/details?id=com.dsc.mindmatrix"
               target="_blank"
               rel="noopener noreferrer"
@@ -159,20 +90,63 @@ export function DownloadsPage({ systemStatus }) {
             </a>
           </div>
         </article>
+
+        {/* Free Panel Package */}
+        <article className="download-card">
+          <div>
+            <div className="download-card-meta">
+              <span className="badge warning">COMMUNITY EVALUATION</span>
+              <span className="text-muted text-sm">
+                {loading ? 'Checking slots...' : `${usedSlots} / ${maxSlots} Slots Used`}
+              </span>
+            </div>
+
+            <h2 className="download-card-title">Free Panel Build</h2>
+            <p className="download-card-desc">
+              Public community evaluation release. Check server connectivity, view real-time slot availability, and download the verified evaluation package.
+            </p>
+
+            <div className="download-status-box mt-14 mb-16">
+              <strong>Status:</strong> {slotsAvailable ? 'Slots currently open for evaluation.' : 'Public pool is currently at capacity.'}
+            </div>
+          </div>
+
+          <div className="download-card-actions">
+            {freeLink ? (
+              <>
+                <a
+                  className="button button-primary w-100"
+                  href={freeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span aria-hidden="true">📥 </span>Download Free Panel Package
+                </a>
+                <NavLink to="/pages/freepanel" className="button button-secondary w-100">
+                  View Shared Credentials
+                </NavLink>
+              </>
+            ) : (
+              <NavLink to="/pages/freepanel" className="button button-secondary w-100">
+                Check Availability &amp; Credentials
+              </NavLink>
+            )}
+          </div>
+        </article>
       </div>
 
       {/* Authenticated Client Downloads Information */}
       <section className="seo-section">
         <div className="seo-container">
           <span className="badge good mb-8">Client Portal</span>
-          <h2>Private &amp; Dedicated Software Downloads</h2>
+          <h2>Licensed Product Downloads</h2>
           <p className="mb-16">
-            Looking for your licensed software panel (Streamer, Special, Sniper, Aim Assist)?
+            Looking for your licensed product build (Streamer, Special, Sniper, Aim Assist)?
           </p>
           <div className="portal-callout-card">
             <div className="portal-callout-info">
               <p className="portal-callout-desc">
-                Paid software panel builds are individually compiled and tied to your unique hardware token. Once your order payment is verified by our team, your personalized download link and authorization key are automatically made available inside your private <strong>Client Dashboard</strong>.
+                Once your order payment is verified by an administrator, your download link and authorization key are automatically unlocked inside your authenticated <strong>Client Dashboard</strong>.
               </p>
             </div>
             <div className="portal-callout-actions">
@@ -180,39 +154,39 @@ export function DownloadsPage({ systemStatus }) {
                 Sign In to Client Portal
               </NavLink>
               <NavLink to="/pages/products" className="button button-secondary button-sm">
-                View Software Products
+                View Products Catalog
               </NavLink>
             </div>
           </div>
         </div>
       </section>
 
-      {/* System Requirements & Verification Instructions */}
+      {/* System Requirements & Compatibility Guide */}
       <section className="seo-section">
         <div className="seo-container">
           <span className="badge warning mb-8">Technical Requirements</span>
-          <h2>System Compatibility &amp; Installation Guide</h2>
+          <h2>Platform Compatibility &amp; Setup Guide</h2>
 
           <div className="card-grid columns-2 mt-20">
             <article className="info-card">
-              <span className="card-badge">WINDOWS REQUIREMENTS</span>
-              <h3>Hardware &amp; Runtimes</h3>
+              <span className="card-badge">ANDROID &amp; WINDOWS</span>
+              <h3>Supported Environments</h3>
               <ul className="feature-list">
-                <li>Operating System: Windows 10 or Windows 11 (64-bit architecture)</li>
-                <li>Runtime: Microsoft .NET Framework 4.8 or later installed</li>
-                <li>Dependencies: Visual C++ 2015–2022 Redistributable (x64)</li>
-                <li>Permissions: Run as Administrator for hardware token reading</li>
+                <li>Android Apps &amp; Games: Android 6.0 / 7.0 or newer via Google Play</li>
+                <li>Windows Releases: Windows 10 or Windows 11 (64-bit)</li>
+                <li>Runtime: Microsoft .NET Framework 4.8 for desktop packages</li>
+                <li>Support: Direct assistance available on our official Discord server</li>
               </ul>
             </article>
 
             <article className="info-card">
-              <span className="card-badge">SMARTSCREEN NOTICE</span>
-              <h3>Indie Binary Verification</h3>
+              <span className="card-badge">INSTALLATION NOTICE</span>
+              <h3>Independent Release Verification</h3>
               <p className="text-muted text-sm m-0">
-                Because Dark Skull Corporation distributes custom compiled binaries directly to users rather than through enterprise certificate stores, Windows Defender SmartScreen may display an &ldquo;Unrecognized app&rdquo; prompt.
+                Our Android apps and games are distributed directly through Google Play. For standalone Windows builds distributed through our portal, Windows Defender SmartScreen may display an &ldquo;Unrecognized app&rdquo; prompt.
               </p>
               <p className="text-muted text-sm m-0 mt-6">
-                Click <strong>More info</strong> and select <strong>Run anyway</strong>. You can verify SHA-256 hashes on our Discord server before executing.
+                Click <strong>More info</strong> and select <strong>Run anyway</strong>, or reach out on Discord if you need setup assistance.
               </p>
             </article>
           </div>

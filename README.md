@@ -8,10 +8,12 @@ This modern React single-page application replaces the legacy monolithic website
 
 ## 1. Project Purpose & Scope
 
-- **Official Brand:** Dark Skull Corporation (DSC)
+- **Official Brand:** Dark Skull Corporation (DSC) — Independent Software Development Studio
+- **Founder & Lead Developer:** Naveed Mushtaq (`https://naveedmushtaq.tech/`)
+- **Primary Focus:** Android Application Development & Game Development (with Custom Website Development available on request)
 - **Primary Domain:** `https://dscweb.me/`
 - **Application Capabilities:**
-  - Public marketing portal: Home, Applications, Software Panels, Download Center, About, Contact, Status, Privacy Policy, Terms of Use.
+  - Public studio portal: Home, Android Apps & Games (`QR Scanner | Generator`, `Mind Matrix`), Products Catalog, Download Center, About Studio, Contact & Website Project Inquiries, Status, Privacy Policy, Terms of Service.
   - Client Portal: Secure login, HWID validation, subscription status, license key display, authenticated software package downloads, and password management.
   - Public Free Panel: Live telemetry, used vs. available slot monitoring, dynamic test credentials, and public package download.
   - Product Catalog & Checkout: Tier selection, multi-duration pricing calculations, UPI QR payment flow, and image proof verification.

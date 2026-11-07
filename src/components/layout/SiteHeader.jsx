@@ -8,7 +8,7 @@ function isExternal(target) {
   return /^https?:\/\//.test(String(target || ''))
 }
 
-export const THEME_STORAGE_KEY = 'dscThemePreferenceV2'
+const THEME_STORAGE_KEY = 'dscThemePreferenceV2'
 
 function resolveInitialTheme() {
   if (typeof document === 'undefined') return 'dark'

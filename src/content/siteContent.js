@@ -34,29 +34,23 @@ export const pageLabels = [
 
 export const homeHighlights = [
   {
-    eyebrow: 'Hardware Binding',
-    title: 'Secure License Protection',
-    body: 'Hardware ID (HWID) verification ensures single-device integrity, stopping credential theft and account abuse.',
+    eyebrow: 'Android Development',
+    title: 'Android Application Development',
+    body: 'Designing and developing Android applications with intuitive interfaces, practical everyday features, and dependable performance.',
   },
   {
-    eyebrow: 'Performance',
-    title: 'Zero Bloat Architecture',
-    body: 'Clean binaries built in C# and Kotlin with lightweight memory footprints and zero background data collection.',
+    eyebrow: 'Interactive Experiences',
+    title: 'Game Development',
+    body: 'Creating engaging games and cognitive experiences with thoughtful gameplay, polished interfaces, and offline-ready responsiveness.',
   },
   {
-    eyebrow: 'Transparency',
-    title: 'Live Operational Telemetry',
-    body: 'Real-time status indicators, open free slot tracking, and responsive developer communication on Discord.',
+    eyebrow: 'Client Projects',
+    title: 'Custom Website Development',
+    body: 'Building responsive, modern websites for individuals, startups, businesses, and companies on request.',
   },
 ]
 
 export const featuredApps = [
-  {
-    type: 'Interactive Tool',
-    title: 'Calculator',
-    description: 'A responsive arithmetic calculator with history logs, keyboard input, and lightweight Windows desktop architecture.',
-    primaryAction: { label: 'Try Web Calculator', to: '/pages/apps' },
-  },
   {
     type: 'Android Utility',
     title: 'QR Scanner | Generator',
@@ -79,27 +73,27 @@ export const featuredApps = [
 
 export const servicePillars = [
   {
-    title: 'Desktop Utility Panels',
+    title: 'Android Application Development',
     items: [
-      'OBS-safe streamer overlays and HUD controls',
-      'Tactical hotkey switches with sub-millisecond response',
-      'Precision mouse sensitivity and calibration tools',
-    ],
-  },
-  {
-    title: 'Mobile Applications',
-    items: [
-      'Offline-capable QR code scanning and generation',
-      'Minimalist brain-training puzzle games',
+      'Offline-capable QR code scanning and custom code generation',
+      'Scoped device permissions and user-first interface design',
       'Zero third-party tracking or background bloatware',
     ],
   },
   {
-    title: 'Security & Licensing',
+    title: 'Game Development',
     items: [
-      'Cryptographic HWID validation on authenticated client binaries',
-      'Manual verification of payment proofs with order tracking',
-      'Community evaluation builds via the live Free Panel',
+      'Handcrafted brain-training and logic puzzle games',
+      'Progressive difficulty scaling and smooth 60 FPS responsiveness',
+      '100% offline playable experiences with no paywalls',
+    ],
+  },
+  {
+    title: 'Custom Website Development',
+    items: [
+      'Responsive websites for individuals, businesses, and companies on request',
+      'Clean, accessible interfaces built for real-world usability and speed',
+      'Direct collaboration with Founder Naveed Mushtaq',
     ],
   },
 ]
@@ -286,7 +280,7 @@ export const productPlans = [
     features: [
       'Bespoke feature integration based on specific client requirements',
       'Dedicated private build compilation and distribution channel',
-      'One-on-one consultation with lead engineer Naveed Mushtaq',
+      'One-on-one consultation with Founder & Lead Developer Naveed Mushtaq',
       'Custom branding, tailored keybind matrices, and private support',
     ],
     action: { label: 'Request Custom Build', to: '/pages/checkout?panel=customised', primary: true },
@@ -295,34 +289,34 @@ export const productPlans = [
 
 export const aboutStats = [
   { label: 'Founded', value: '2024' },
-  { label: 'Platform Focus', value: 'Windows & Android' },
-  { label: 'Lead Developer', value: 'Naveed Mushtaq' },
-  { label: 'Community', value: 'Discord Verified' },
+  { label: 'Primary Focus', value: 'Android Apps & Games' },
+  { label: 'Founder', value: 'Naveed Mushtaq' },
+  { label: 'Web Projects', value: 'Available on Request' },
 ]
 
 export const contactChannels = [
   {
     label: 'Discord Server',
     title: 'dsc.gg/XB2Zjmsb7K',
-    body: 'Live community support, update announcements, and direct ticket interaction with our engineering team.',
+    body: 'Live community support, update announcements, and direct interaction with our studio team.',
     action: { label: 'Join Discord', href: 'https://discord.gg/XB2Zjmsb7K' },
   },
   {
     label: 'Official Email',
     title: 'darkskullcorporation@gmail.com',
-    body: 'Formal business inquiries, licensing verification, partnership opportunities, and order assistance.',
+    body: 'Android app, game, and custom website inquiries, as well as product support and order assistance.',
     action: { label: 'Send Email', href: 'mailto:darkskullcorporation@gmail.com' },
   },
   {
     label: 'GitHub Organization',
     title: 'github.com/shahnaveed07',
-    body: 'Public repositories, open-source utilities, issue reporting, and technical documentation.',
+    body: 'Public repositories, open-source projects, issue reporting, and technical documentation.',
     action: { label: 'View GitHub', href: 'https://github.com/shahnaveed07' },
   },
   {
     label: 'Developer Portfolio',
     title: 'naveedmushtaq.tech',
-    body: 'Learn about lead engineer Naveed Mushtaq, explore engineering background, and review technical credentials.',
+    body: 'Learn about Naveed Mushtaq — Founder & Lead Developer of Dark Skull Corporation, explore his portfolio, and review past projects.',
     action: { label: 'Visit Portfolio', href: 'https://naveedmushtaq.tech/' },
   },
 ]
@@ -408,7 +402,7 @@ export const privacySections = [
     items: [
       'This Privacy Policy may be updated periodically to reflect changes in our products or regulatory requirements.',
       'The current effective date will always be prominently displayed at the top of this page.',
-      'Direct privacy inquiries to: darkskullcorporation@gmail.com (Attn: Naveed Mushtaq).',
+      'Direct privacy inquiries to: darkskullcorporation@gmail.com (Attn: Naveed Mushtaq — Founder & Lead Developer).',
     ],
   },
 ]
@@ -417,12 +411,12 @@ export const termsSections = [
   {
     label: '1. Acceptance',
     title: 'Acceptance of Terms & Eligibility',
-    body: 'By accessing or using the DSCWeb website (dscweb.me), purchasing licenses, downloading binaries, or using our Android applications, you agree to be bound by these Terms of Service. If you do not agree to these terms, you must discontinue use immediately.',
+    body: 'By accessing or using the DSCWeb website (dscweb.me), purchasing licenses, downloading binaries, or using our Android applications and games, you agree to be bound by these Terms of Service. If you do not agree to these terms, you must discontinue use immediately.',
   },
   {
     label: '2. License Grant',
     title: 'Software Licensing & Single-User Restrictions',
-    body: 'All Dark Skull Corporation desktop utilities and software panels are licensed, not sold. Licenses are granted on a non-exclusive, non-transferable, revocable basis for single-machine use bound to your unique Hardware ID (HWID). Sharing license keys, renting access, or attempting to bypass hardware locks is strictly prohibited.',
+    body: 'All Dark Skull Corporation software products and panels are licensed, not sold. Licenses are granted on a non-exclusive, non-transferable, revocable basis for single-machine use bound to your unique Hardware ID (HWID). Sharing license keys, renting access, or attempting to bypass hardware locks is strictly prohibited.',
   },
   {
     label: '3. Prohibited Use',
@@ -447,7 +441,7 @@ export const termsSections = [
   {
     label: '7. Limitation',
     title: 'Limitation of Liability',
-    body: 'In no event shall Dark Skull Corporation, its developer Naveed Mushtaq, or affiliates be liable for indirect, incidental, special, consequential, or punitive damages arising from the use or inability to use our software, website, or services.',
+    body: 'In no event shall Dark Skull Corporation, Founder & Lead Developer Naveed Mushtaq, or affiliates be liable for indirect, incidental, special, consequential, or punitive damages arising from the use or inability to use our software, website, or services.',
   },
   {
     label: '8. Governance',
@@ -461,7 +455,7 @@ export const footerGroups = [
     title: 'Explore',
     links: [
       { label: 'Home', to: '/' },
-      { label: 'Apps & Utilities', to: '/pages/apps' },
+      { label: 'Apps & Games', to: '/pages/apps' },
       { label: 'Products & Pricing', to: '/pages/products' },
       { label: 'Download Center', to: '/pages/downloads' },
       { label: 'About Studio', to: '/pages/about' },

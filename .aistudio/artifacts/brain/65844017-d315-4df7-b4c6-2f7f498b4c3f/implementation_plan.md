@@ -1,63 +1,82 @@
-# DSCWeb React — Black & Gold Theme Initialization & Visual Remediation Plan
+# DSCWeb — Official Brand Identity Correction & Calculator Removal Plan
 
-## 1. Root Cause Analysis
-1. **Pre-Render Theme Bootstrap (`index.html`)**:
-   - Lines 60–69 read legacy `localStorage.getItem('siteTheme')` and fell back to `window.matchMedia('(prefers-color-scheme: dark)')`. Whenever a visitor's OS/browser preferred Light Mode—or had a stale `siteTheme="light"` entry—the app booted into Light Mode (`#f7f7f5` off-white background with `#ffffff` white cards) instead of Black & Gold Dark Mode.
-2. **Header Theme State (`src/components/layout/SiteHeader.jsx`)**:
-   - Lines 19–24 and 61–69 also fell back to `window.matchMedia('(prefers-color-scheme: dark)')`, persisted to `siteTheme`, and did not update `document.documentElement.style.colorScheme` or `<meta name="theme-color">`.
-3. **CSS Token & Button Contrast Issues (`src/index.css`)**:
-   - Dark mode background tokens used `#09090b`/`#121216` instead of the true black baseline (`#050505` main background, `#0A0A0A` secondary background, `#080808` header/footer, `#111111` cards, `#171717` elevated cards, `#292929` borders, `#51421D` subtle gold borders).
-   - Primary buttons used a dark antique olive-gold (`#9a7b1c`) with white text instead of luminous metallic gold (`#D4AF37` fill, `#F5D76E` hover, `#B8860B` deep gold, `#98730F` active) with high-contrast near-black text (`#080808`).
-   - Secondary buttons used generic grey borders instead of a dark charcoal fill (`#111111`) with a muted gold border (`#51421D`) and gold hover emphasis.
+## 1. Central Content & Portfolio Data (`src/content/siteContent.js`)
+- **`homeHighlights`**: Update to reflect DSC's core software studio pillars:
+  1. *Android App Development* — Intuitive, high-performance Android applications published on Google Play.
+  2. *Game Development* — Engaging games and interactive cognitive challenges built for smooth offline play.
+  3. *Custom Website Development* — Responsive websites designed and developed for individuals, businesses, and companies on request.
+- **`featuredApps`**: Remove the obsolete `Calculator` entry completely. Retain **QR Scanner | Generator** and **Mind Matrix** with their Google Play links.
+- **`servicePillars`**: Replace outdated desktop/security pillars with **Android Application Development**, **Game Development**, and **Custom Website Development**.
+- **`productPlans`**: **100% preserved** (all 7 product plans, slugs, pricing, specs, features, and checkout actions remain untouched; update line 289 from `"lead engineer Naveed Mushtaq"` to `"Founder & Lead Developer Naveed Mushtaq"`).
+- **`aboutStats`**: Update to:
+  - `{ label: 'Founded', value: '2024' }`
+  - `{ label: 'Primary Focus', value: 'Android Apps & Games' }`
+  - `{ label: 'Founder & Lead Developer', value: 'Naveed Mushtaq' }`
+  - `{ label: 'Web Projects', value: 'Available on Request' }`
+- **`contactChannels`**: Update Developer Portfolio (`naveedmushtaq.tech`) description to identify **Naveed Mushtaq — Founder & Lead Developer** of Dark Skull Corporation.
+- **`privacySections` & `termsSections`**: Update references to identify **Naveed Mushtaq — Founder & Lead Developer** while preserving all accurate legal, licensing, and AdSense disclosures.
+- **`footerGroups`**: Update `/pages/apps` link label from `"Apps & Utilities"` to `"Apps & Games"`.
 
 ---
 
-## 2. Planned Changes
+## 2. Complete Removal of Calculator (`AppsPage`, `HomePage`, `DownloadsPage`, `index.css`)
+- **`src/pages/AppsPage.jsx`**:
+  - Remove all Calculator state (`calcDisplay`, `calcHistory`, `calcWaitingForOperand`, `calcPrevValue`, `calcOperation`, `copiedResult`), handlers (`handleCalcDigit`, `handleCalcDecimal`, `handleCalcClear`, `handleCalcBackspace`, `handleCalcOperator`, `handleCalcEqual`, `handleCopyCalc`), and the `#calculator-tool` / `.calc-widget` markup.
+  - Showcase **QR Scanner | Generator** and **Mind Matrix** with their Google Play links, plus a custom website & app inquiry callout and the Studio Quality & Privacy Constitution section.
+  - Update page title & meta description to focus on Android applications and mobile games developed by Dark Skull Corporation.
+- **`src/pages/HomePage.jsx`**:
+  - **Hero**:
+    - Eyebrow: `DARK SKULL CORPORATION · SOFTWARE STUDIO`
+    - Headline: `Building Apps, Games & Digital Experiences.`
+    - Description: `Dark Skull Corporation (DSC) is an independent software development studio primarily focused on Android application development and game development. We also offer custom website design and development for individuals, businesses and companies on request.`
+    - CTAs: `Explore Our Apps & Games` (`/pages/apps`), `View Our Products` (`/pages/products`), and `Request a Website` (`/pages/contact`).
+    - Hero Capability Strip: `01 Android App Development`, `02 Game Development`, `03 Custom Website Development`, `04 Product & Client Portal`.
+  - **Featured Showcase**: Remove the Calculator card; showcase **QR Scanner | Generator**, **Mind Matrix**, **Free Panel Build**, and **Custom Website Development** (linking to `/pages/contact`).
+  - **Studio Focus Cards (`.disciplines-grid`)**:
+    - `01 — Android App Development`: Designing and developing Android applications with intuitive interfaces, useful features and dependable performance.
+    - `02 — Game Development`: Creating engaging games and interactive experiences with thoughtful gameplay, polished interfaces and continuous refinement.
+    - `03 — Custom Website Development`: Building responsive websites for individuals, startups, businesses and companies on request.
+  - **Split Highlights**: Update About highlight to credit **Naveed Mushtaq — Founder & Lead Developer** and the official studio identity.
+- **`src/pages/DownloadsPage.jsx`**:
+  - Remove the Calculator download card (`Calculator Tool` / `Launch Web Calculator`).
+  - Retain **QR Scanner | Generator**, **Mind Matrix**, **Free Panel Build**, and the authenticated Client Portal & installation guide sections.
+- **`src/index.css`**:
+  - Remove Calculator-exclusive styles (`.calc-widget`, `.calc-header`, `.calc-screen`, `.calc-keypad`, `.calc-key`, `.calc-key-clear`, `.calc-key-equal`, `.calc-key-zero`, `.calc-history`, `.calc-history-item`) after verifying no other components reference them.
 
-### A. Fix Theme Bootstrap in `index.html`
-- Set default attributes on `<html>`: `data-theme="dark"` and `style="color-scheme: dark;"`.
-- Set default `<meta name="theme-color" content="#050505" />`.
-- Update the inline bootstrap script to:
-  - Read **only** `localStorage.getItem('dscThemePreferenceV2')`.
-  - Ignore `siteTheme` and never query `window.matchMedia('(prefers-color-scheme: dark)')`.
-  - Default unconditionally to `'dark'` unless `dscThemePreferenceV2 === 'light'`.
-  - Apply `document.documentElement.setAttribute('data-theme', resolvedTheme)` and `document.documentElement.style.colorScheme = resolvedTheme` before React mounts.
-  - Sync `<meta name="theme-color">` (`#050505` for dark, `#FAF8F2` for light).
+---
 
-### B. Fix Theme State & Persistence in `src/components/layout/SiteHeader.jsx`
-- Define `export const THEME_STORAGE_KEY = 'dscThemePreferenceV2'`.
-- Initialize `theme` state from `document.documentElement.getAttribute('data-theme')` or `localStorage.getItem(THEME_STORAGE_KEY)`, defaulting strictly to `'dark'` if neither is `'light'` or `'dark'`.
-- On theme change:
-  - Update `document.documentElement.setAttribute('data-theme', theme)`.
-  - Update `document.documentElement.style.colorScheme = theme`.
-  - Update `<meta name="theme-color">` to `#050505` (dark) or `#FAF8F2` (light).
-  - Persist `localStorage.setItem('dscThemePreferenceV2', theme)` when the user toggles the theme.
+## 3. Company Profile, Leadership & Inquiry Updates (`AboutPage`, `ContactPage`, `ProductsPage`, `PrivacyPolicyPage`, `TermsPage`, `SiteFooter`)
+- **`src/pages/AboutPage.jsx`**:
+  - Update SEO title to `'About Dark Skull Corporation | Naveed Mushtaq — Founder & Lead Developer'` and description to the official studio identity.
+  - Rewrite introductory copy with the approved company description.
+  - Replace `focusAreas` with **Android Application Development**, **Game Development**, and **Custom Website Development**.
+  - Replace `engineeringStandards` with **01 User-Centered Development**, **02 Quality & Reliability**, and **03 Continuous Improvement**.
+  - Update **Technology Stack & Development Areas** to accurately describe Android application development, game development, and custom website development without fabricating unused technologies.
+  - Update the **Founder & Lead Developer** section with the official designation **Naveed Mushtaq — Founder & Lead Developer** and the approved founder statement.
+- **`src/pages/ContactPage.jsx`**:
+  - Update header and intro copy to welcome Android app development inquiries, game development inquiries, custom website development inquiries, and product/order support inquiries.
+  - Add `"Website Design & Development"` (`website`), `"Android App Development"` (`android`), and `"Game Development"` (`game`) to the inquiry category selector while retaining all existing categories (`order`, `support`, `freepanel`, `custom`, `bug`, `general`) and the existing mailto/clipboard workflow.
+- **`src/pages/ProductsPage.jsx`**:
+  - Preserve 100% of product cards, filters, pricing, and checkout links while updating the page header description so it presents the product catalog accurately without misrepresenting DSC's studio identity.
+- **`src/pages/PrivacyPolicyPage.jsx` & `src/pages/TermsPage.jsx`**:
+  - Update contact designation to `Founder & Lead Developer: Naveed Mushtaq`.
+- **`src/components/layout/SiteFooter.jsx`**:
+  - Update footer credit to `Founded & Developed by Naveed Mushtaq — Founder & Lead Developer` (keeping the link to `https://naveedmushtaq.tech/` with accessible text `Naveed Mushtaq` so existing tests and users see both his name and official title).
 
-### C. Enforce True Black & Metallic Gold System in `src/index.css`
-- **Dark Mode (`:root`)**:
-  - `--bg: #050505` (Main background)
-  - `--bg-soft: #0A0A0A` (Secondary background)
-  - `--header-bg: #080808` / `--footer-bg: #080808` (Header & footer surfaces)
-  - `--surface: #111111` / `--card-bg: #111111` (Card & panel surfaces)
-  - `--surface-solid: #141414`
-  - `--surface-strong: #171717` / `--surface-elevated: #171717` / `--surface-hover: #171717` (Elevated cards & hover states)
-  - `--border: #292929` / `--surface-border: #292929` / `--card-border: #292929` (Standard borders)
-  - `--gold-border-subtle: #51421D` / `--card-hover-border: #51421D` (Subtle gold borders)
-  - `--text: #F5F5F5` (Main text)
-  - `--text-secondary: #A3A3A3` / `--muted: #A3A3A3` / `--text-muted: #A3A3A3` (Secondary text)
-  - `--primary: #D4AF37` (Primary metallic gold)
-  - `--primary-hover: #F5D76E` (Gold hover)
-  - `--primary-strong: #B8860B` (Deep gold)
-  - `--primary-active: #98730F` (Active gold)
-  - `--primary-text: #080808` (Near-black text on primary gold buttons)
-- **Buttons**:
-  - `.button-primary, .btn-primary`: Background `#D4AF37`, text `#080808`, border `#D4AF37`, hover background `#F5D76E` with border `#F5D76E`, active background `#98730F`.
-  - `.button-secondary, .btn-secondary, .btn-neutral`: Dark charcoal background (`var(--surface)` `#111111`), muted gold border (`var(--gold-border-subtle)` `#51421D`), white text (`var(--text)` `#F5F5F5`), hover background `var(--surface-elevated)` (`#171717`) with `#D4AF37` gold border and `#F5D76E` text emphasis.
-- **Light Mode (`:root[data-theme="light"]`)**:
-  - Warm off-white background (`#FAF8F2`), secondary background (`#F2EFE7`), white cards (`#FFFFFF`), dark readable typography (`#141414` / `#525252`), muted metallic-gold accents (`#B8860B` / `#98730F`), and high-contrast primary (`#D4AF37` with `#080808` text) and secondary (`#FFFFFF` with `#C8B273` muted gold border) buttons.
+---
 
-### D. Automated Tests & Browser Verification
-- Add unit/integration tests in `src/__tests__/components.test.jsx` verifying:
-  - Default theme is `'dark'` even when legacy `localStorage.setItem('siteTheme', 'light')` is present.
-  - Toggling theme switches `data-theme` and `style.colorScheme` to `'light'` and persists `dscThemePreferenceV2`.
-- Run `npm run lint`, `npm run test`, and `npm run build`, and verify the live rendered application.
+## 4. Global Metadata, Structured Data & Documentation (`index.html`, `metadata.json`, `README.md`)
+- **`index.html` & `metadata.json`**:
+  - Update `<title>`, `<meta name="description">`, `<meta name="keywords">`, Open Graph, Twitter cards, and Schema.org JSON-LD (`"@type": "Organization"` /软件 development studio founded by `Naveed Mushtaq — Founder & Lead Developer`) to reflect:
+    `"Android App Development, Game Development, Custom Website Development, Dark Skull Corporation."`
+- **`README.md`**:
+  - Update project overview to reflect DSC's official studio identity and Founder & Lead Developer attribution.
+
+---
+
+## 5. Automated Tests & Verification (`src/__tests__/adsense_remediation.test.jsx`)
+- Replace the obsolete Calculator test in `src/__tests__/adsense_remediation.test.jsx` with comprehensive tests verifying:
+  - `AppsPage` renders **QR Scanner | Generator** and **Mind Matrix** with their Google Play links and contains no Calculator widget.
+  - `AboutPage` and `HomePage` identify **Dark Skull Corporation** as an independent software development studio focused on Android Application Development, Game Development, and Custom Website Development, with **Naveed Mushtaq — Founder & Lead Developer**.
+  - `ContactPage` includes the **Website Design & Development** inquiry option.
+- Run `npm run lint`, `npm run test`, and `npm run build`.

@@ -4,45 +4,45 @@ import { aboutStats } from '../content/siteContent'
 
 const focusAreas = [
   {
-    title: 'Desktop Utility Panels',
-    tag: 'Windows x64 & .NET',
-    desc: 'High-performance desktop utilities designed for zero bloat, OBS-safe broadcast overlays, rapid hotkey tool switching, and input sensitivity calibration.',
+    title: 'Android Application Development',
+    tag: 'Primary Focus',
+    desc: 'Designing and developing Android applications with intuitive interfaces, practical everyday utility, scoped permissions, and dependable performance.',
   },
   {
-    title: 'Mobile Applications & Games',
-    tag: 'Android & Kotlin',
-    desc: 'Native Android tools such as our offline QR Scanner & Generator, alongside cognitive puzzle games like Mind Matrix with zero intrusive telemetry.',
+    title: 'Game Development',
+    tag: 'Primary Focus',
+    desc: 'Creating engaging games and interactive experiences such as Mind Matrix with thoughtful gameplay, polished interfaces, and offline-first reliability.',
   },
   {
-    title: 'Hardware-Bound Licensing',
-    tag: 'Security & HWID',
-    desc: 'Cryptographic Hardware Identifier (HWID) verification architectures ensuring single-device license protection, order tracking, and account security.',
+    title: 'Custom Website Development',
+    tag: 'Available on Request',
+    desc: 'Designing and developing responsive, modern websites for individuals, startups, businesses, and companies tailored to real-world goals.',
   },
 ]
 
-const engineeringStandards = [
+const studioPrinciples = [
   {
     number: '01',
-    title: 'Practical Purpose',
-    desc: 'Every tool and feature must solve a real functional requirement. We eliminate bloatware, cosmetic fluff, and unnecessary background processes.',
+    title: 'User-Centered Development',
+    desc: 'Every application, game, and website is designed around intuitive navigation, clear visual hierarchy, and practical usefulness for real users.',
   },
   {
     number: '02',
-    title: 'Resource Respect',
-    desc: 'Software should execute instantaneously with low CPU and memory footprints. Our tools are compiled to run silently without slowing down your system.',
+    title: 'Quality & Reliability',
+    desc: 'We prioritize clean engineering, responsive performance, and dependable operation across Android devices and modern web browsers.',
   },
   {
     number: '03',
-    title: 'Transparent Security',
-    desc: 'We are open about how hardware tokens are generated and how payment proofs are verified. We never harvest or sell personal data.',
+    title: 'Continuous Improvement',
+    desc: 'We actively refine our published apps, games, and web platforms based on user feedback, usability testing, and ongoing technical updates.',
   },
 ]
 
 export function AboutPage() {
   usePageMeta({
-    title: 'About Dark Skull Corporation & Lead Developer',
+    title: 'About Dark Skull Corporation',
     description:
-      'Learn about Dark Skull Corporation, an independent software studio led by Naveed Mushtaq, focusing on lightweight desktop panels, Android utilities, and logic games.',
+      'Dark Skull Corporation (DSC) is an independent software development studio focused on Android application development, game development, and custom website development.',
     canonical: 'https://dscweb.me/pages/about',
   })
 
@@ -53,7 +53,7 @@ export function AboutPage() {
         <span className="hero-eyebrow">Dark Skull Corporation</span>
         <h1>Independent Software Studio</h1>
         <p>
-          Dark Skull Corporation (DSC) is an independent software development studio focused on building lightweight desktop utilities, specialized software panels, Android applications, and interactive puzzle experiences.
+          Dark Skull Corporation (DSC) is an independent software development studio primarily focused on Android application development and game development. We also offer custom website design and development for individuals, businesses and companies on request. Our goal is to build useful, intuitive and reliable digital experiences.
         </p>
       </section>
 
@@ -78,12 +78,12 @@ export function AboutPage() {
         ))}
       </div>
 
-      {/* Engineering Standards */}
+      {/* Studio Principles, Development Areas & Founder Section */}
       <section className="seo-section">
         <div className="seo-container">
-          <h2>Engineering Principles</h2>
+          <h2>Studio Principles</h2>
           <div className="principles-grid-about">
-            {engineeringStandards.map((pr) => (
+            {studioPrinciples.map((pr) => (
               <div key={pr.number} className="principle-item-about">
                 <span className="principle-item-num">{pr.number}</span>
                 <h3 className="principle-item-title">{pr.title}</h3>
@@ -92,42 +92,54 @@ export function AboutPage() {
             ))}
           </div>
 
-          {/* Technology & Architecture Section */}
-          <h2 className="mt-36">Technology Stack &amp; Architecture</h2>
+          {/* Technology & Development Areas Section */}
+          <h2 className="mt-36">Technology Stack &amp; Development Areas</h2>
           <p>
-            Dark Skull Corporation builds applications across multiple software tiers using battle-tested technology:
+            Dark Skull Corporation designs and develops software products across our core areas of focus:
           </p>
           <ul className="feature-list">
             <li>
-              <strong>Windows Desktop Binaries:</strong> Developed in C# utilizing the Microsoft .NET Framework for low memory footprint, raw input processing, and native Windows API integration.
+              <strong>Android Application Development:</strong> Native Android applications engineered for fast startup, offline capability, and scoped device permissions, published on Google Play (including <em>QR Scanner | Generator</em>).
             </li>
             <li>
-              <strong>Mobile Applications:</strong> Built natively for Android using Kotlin and modern Android Jetpack components, published securely through the Google Play Store.
+              <strong>Game Development:</strong> Interactive mobile puzzle and cognitive games (including <em>Mind Matrix</em>) built with responsive touch controls, progressive challenge design, and smooth offline performance.
             </li>
             <li>
-              <strong>Web Architecture:</strong> Engineered with React, Vite, and clean client-side routing, interfacing with high-availability RESTful backend services.
-            </li>
-            <li>
-              <strong>License Verification:</strong> Cryptographically generated Hardware Identifier (HWID) tokens validate single-machine authorization and prevent unauthorized key duplication.
+              <strong>Custom Website Development:</strong> Responsive web applications and custom websites built with modern web technologies (React, Vite, HTML, CSS, JavaScript, and REST APIs) for individuals, businesses, and companies on request.
             </li>
           </ul>
 
-          {/* Leadership & Bio */}
-          <h2 className="mt-36">Developer Leadership</h2>
+          {/* Founder & Lead Developer Section */}
+          <h2 className="mt-36">Founder </h2>
+          <div className="portal-callout-card mt-16 mb-16">
+            <div className="portal-callout-info">
+              <span className="badge warning mb-8">Studio Leadership</span>
+              <h3 className="portal-callout-title">Naveed Mushtaq — Founder </h3>
+              <p className="portal-callout-desc">
+                Naveed Mushtaq is the Founder and Lead Developer of Dark Skull Corporation. He established DSC with a vision of building useful software products, Android applications and engaging games, while leading the studio&apos;s development direction and engineering work.
+              </p>
+            </div>
+            <div className="portal-callout-actions">
+              <a
+                href="https://naveedmushtaq.tech/"
+                target="_blank"
+                rel="noreferrer"
+                className="button button-primary button-sm"
+              >
+                Visit Founder Portfolio ↗
+              </a>
+              <a
+                href="https://github.com/shahnaveed07"
+                target="_blank"
+                rel="noreferrer"
+                className="button button-secondary button-sm"
+              >
+                GitHub (@shahnaveed07) ↗
+              </a>
+            </div>
+          </div>
           <p>
-            Dark Skull Corporation is founded and independently developed by{' '}
-            <a
-              href="https://naveedmushtaq.tech/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary font-semibold"
-            >
-              Naveed Mushtaq ↗
-            </a>
-            . Naveed leads all aspects of software architecture, C# tool compilation, mobile application deployment, and community support.
-          </p>
-          <p>
-            You can inspect public code repositories and open-source contributions on GitHub at{' '}
+            You can explore public repositories, studio releases, and project updates on GitHub at{' '}
             <a
               href="https://github.com/shahnaveed07"
               target="_blank"
@@ -135,33 +147,37 @@ export function AboutPage() {
               className="text-primary font-semibold"
             >
               github.com/shahnaveed07 ↗
-            </a>
-            , or review past engineering projects on the developer portfolio.
+            </a>{' '}
+            or visit{' '}
+            <a
+              href="https://naveedmushtaq.tech/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary font-semibold"
+            >
+              naveedmushtaq.tech ↗
+            </a>{' '}
+            to learn more about <strong>Naveed Mushtaq — Founder &amp; Lead Developer</strong>.
           </p>
         </div>
       </section>
 
       {/* Call to action */}
       <section className="about-cta-card">
-        <h2 className="about-cta-title">Explore Our Products &amp; Community</h2>
+        <h2 className="about-cta-title">Explore Our Apps, Games &amp; Services</h2>
         <p className="about-cta-desc">
-          Browse our software catalog, download community builds, or connect directly with our engineering team on Discord.
+          Browse our Android applications and games, view our product catalog, or contact us to discuss a custom website development project.
         </p>
         <div className="about-cta-actions">
-          <NavLink to="/pages/products" className="button button-primary">
-            View Products
+          <NavLink to="/pages/apps" className="button button-primary">
+            Explore Apps &amp; Games
           </NavLink>
           <NavLink to="/pages/contact" className="button button-secondary">
-            Contact Support
+            Request a Website / Contact Us
           </NavLink>
-          <a
-            href="https://discord.gg/XB2Zjmsb7K"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="button button-ghost"
-          >
-            Join Discord Community ↗
-          </a>
+          <NavLink to="/pages/products" className="button button-ghost">
+            View Products
+          </NavLink>
         </div>
       </section>
     </div>

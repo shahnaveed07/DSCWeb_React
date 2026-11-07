@@ -8,15 +8,15 @@ export function SiteFooter({ wide = false }) {
             &copy; 2026 Dark Skull Corporation. All rights reserved.
           </p>
           <p className="footer-credit">
-            Developed by{' '}
+          Visit{' '}
             <a
               href="https://naveedmushtaq.tech/"
               target="_blank"
               rel="noopener noreferrer"
               className="footer-developer-link"
-              title="Visit Developer Portfolio"
+              title="Visit Developer's Portfolio"
             >
-              Naveed Mushtaq
+            Naveed Mushtaq
             </a>
           </p>
         </div>
