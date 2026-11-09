@@ -4,6 +4,7 @@ import { extractApiMessage, submitCheckout } from '../services/dscApi'
 import { FullScreenLoader } from '../components/ui/FullScreenLoader'
 import { PasswordInput } from '../components/ui/PasswordInput'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 
 const BASE_PRICES = {
@@ -36,9 +37,10 @@ export function CheckoutPage() {
   const panel = String(searchParams.get('panel') || '').trim().toLowerCase()
 
   usePageMeta({
-    title: panel ? `Checkout — ${panel.toUpperCase()} Panel` : 'Order Checkout',
-    description: 'Complete your Dark Skull Corporation software panel order, duration selection, and payment verification.',
-    canonical: 'https://dscweb.me/pages/checkout',
+    ...SEO_ROUTES.checkout,
+    title: panel
+      ? `Checkout — ${panel.toUpperCase()} Panel | Dark Skull Corporation`
+      : SEO_ROUTES.checkout.title,
   })
 
   const [days, setDays] = useState(30)

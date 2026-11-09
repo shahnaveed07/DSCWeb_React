@@ -1,14 +1,10 @@
 import { useState } from 'react'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { contactChannels } from '../content/siteContent'
 
 export function ContactPage() {
-  usePageMeta({
-    title: 'Contact Dark Skull Corporation | Website Projects, Apps, Games & Support',
-    description:
-      'Contact Dark Skull Corporation for custom website design and development inquiries, Android app and game inquiries, product orders, or technical support.',
-    canonical: 'https://dscweb.me/pages/contact',
-  })
+  usePageMeta(SEO_ROUTES.contact)
 
   const [form, setForm] = useState({
     name: '',

@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom'
 import { changePassword, extractApiMessage, isAuthError } from '../services/dscApi'
 import { PasswordInput } from '../components/ui/PasswordInput'
 import { updateStoredSession } from '../utils/auth'
+import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 export function ChangePasswordPage({ session, onSessionInvalid, onSessionUpdate }) {
+  usePageMeta(SEO_ROUTES.change)
   const isFree = String(session?.plan || '').trim().toLowerCase() === 'free'
   const mustChange = Boolean(session?.mustChangePassword)
   const [form, setForm] = useState({ currentPassword: '', newPassword: '' })

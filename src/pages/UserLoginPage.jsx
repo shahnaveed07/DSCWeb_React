@@ -5,14 +5,10 @@ import { clearStoredSession, persistSessionFromResponse } from '../utils/auth'
 import { FullScreenLoader } from '../components/ui/FullScreenLoader'
 import { PasswordInput } from '../components/ui/PasswordInput'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 export function UserLoginPage({ session, onSessionChange }) {
-  usePageMeta({
-    title: 'Client Portal Login',
-    description:
-      'Sign in to your Dark Skull Corporation Client Portal to access your hardware-bound software licenses, downloads, and account details.',
-    canonical: 'https://dscweb.me/pages/ulogin',
-  })
+  usePageMeta(SEO_ROUTES.ulogin)
 
   const navigate = useNavigate()
   const [form, setForm] = useState({ username: '', password: '' })

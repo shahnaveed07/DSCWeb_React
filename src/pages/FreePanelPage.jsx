@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRemoteResource } from '../hooks/useRemoteResource'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { getFreePanelStatus } from '../services/dscApi'
 import { normalizeFreePanelResponse } from '../utils/format'
 
@@ -124,12 +125,7 @@ function FreePanelAvailableSection({
 }
 
 export function FreePanelPage() {
-  usePageMeta({
-    title: 'Free Panel Access & Live Credentials',
-    description:
-      'Access public evaluation credentials, real-time slot telemetry, and official package archive downloads for the Dark Skull Corporation Free Panel.',
-    canonical: 'https://dscweb.me/pages/freepanel',
-  })
+  usePageMeta(SEO_ROUTES.freepanel)
 
   const [copiedUserValue, setCopiedUserValue] = useState('')
   const [copiedPassValue, setCopiedPassValue] = useState('')

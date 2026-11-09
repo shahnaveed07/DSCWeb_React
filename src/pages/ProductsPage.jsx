@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { productPlans } from '../content/siteContent'
 
 const CATEGORIES = [
@@ -11,12 +12,7 @@ const CATEGORIES = [
 ]
 
 export function ProductsPage() {
-  usePageMeta({
-    title: 'Software Products Catalog | Dark Skull Corporation',
-    description:
-      'Browse the Dark Skull Corporation software catalog featuring transparent base pricing, flexible durations, and verified client portal delivery.',
-    canonical: 'https://dscweb.me/pages/products',
-  })
+  usePageMeta(SEO_ROUTES.products)
 
   const [activeFilter, setActiveFilter] = useState('all')
   const [expandedProduct, setExpandedProduct] = useState(null)

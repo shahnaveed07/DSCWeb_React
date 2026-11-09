@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { extractApiMessage, generateAdminKey, isAuthError } from '../services/dscApi'
+import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 const plans = ['free', 'streamer', 'sniper', 'special', 'aimbot', 'premium', 'customised']
 
 export function GenerateKeyPage({ session, onSessionInvalid }) {
+  usePageMeta(SEO_ROUTES.generatekey)
   const [plan, setPlan] = useState('')
   const [validDays, setValidDays] = useState('')
   const [key, setKey] = useState('')

@@ -1,13 +1,9 @@
 import { NavLink } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 export function AppsPage() {
-  usePageMeta({
-    title: 'Android Applications & Mobile Games Portfolio | Dark Skull Corporation',
-    description:
-      'Explore official Android applications and mobile games developed by Dark Skull Corporation, including QR Scanner | Generator and Mind Matrix on Google Play.',
-    canonical: 'https://dscweb.me/pages/apps',
-  })
+  usePageMeta(SEO_ROUTES.apps)
 
   return (
     <div className="center-wrap">

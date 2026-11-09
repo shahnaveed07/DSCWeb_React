@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useRemoteResource } from '../hooks/useRemoteResource'
+import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import {
   changeAdminPassword,
   createAdminAccount,
@@ -30,6 +32,7 @@ function getValue(source, keys) {
 }
 
 export function AdminDashboardPage({ session, systemStatus, onSessionInvalid }) {
+  usePageMeta(SEO_ROUTES.adash)
   const [revision, setRevision] = useState(0)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState('success')

@@ -23,6 +23,8 @@ import {
   toIsoOrNullFromDatetimeLocal,
 } from '../utils/format'
 import { PasswordInput } from '../components/ui/PasswordInput'
+import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 const TABLES = [
   ['users', 'Users'],
@@ -172,6 +174,7 @@ function buildSettingsPayload(current, overrides = {}) {
 }
 
 export function AdminWorkspacePage({ session, onSessionInvalid }) {
+  usePageMeta(SEO_ROUTES.ownerdb)
   const [table, setTable] = useState('users')
   const [records, setRecords] = useState([])
   const [cachedSettings, setCachedSettings] = useState({})

@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { PageSection } from '../components/ui/PageSection'
 import { privacySections } from '../content/siteContent'
 
 export function PrivacyPolicyPage() {
-  usePageMeta({
-    title: 'Privacy Policy & Cookie Disclosures',
-    description:
-      'Dark Skull Corporation Privacy Policy explaining technical data collection, HWID license binding, third-party advertising disclosures, and cookie policies.',
-    canonical: 'https://dscweb.me/pages/privacy-policy',
-  })
+  usePageMeta(SEO_ROUTES.privacy)
 
   return (
     <div className="page-stack">

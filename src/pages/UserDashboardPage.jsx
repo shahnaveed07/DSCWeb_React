@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useRemoteResource } from '../hooks/useRemoteResource'
+import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import {
   extractApiMessage,
   getCurrentOrder,
@@ -10,6 +12,7 @@ import {
 import { evaluateSubscriptionExpiry, formatDateTime } from '../utils/format'
 
 export function UserDashboardPage({ session, onSessionInvalid }) {
+  usePageMeta(SEO_ROUTES.udash)
   const [copiedKey, setCopiedKey] = useState(false)
   const [downloadError, setDownloadError] = useState('')
   const [downloadLoading, setDownloadLoading] = useState(false)

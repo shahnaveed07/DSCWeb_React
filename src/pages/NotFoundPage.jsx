@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 export function NotFoundPage() {
-  usePageMeta({
-    title: 'Page Not Found (404)',
-    description: 'The requested page could not be found. Return to DSCWeb homepage or browse active software releases.',
-  })
+  usePageMeta(SEO_ROUTES.notFound)
   return (
     <section className="auth-shell">
       <div className="auth-card text-center">

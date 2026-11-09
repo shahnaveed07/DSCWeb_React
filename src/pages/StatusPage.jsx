@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 const statusStates = {
   update: {
@@ -31,21 +32,22 @@ const statusStates = {
 
 export function StatusPage() {
   const [searchParams] = useSearchParams()
-  const state = statusStates[searchParams.get('type')] || statusStates.default
+  const typeParam = searchParams.get('type')
+  const state = statusStates[typeParam] || statusStates.default
 
   usePageMeta({
-    title: `System Status — ${state.label}`,
-    description: state.description,
-    canonical: 'https://dscweb.me/pages/status',
+    ...SEO_ROUTES.status,
+    title: typeParam ? `System Status — ${state.label} | DSC` : SEO_ROUTES.status.title,
+    description: typeParam ? state.description : SEO_ROUTES.status.description,
   })
 
   return (
     <section className="status-layout">
       <div className="panel status-panel">
-        <Link className="status-brand" to="/" aria-label="DSCWeb home">
+        <Link className="status-brand" to="/" aria-label="Dark Skull Corporation Home">
           <picture>
             <source srcSet="/images/dsclogo.webp" type="image/webp" />
-            <img src="/images/dsclogo.png" alt="DSC" className="status-logo" width="48" height="48" />
+            <img src="/images/dsclogo.png" alt="Dark Skull Corporation logo" className="status-logo" width="48" height="48" />
           </picture>
         </Link>
 

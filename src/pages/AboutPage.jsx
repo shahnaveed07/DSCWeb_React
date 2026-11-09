@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { aboutStats } from '../content/siteContent'
 
 const focusAreas = [
@@ -39,12 +40,7 @@ const studioPrinciples = [
 ]
 
 export function AboutPage() {
-  usePageMeta({
-    title: 'About Dark Skull Corporation',
-    description:
-      'Dark Skull Corporation (DSC) is an independent software development studio focused on Android application development, game development, and custom website development.',
-    canonical: 'https://dscweb.me/pages/about',
-  })
+  usePageMeta(SEO_ROUTES.about)
 
   return (
     <div className="center-wrap">

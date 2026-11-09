@@ -5,14 +5,10 @@ import { clearStoredSession, persistSessionFromResponse } from '../utils/auth'
 import { FullScreenLoader } from '../components/ui/FullScreenLoader'
 import { PasswordInput } from '../components/ui/PasswordInput'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 export function AdminLoginPage({ session, onSessionChange }) {
-  usePageMeta({
-    title: 'Admin Portal Login',
-    description:
-      'Administrative access portal for Dark Skull Corporation management, order approvals, and platform configuration.',
-    canonical: 'https://dscweb.me/pages/alogin',
-  })
+  usePageMeta(SEO_ROUTES.alogin)
 
   const navigate = useNavigate()
   const [form, setForm] = useState({ username: '', password: '' })

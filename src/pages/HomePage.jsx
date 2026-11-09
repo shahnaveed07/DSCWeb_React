@@ -1,14 +1,10 @@
 import { NavLink } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { ButtonLink } from '../components/layout/SiteHeader'
 
 export function HomePage({ systemStatus }) {
-  usePageMeta({
-    title: 'Dark Skull Corporation | Android App Development, Game Development & Custom Websites',
-    description:
-      'Dark Skull Corporation (DSC) is an independent software development studio primarily focused on Android application development and game development, with custom website development available on request.',
-    canonical: 'https://dscweb.me/',
-  })
+  usePageMeta(SEO_ROUTES.home)
 
   const isMaintenance =
     systemStatus?.isMaintenanceMode === true || systemStatus?.IsMaintenanceMode === true

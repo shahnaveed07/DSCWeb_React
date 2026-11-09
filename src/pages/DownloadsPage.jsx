@@ -1,15 +1,11 @@
 import { NavLink } from 'react-router-dom'
 import { useRemoteResource } from '../hooks/useRemoteResource'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { getFreePanelStatus } from '../services/dscApi'
 
 export function DownloadsPage({ systemStatus }) {
-  usePageMeta({
-    title: 'Download Center | Android Apps, Games & Official Releases — Dark Skull Corporation',
-    description:
-      'Access official Android applications, mobile games on Google Play, and verified software releases from Dark Skull Corporation.',
-    canonical: 'https://dscweb.me/pages/downloads',
-  })
+  usePageMeta(SEO_ROUTES.downloads)
 
   const { data, loading } = useRemoteResource(getFreePanelStatus, [])
   const freeLink =

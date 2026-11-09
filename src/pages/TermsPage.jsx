@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 import { PageSection } from '../components/ui/PageSection'
 import { termsSections } from '../content/siteContent'
 
 export function TermsPage() {
-  usePageMeta({
-    title: 'Terms of Service & Licensing Agreements',
-    description:
-      'Terms of Service and software licensing policies governing Dark Skull Corporation applications, desktop panels, and web portal access.',
-    canonical: 'https://dscweb.me/pages/terms',
-  })
+  usePageMeta(SEO_ROUTES.terms)
 
   return (
     <div className="page-stack">

@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { usePageMeta } from '../hooks/usePageMeta'
+import { SEO_ROUTES } from '../content/seoConfig'
 
 export function MaintenancePage({ systemStatus, onRetry }) {
+  usePageMeta(SEO_ROUTES.maintenance)
   const [retrying, setRetrying] = useState(false)
 
   const reason =
