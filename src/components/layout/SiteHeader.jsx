@@ -11,7 +11,7 @@ function isExternal(target) {
 const THEME_STORAGE_KEY = 'dscThemePreferenceV2'
 
 function resolveInitialTheme() {
-  if (typeof document === 'undefined') return 'dark'
+  if (typeof document === 'undefined') return 'light'
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY)
     if (saved === 'light' || saved === 'dark') {
@@ -24,7 +24,7 @@ function resolveInitialTheme() {
   if (currentAttr === 'light' || currentAttr === 'dark') {
     return currentAttr
   }
-  return 'dark'
+  return 'light'
 }
 
 export function SiteHeader({ session, systemStatus, onLogout, compact = false, wide = false }) {
@@ -79,7 +79,7 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false, w
 
     const metaTheme = document.querySelector('meta[name="theme-color"]')
     if (metaTheme) {
-      metaTheme.setAttribute('content', validTheme === 'light' ? '#FAF8F2' : '#050505')
+      metaTheme.setAttribute('content', validTheme === 'light' ? '#F8FAFC' : '#0B1220')
     }
   }, [theme])
 

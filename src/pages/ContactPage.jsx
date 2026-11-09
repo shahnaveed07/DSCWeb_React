@@ -94,7 +94,7 @@ ${form.message}
         {contactChannels.map((c) => (
           <article key={c.label} className="channel-card">
             <div>
-              <span className="badge warning mb-10">{c.label}</span>
+              <span className="badge primary mb-10">{c.label}</span>
               <h2 className="channel-card-title">{c.title}</h2>
               <p className="channel-card-desc">{c.body}</p>
             </div>
@@ -244,7 +244,7 @@ ${form.message}
       {/* Order Verification Notice */}
       <section className="seo-section">
         <div className="seo-container">
-          <span className="badge warning mb-8">Order Notice</span>
+          <span className="badge primary mb-8">Order Notice</span>
           <h2>Order &amp; Payment Verification Timeline</h2>
           <p>
             Orders placed via the checkout system undergo manual verification of uploaded screenshot payment proofs. Once confirmed by an administrator, your license key is unlocked immediately on your <strong>Client Dashboard</strong>.

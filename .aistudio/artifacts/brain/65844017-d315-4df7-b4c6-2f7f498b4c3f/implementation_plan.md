@@ -1,119 +1,96 @@
-# DSCWeb — Complete Technical & On-Page SEO, Sitemap & Search Visibility Optimization
+# DSCWeb — Complete Professional Theme Redesign (Slate, White & Blue System)
 
-This plan establishes a complete, verifiable SEO architecture across all 19 routes of the DSCWeb React application (`https://dscweb.me/`), ensuring accurate representation of **Dark Skull Corporation (DSC)** as an independent software development studio focused on Android Application Development, Game Development, and Custom Website Development, while delivering route-specific static HTML metadata shells for crawlers and preserving 100% of existing product catalogue and platform functionality.
+This plan replaces the legacy Black & Gold visual palette across the DSCWeb React application (`https://dscweb.me/`) with a restrained, high-trust corporate **Slate, White & Blue** design system tailored for an independent software development studio, while preserving 100% of existing product catalogue, authentication, dashboard, checkout, and SEO prerendering functionality.
 
 ## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> The following architectural and content decisions incorporate your Phase 1 confirmations:
+> The following design and theme initialization decisions incorporate your Phase 1 confirmations:
 
-- **Confirmed Decision 1 — Build-Time Static HTML Route Shells for Crawlers**: During `npm run build`, a lightweight post-build generator will emit route-specific static HTML files (`dist/pages/apps/index.html`, `dist/pages/products/index.html`, etc.) populated with each route's exact `<title>`, `<meta name="description">`, `<link rel="canonical">`, `<meta name="robots">`, Open Graph, Twitter cards, and route-specific Schema.org JSON-LD. This guarantees that non-JS social crawlers (Discord, X/Twitter, LinkedIn, WhatsApp) and search bots receive exact page-level metadata on initial HTTP response on both Netlify and Vercel without requiring SSR.
-- **Confirmed Decision 2 — Founder Attribution Preservation**: Your manual edits in the visible UI (`AboutPage`, `SiteFooter`, `HomePage`, `AppsPage`, and `siteContent`) are strictly preserved as-is, while SEO metadata (`<meta name="author">`, About page SEO title/description) and Schema.org JSON-LD (`Organization.founder` and `Person`) use the official designation **Naveed Mushtaq — Founder & Lead Developer**.
-- **Confirmed Decision 3 — Square Logo Social Card Handling**: Because the verified existing brand asset (`https://dscweb.me/images/dsclogo.png`) is a `1280×1280` square image, `twitter:card` defaults to `"summary"` rather than `"summary_large_image"` so social previews do not crop the square logo awkwardly, and no non-existent image URLs are invented.
+- **Confirmed Decision 1 — Default to Light Mode (`#F8FAFC`) for New Visitors**: New visitors without a stored preference will initially receive the clean **Light Mode (`#F8FAFC` background / `#FFFFFF` cards / `#0F172A` slate typography / `#2563EB` blue primary accents)**. The pre-render theme script and header toggle will continue using the `dscThemePreferenceV2` storage key so explicit user theme switches between Light and Dark Mode (`#0B1220` deep slate) persist across reloads with zero flash.
+- **Confirmed Decision 2 — Category Tags Styled in Primary Blue Accent**: Non-status category and portfolio tags (`Primary Focus`, `Available on Request`, `ANDROID APPLICATION`, `MOBILE LOGIC GAME`, product category chips, and studio badges) will use the **Primary Blue Accent** (`--primary` / `--primary-soft` / `--primary-border`), while semantic green (`good`), muted amber (`warning`), and red (`danger`) remain strictly reserved for genuine functional status indicators (such as order review status, slot capacity alerts, and form validation).
 
 ---
 
 ## 1. Overview & Core Concept
 
-- **What It Does**: Replaces ad-hoc page title/description updates with a unified SEO metadata system that synchronizes client-side React Router navigation (`usePageMeta`) and build-time static HTML generation from a single source of truth.
-- **Target Audience / Persona**: Search engine crawlers (Googlebot, Bingbot), social preview bots (Discord, X, LinkedIn, Facebook), and prospective visitors searching for Android applications, mobile games (`QR Scanner | Generator`, `Mind Matrix`), custom website development services, or DSC software products.
-- **Key Value**: Eliminates duplicate/truncated titles (`| DSCWeb` double-branding), removes non-indexable transactional routes (`/pages/checkout`) from `sitemap.xml`, enforces explicit `noindex, nofollow` policies on authentication, checkout, dashboard, and utility routes, and embeds rich Schema.org structured data (`Organization`, `WebSite`, `Person`, `WebPage`, and `SoftwareApplication`).
+- **What It Does**: Establishes a centralized CSS custom property architecture in both Dark (`:root`) and Light (`:root[data-theme="light"]`) modes built on Slate neutrals (`#0B1220`–`#F8FAFC`) and Engineering Blue (`#2563EB`–`#1E3A8A`), removing all legacy metallic gold (`#D4AF37`, `#F5D76E`, `#B8860B`), cream (`#FAF8F2`, `#E2DEC9`), and pure pitch-black (`#050505`) styling.
+- **Target Audience / Persona**: Clients, businesses, and users visiting Dark Skull Corporation to explore Android applications, mobile games, custom website development services, or licensed software products.
+- **Key Value**: Communicates technical credibility, modern software engineering rigor, and WCAG 2.1 AA contrast compliance across all 20 routes without altering any business logic, API contracts, or SEO metadata.
 
 ---
 
-## 2. User Experience, SEO Metadata Matrix & Visual Consistency
+## 2. User Experience & Visual Design
 
-- **Visual Identity & Theme Preservation**:
-  - Retains the approved **Black & Gold** visual identity (`#050505` dark background, `#D4AF37` metallic gold accents, `dscThemePreferenceV2` persistence) with zero regressions.
-  - Preserves your recent visible text adjustments on the About page, Home page, Apps page, Privacy Policy page, and Site Footer.
-  - Updates `site.webmanifest` theme/background colors to `#050505` to match the Black & Gold dark theme baseline.
-
-- **Complete Route-by-Route SEO Metadata & Indexing Matrix**:
-
-| Page | Canonical Route | SEO `<title>` | Meta Description (140–160 chars) | Robots Policy | In Sitemap? |
-|---|---|---|---|---|---|
-| **Home** | `https://dscweb.me/` | `Dark Skull Corporation \| Android Apps & Game Development` | `Dark Skull Corporation is an independent software studio focused on Android applications, game development and custom websites for individuals and businesses.` | `index, follow` | Yes |
-| **Apps & Games** | `https://dscweb.me/pages/apps` | `Android Apps & Games \| Dark Skull Corporation` | `Explore Android applications and mobile games developed by Dark Skull Corporation, including QR Scanner & Generator and Mind Matrix on Google Play.` | `index, follow` | Yes |
-| **Products** | `https://dscweb.me/pages/products` | `Software Products & Pricing \| Dark Skull Corporation` | `Explore the official Dark Skull Corporation software product catalogue, available plans, product specifications, regional pricing and purchase options.` | `index, follow` | Yes |
-| **Downloads** | `https://dscweb.me/pages/downloads` | `Software & Android App Downloads \| DSC` | `Visit the official Dark Skull Corporation download center for available software releases, Android applications, mobile games and public builds.` | `index, follow` | Yes |
-| **Free Panel** | `https://dscweb.me/pages/freepanel` | `Free Panel Access & Live Credentials \| DSC` | `Access Dark Skull Corporation's public Free Panel build, check live server availability, and retrieve active community test credentials.` | `index, follow` | Yes |
-| **About Studio** | `https://dscweb.me/pages/about` | `About Dark Skull Corporation \| Founder & Lead Developer` | `Learn about Dark Skull Corporation, its Android app and game development focus, custom website services, and founder Naveed Mushtaq.` | `index, follow` | Yes |
-| **Contact** | `https://dscweb.me/pages/contact` | `Contact DSC \| Website & Software Development Inquiries` | `Contact Dark Skull Corporation for Android app development, game development, custom website projects, business inquiries and client support.` | `index, follow` | Yes |
-| **Privacy Policy** | `https://dscweb.me/pages/privacy-policy` | `Privacy Policy & Cookie Disclosures \| Dark Skull Corporation` | `Read the Dark Skull Corporation Privacy Policy covering data collection, local storage, cookie usage, third-party advertising disclosures and user rights.` | `index, follow` | Yes |
-| **Terms of Service** | `https://dscweb.me/pages/terms` | `Terms of Service & Licensing \| Dark Skull Corporation` | `Review the Terms of Service, software licensing rules, payment verification policies and fair use terms for Dark Skull Corporation websites and products.` | `index, follow` | Yes |
-| **System Status** | `https://dscweb.me/pages/status` | `System Status & Service Availability \| DSC` | `Check current platform operational status, scheduled maintenance notices and service availability for Dark Skull Corporation web services.` | `index, follow` | Yes |
-| **Checkout** | `https://dscweb.me/pages/checkout` | `Order Checkout \| Dark Skull Corporation` | `Complete your Dark Skull Corporation software product order, duration selection and payment verification.` | `noindex, nofollow` | No |
-| **User Login** | `https://dscweb.me/pages/ulogin` | `Client Portal Login \| Dark Skull Corporation` | `Sign in to your Dark Skull Corporation client account to view active subscriptions, downloads and account settings.` | `noindex, nofollow` | No |
-| **Admin Login** | `https://dscweb.me/pages/alogin` | `Admin Portal Login \| Dark Skull Corporation` | `Administrative authentication portal for authorized Dark Skull Corporation staff.` | `noindex, nofollow` | No |
-| **User Dashboard** | `https://dscweb.me/pages/udash` | `Client Dashboard \| Dark Skull Corporation` | `Manage your Dark Skull Corporation client profile, active product licenses and direct downloads.` | `noindex, nofollow` | No |
-| **Change Password** | `https://dscweb.me/pages/change` | `Change Account Password \| Dark Skull Corporation` | `Update your Dark Skull Corporation client portal password and security credentials.` | `noindex, nofollow` | No |
-| **Admin Dashboard** | `https://dscweb.me/pages/adash` | `Admin Dashboard \| Dark Skull Corporation` | `Administrative control panel for Dark Skull Corporation system status and release management.` | `noindex, nofollow` | No |
-| **Owner DB** | `https://dscweb.me/pages/ownerdb` | `Owner Database Manager \| Dark Skull Corporation` | `Owner-level account and database management workspace for Dark Skull Corporation.` | `noindex, nofollow` | No |
-| **Generate Key** | `https://dscweb.me/pages/generatekey` | `Generate Access Key \| Dark Skull Corporation` | `Administrative key generation utility for Dark Skull Corporation.` | `noindex, nofollow` | No |
-| **Maintenance** | `https://dscweb.me/` | `Scheduled System Maintenance \| Dark Skull Corporation` | `Dark Skull Corporation web services are temporarily undergoing scheduled maintenance. Please check back shortly.` | `noindex, nofollow` | No |
-| **Not Found (404)** | `https://dscweb.me/pages/404` | `Page Not Found (404) \| Dark Skull Corporation` | `The requested page could not be found. Return to the Dark Skull Corporation homepage or browse our Android apps, games and products.` | `noindex, nofollow` | No |
+- **Visual Identity & Theme**:
+  - *Aesthetic Direction*: Restrained corporate software studio — crisp 1px structural borders, balanced whitespace, subtle elevation, and zero neon, gold, or heavy gradient distractions.
+  - *Color Palette & Mood*:
+    - **Light Mode (Initial Default — `data-theme="light"`)**:
+      - Canvas & Surfaces: Main background `#F8FAFC`, secondary/footer `#F1F5F9`, header/cards/elevated surfaces `#FFFFFF`, hover surface `#F8FAFC`.
+      - Borders: Standard `#E2E8F0`, strong `#CBD5E1`, card hover `#94A3B8`.
+      - Typography: Primary `#0F172A`, secondary/soft `#475569`, muted `#64748B`, disabled `#94A3B8`.
+      - Primary & Links: Primary `#2563EB`, hover `#1D4ED8`, strong `#1E40AF`, active `#1E3A8A`, button text `#FFFFFF`, links `#2563EB`, eyebrows `#475569`.
+    - **Dark Mode (`data-theme="dark"`)**:
+      - Canvas & Surfaces: Main background `#0B1220`, secondary/cards/inputs `#111827`, header/footer `#0F172A`, strong/hover surface `#1E293B`, elevated surface `#1F2937`.
+      - Borders: Standard `#334155`, strong `#475569`, card hover `#64748B`.
+      - Typography: Primary `#F8FAFC`, secondary/soft `#CBD5E1`, muted `#94A3B8`, disabled `#64748B`.
+      - Primary & Links: Primary `#2563EB`, hover `#1D4ED8`, strong `#1E40AF`, active `#1E3A8A`, button text `#FFFFFF`, links `#60A5FA`, eyebrows `#94A3B8`.
+    - **Semantic Status Tokens**:
+      - Success (Restrained Green): `#16A34A` (Light) / `#22C55E` (Dark) with subtle tinted backgrounds and borders.
+      - Warning (Muted Amber): `#D97706` (Light) / `#F59E0B` (Dark) reserved strictly for real operational warnings.
+      - Danger (Standard Red): `#DC2626` (Light) / `#EF4444` (Dark) for errors and destructive actions.
+      - Information (Professional Blue): `#2563EB` / `#60A5FA` with subtle blue tint (`rgba(37, 99, 235, 0.10)`).
+  - *Component Styling & Layout*:
+    - **Buttons**: Primary buttons use `#2563EB` background with `#FFFFFF` text (`#1D4ED8` hover, `#1E3A8A` active); secondary buttons use neutral surface (`--surface`) with `--border-strong` border and `--text` label; destructive buttons use `--danger` with `#FFFFFF` text.
+    - **Cards, Tables & Modals**: Clean flat surfaces (`--card-bg`) with 1px `--card-border`, subtle shadow tokens, neutral table headers (`--bg-soft`), and accessible focus rings (`--ring: 0 0 0 2px rgba(37, 99, 235, 0.35)`).
 
 ---
 
-## 3. Key Product & Technical SEO Decisions
+## 3. Key Product & Engineering Decisions
 
-- **Decision 1 — Single-Source SEO Registry + Enhanced `usePageMeta`**:
-  - *Chosen Approach*: Centralize all route metadata, Open Graph tags, Twitter Card tags, robots directives, and route-level JSON-LD definitions into a shared SEO configuration module consumed by both `usePageMeta` at runtime and the static prerender script at build time.
-  - *Why*: Guarantees zero drift between what Vite builds into static HTML files and what React Router updates during client-side navigation, while preventing stale tags from lingering across route transitions.
-- **Decision 2 — Crawlability vs. Indexability Alignment (`robots.txt` + `meta[name="robots"]`)**:
-  - *Chosen Approach*: Keep administrative/private workspace paths (`/pages/adash`, `/pages/ownerdb`, `/pages/generatekey`, `/pages/udash`, `/pages/change`, `/pages/alogin`) disallowed in `robots.txt` AND stamped with `noindex, nofollow` in `usePageMeta`. Keep `/pages/ulogin` and `/pages/checkout` crawlable in `robots.txt` while setting `<meta name="robots" content="noindex, nofollow" />` on both pages (and removing `/pages/checkout` from `sitemap.xml`).
-  - *Why*: Search engines must be allowed to crawl `/pages/checkout` and `/pages/ulogin` in order to read their `noindex` directives and drop them from search results, whereas blocking them in `robots.txt` would prevent crawlers from seeing `noindex`.
-- **Decision 3 — Canonical Route Normalization & Legacy `.html` 301 Redirects**:
-  - *Chosen Approach*: Configure explicit 301 permanent redirects in `netlify.toml`, `public/_redirects`, and `vercel.json` for legacy `.html` paths (`/index.html`, `/pages/apps.html`, `/pages/products.html`, `/pages/downloads.html`, `/pages/freepanel.html`, `/pages/about.html`, `/pages/contact.html`, `/pages/privacy-policy.html`, `/pages/policy.html`, `/pages/terms.html`, `/pages/status.html`) to their clean canonical URLs before the SPA fallback rewrite (`200`), while keeping `<Navigate replace />` routes in `App.jsx`.
-  - *Why*: Ensures both HTTP-level crawlers and client-side navigations resolve legacy `.html` URLs to a single canonical URL without redirect loops.
+- **Decision 1 — Flash-Free Light Mode Default & `theme-color` Synchronization**:
+  - *Chosen Approach*: Configure root `<html lang="en" data-theme="light" style="color-scheme: light;">` and `<meta name="theme-color" content="#F8FAFC" />` in the base HTML template, update the inline bootstrap script and header theme resolver to default to `'light'` when `dscThemePreferenceV2` is unset, and dynamically sync `<meta name="theme-color">` between `#F8FAFC` (light) and `#0B1220` (dark).
+  - *Why*: Eliminates initial theme flashing for new visitors while preserving instant persistence when a user toggles between Light and Dark modes.
+- **Decision 2 — Complete Fallback & Legacy Token Eradication**:
+  - *Chosen Approach*: Replace all hardcoded CSS fallback values (e.g., `var(--button-primary-bg, #D4AF37)`, `var(--primary-text, #080808)`, `#51421D`, `#C8B273`, `#FAF8F2`) and remap legacy alias variables (`--elite-bg`, `--elite-border`, `--elite-text-gold`, `--gold-border-subtle`) to the new Slate & Blue token hierarchy while keeping QR code containers white where technically required for camera scanning.
+  - *Why*: Ensures no component, modal, tooltip, or featured product card can ever fall back to gold, cream, or olive colors.
 
 ---
 
-## 4. Technical Architecture & Data Strategy *(Technical Reference)*
+## 4. Technical Architecture & Theme Token Strategy *(Technical Reference)*
 
-### Architecture & SEO Delivery Diagram
+### Theme Architecture & Component Consumption Diagram
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                    Central SEO Registry & Schema Builder                  │
-│  • Route Metadata Map (title, description, canonical, robots)             │
-│  • Social Card Defaults (og:*, twitter:*, site_name, square logo card)    │
-│  • JSON-LD Graph Builder (Organization, WebSite, Person, WebPage, Apps)   │
+│                 Centralized CSS Variable System (Slate & Blue)            │
+│  • :root (Dark Slate #0B1220 / #111827 / #0F172A + Blue #2563EB)          │
+│  • :root[data-theme="light"] (Light Slate #F8FAFC / #FFFFFF + #2563EB)    │
+│  • Semantic Status Tokens (Success Green, Warning Amber, Danger Red)      │
 └───────────────────┬───────────────────────────────────┬───────────────────┘
                     │                                   │
-                    ▼ (Runtime Navigation)              ▼ (Build-Time Hook)
+                    ▼ (Pre-Render Bootstrap)            ▼ (Runtime Toggle)
 ┌───────────────────────────────────────┐ ┌─────────────────────────────────┐
-│       usePageMeta(seoProps) Hook      │ │    Post-Build Static HTML Gen   │
-│  • Updates document.title exact match │ │  • Reads dist/index.html        │
-│  • Upserts <meta name="description">  │ │  • Emits dist/pages/*/index.html│
-│  • Upserts <meta name="robots">       │ │    with route-specific <head>   │
-│  • Upserts <link rel="canonical">     │ │    and JSON-LD structured data  │
-│  • Upserts og:* & twitter:* meta tags │ │  • Verifies public/sitemap.xml  │
-│  • Upserts #dsc-route-jsonld script   │ │    & public/robots.txt          │
+│     HTML Entry & Prerender Shells     │ │     SiteHeader Theme Controller │
+│  • Default: data-theme="light"        │ │  • Reads dscThemePreferenceV2   │
+│  • Reads dscThemePreferenceV2         │ │  • Toggles Light <-> Dark       │
+│  • Sets meta[name="theme-color"]      │ │  • Updates data-theme,          │
+│    (#F8FAFC light / #0B1220 dark)     │ │    colorScheme & theme-color    │
 └───────────────────┬───────────────────┘ └─────────────────┬───────────────┘
                     │                                       │
                     ▼                                       ▼
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                React 19 SPA Pages + Automated SEO Test Suite              │
-│  • 10 Indexable Public Pages (H1 verified, unique metadata, JSON-LD)      │
-│  • 10 Non-Indexable Auth/Admin/Checkout/System Pages (noindex, nofollow)  │
-│  • Automated Vitest SEO Suite verifying XML, JSON-LD, Canonicals & Dist   │
+│                  Unified Component & Page Surface Layer                   │
+│  • Buttons (.button-primary #2563EB + #FFF, .button-secondary neutral)    │
+│  • Category Badges (Primary Blue Accent) vs Status Badges (Semantic)      │
+│  • Cards, Forms, Tables, Modals, Toasts, Tooltips & Skeletons             │
+│  • All 20 Public, Auth, Checkout, Client Dashboard & Admin Workspace Views│
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Structured Data (Schema.org JSON-LD) Strategy
-1. **Base Graph (`index.html` & All Public Pages)**:
-   - `Organization` (`https://dscweb.me/#organization`): Official name `Dark Skull Corporation`, alternateName `DSC`, `url: "https://dscweb.me/"`, `logo: "https://dscweb.me/images/dsclogo.png"`, approved description, `founder` referencing `Person` (`Naveed Mushtaq`, `jobTitle: "Founder & Lead Developer"`, `url: "https://naveedmushtaq.tech/"`), `knowsAbout` (`Android Application Development`, `Game Development`, `Custom Website Development`), and `sameAs` links (`https://discord.gg/XB2Zjmsb7K`, `https://github.com/shahnaveed07`, `https://naveedmushtaq.tech/`).
-   - `WebSite` (`https://dscweb.me/#website`): Name `Dark Skull Corporation`, alternateName `DSC`, `url: "https://dscweb.me/"`, `publisher` referencing `#organization` (no fake `SearchAction`).
-   - `Person` (`https://naveedmushtaq.tech/#person`): `name: "Naveed Mushtaq"`, `jobTitle: "Founder & Lead Developer"`, `worksFor` referencing `#organization`, `url: "https://naveedmushtaq.tech/"`, `sameAs: ["https://github.com/shahnaveed07", "https://naveedmushtaq.tech/"]`.
-2. **Route-Specific Structured Data (`#dsc-route-jsonld`)**:
-   - Every indexable public page receives a `WebPage` (or `AboutPage` / `ContactPage` / `CollectionPage`) schema node with its exact `name`, `description`, `url`, and `isPartOf: { "@id": "https://dscweb.me/#website" }`.
-   - `/pages/apps` additionally includes verified `SoftwareApplication` nodes for **QR Scanner | Generator** (`applicationCategory: "UtilitiesApplication"`, `operatingSystem: "Android"`, `installUrl: "https://play.google.com/store/apps/details?id=com.dsc.qrscanner"`) and **Mind Matrix** (`applicationCategory: "GameApplication"`, `operatingSystem: "Android"`, `installUrl: "https://play.google.com/store/apps/details?id=com.dsc.mindmatrix"`) without unverified ratings, reviews, or prices.
-
-### Interactive Component & Verification Mapping
-- **Automated SEO Validation Suite**: Adds a dedicated test suite verifying:
-  1. `public/sitemap.xml` XML validity, HTTPS protocol, exact 10 canonical public URLs, zero duplicate URLs, zero `.html` aliases, and zero private/checkout URLs.
-  2. `public/robots.txt` allowances, admin/dashboard disallows, and exact `Sitemap: https://dscweb.me/sitemap.xml` reference.
-  3. Every public page renders a single meaningful `<h1>`, unique `<title>`, unique `<meta name="description">`, matching `<link rel="canonical">`, `robots="index, follow"`, complete Open Graph (`og:type`, `og:title`, `og:description`, `og:url`, `og:site_name`, `og:image`), and complete Twitter Card (`twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`) metadata.
-  4. Non-indexable pages (`CheckoutPage`, `UserLoginPage`, `AdminLoginPage`, `UserDashboardPage`, `AdminDashboardPage`, `AdminWorkspacePage`, `ChangePasswordPage`, `GenerateKeyPage`, `MaintenancePage`, `NotFoundPage`) apply `robots="noindex, nofollow"`.
-  5. Valid JSON-LD structured data parsing with zero Calculator references and accurate Founder & Lead Developer attribution.
+### Interactive Component & State Mapping
+- **Theme Toggle & Persistence**:
+  - Initial state resolves from `localStorage.getItem('dscThemePreferenceV2')`, defaulting to `'light'` when unset.
+  - Clicking the header theme toggle switches `'light'` ↔ `'dark'`, writes to `dscThemePreferenceV2`, updates `document.documentElement.setAttribute('data-theme', nextTheme)`, `document.documentElement.style.colorScheme = nextTheme`, and sets `<meta name="theme-color">` to `#F8FAFC` (light) or `#0B1220` (dark).
+- **Category Badge vs. Semantic Status Badge Separation**:
+  - Category labels across public pages (`AboutPage`, `AppsPage`, `ProductsPage`, `DownloadsPage`, `ContactPage`) use primary blue accent badge classes, while operational status indicators (`FreePanelPage` slot full warnings, `UserDashboardPage` pending/expired alerts, `AdminDashboardPage` order status pills) retain semantic green, amber, and red tokens.

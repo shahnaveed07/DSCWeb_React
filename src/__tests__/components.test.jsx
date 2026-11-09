@@ -225,9 +225,9 @@ describe('Page Content & AdSense Remediation Tests', () => {
     expect(screen.getByRole('link', { name: /Naveed Mushtaq/i })).toBeTruthy()
   })
 
-  it('defaults to dark theme even if legacy siteTheme is light, and persists explicit toggle to dscThemePreferenceV2', () => {
+  it('defaults to light theme for new visitors and persists explicit toggle to dscThemePreferenceV2', () => {
     localStorage.clear()
-    localStorage.setItem('siteTheme', 'light')
+    localStorage.setItem('siteTheme', 'dark')
     document.documentElement.removeAttribute('data-theme')
 
     render(
@@ -240,19 +240,19 @@ describe('Page Content & AdSense Remediation Tests', () => {
       </MemoryRouter>
     )
 
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
-    expect(document.documentElement.style.colorScheme).toBe('dark')
-
-    const toggleBtn = screen.getByRole('button', { name: /Switch to light mode/i })
-    fireEvent.click(toggleBtn)
-
     expect(document.documentElement.getAttribute('data-theme')).toBe('light')
     expect(document.documentElement.style.colorScheme).toBe('light')
-    expect(localStorage.getItem('dscThemePreferenceV2')).toBe('light')
+
+    const toggleBtn = screen.getByRole('button', { name: /Switch to dark mode/i })
+    fireEvent.click(toggleBtn)
+
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    expect(document.documentElement.style.colorScheme).toBe('dark')
+    expect(localStorage.getItem('dscThemePreferenceV2')).toBe('dark')
 
     fireEvent.click(toggleBtn)
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
-    expect(localStorage.getItem('dscThemePreferenceV2')).toBe('dark')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+    expect(localStorage.getItem('dscThemePreferenceV2')).toBe('light')
   })
 })
 

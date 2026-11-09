@@ -22,7 +22,7 @@ export function AppsPage() {
         <article className="app-card">
           <div className="app-card-header">
             <div>
-              <span className="badge warning">ANDROID APPLICATION</span>
+              <span className="badge primary">ANDROID APPLICATION</span>
               <h2 className="app-card-title">QR Scanner | Generator</h2>
             </div>
             <div>
@@ -72,7 +72,7 @@ export function AppsPage() {
         <article className="app-card">
           <div className="app-card-header">
             <div>
-              <span className="badge warning">MOBILE LOGIC GAME</span>
+              <span className="badge primary">MOBILE LOGIC GAME</span>
               <h2 className="app-card-title">Mind Matrix</h2>
             </div>
             <div>

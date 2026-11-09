@@ -67,7 +67,7 @@ export function ProductsPage() {
                 {p.badge ? (
                   <span className="elite-badge">{p.badge}</span>
                 ) : (
-                  <span className="badge warning mb-8">{p.category}</span>
+                  <span className="badge primary mb-8">{p.category}</span>
                 )}
 
                 <h2 className="product-title mt-6">{p.title}</h2>
@@ -169,7 +169,7 @@ export function ProductsPage() {
       {/* Licensing Workflow Explanation */}
       <section className="seo-section">
         <div className="seo-container">
-          <span className="badge warning mb-8">Transparent Process</span>
+          <span className="badge primary mb-8">Transparent Process</span>
           <h2>How Licensing &amp; Order Delivery Works</h2>
           <p className="mb-24">
             We prioritize security and transparent delivery. Here is what happens when you purchase or evaluate our software:

@@ -67,7 +67,7 @@ export function AboutPage() {
       <div className="focus-grid">
         {focusAreas.map((area) => (
           <div key={area.title} className="focus-card">
-            <span className="badge warning mb-8">{area.tag}</span>
+            <span className="badge primary mb-8">{area.tag}</span>
             <h2 className="focus-card-title">{area.title}</h2>
             <p className="focus-card-desc">{area.desc}</p>
           </div>
@@ -109,7 +109,7 @@ export function AboutPage() {
           <h2 className="mt-36">Founder </h2>
           <div className="portal-callout-card mt-16 mb-16">
             <div className="portal-callout-info">
-              <span className="badge warning mb-8">Studio Leadership</span>
+              <span className="badge primary mb-8">Studio Leadership</span>
               <h3 className="portal-callout-title">Naveed Mushtaq — Founder </h3>
               <p className="portal-callout-desc">
                 Naveed Mushtaq is the Founder and Lead Developer of Dark Skull Corporation. He established DSC with a vision of building useful software products, Android applications and engaging games, while leading the studio&apos;s development direction and engineering work.

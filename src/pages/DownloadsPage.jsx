@@ -31,7 +31,7 @@ export function DownloadsPage({ systemStatus }) {
         <article className="download-card">
           <div>
             <div className="download-card-meta">
-              <span className="badge warning">ANDROID APPLICATION</span>
+              <span className="badge primary">ANDROID APPLICATION</span>
               <span className="text-muted text-sm">Google Play Verified</span>
             </div>
 
@@ -61,7 +61,7 @@ export function DownloadsPage({ systemStatus }) {
         <article className="download-card">
           <div>
             <div className="download-card-meta">
-              <span className="badge warning">MOBILE GAME</span>
+              <span className="badge primary">MOBILE GAME</span>
               <span className="text-muted text-sm">Google Play Verified</span>
             </div>
 
@@ -91,7 +91,7 @@ export function DownloadsPage({ systemStatus }) {
         <article className="download-card">
           <div>
             <div className="download-card-meta">
-              <span className="badge warning">COMMUNITY EVALUATION</span>
+              <span className="badge primary">COMMUNITY EVALUATION</span>
               <span className="text-muted text-sm">
                 {loading ? 'Checking slots...' : `${usedSlots} / ${maxSlots} Slots Used`}
               </span>
@@ -160,7 +160,7 @@ export function DownloadsPage({ systemStatus }) {
       {/* System Requirements & Compatibility Guide */}
       <section className="seo-section">
         <div className="seo-container">
-          <span className="badge warning mb-8">Technical Requirements</span>
+          <span className="badge primary mb-8">Technical Requirements</span>
           <h2>Platform Compatibility &amp; Setup Guide</h2>
 
           <div className="card-grid columns-2 mt-20">
