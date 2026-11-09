@@ -43,15 +43,28 @@ npm run preview
 
 ---
 
-## 3. Deployment Configuration (Netlify)
+## 3. Deployment Configuration
 
-This project is configured for deployment on **Netlify**:
+### Cloudflare Pages (Primary Production Host)
 
+This repository is connected to **Cloudflare Pages** via native GitHub Git Integration:
+
+- **Framework preset:** `Vite`
 - **Build command:** `npm run build`
-- **Publish directory:** `dist`
-- **Single Page Application Routing:**
-  - Configured via `netlify.toml` and `public/_redirects` (`/* /index.html 200`).
-  - All direct client-side routes, refreshes, and deep links cleanly resolve through `index.html` to React Router.
+- **Build output directory:** `dist`
+- **Root directory:** *(leave blank / repository root)*
+- **Package Manager:** Automatically detected via `bun.lock` (`bun install --frozen-lockfile`)
+- **Deploy command:** **None / Leave Blank** *(Do not specify `npx wrangler pages deploy` — Cloudflare Pages automatically publishes the `dist` directory upon build completion without requiring an API token)*
+- **Single Page Application Routing & Redirects:**
+  - Configured via `public/_redirects` (copied to `dist/_redirects`).
+  - Legacy `.html` aliases return HTTP 301 to their canonical routes, and non-file routes fall back via `/* /index.html 200`.
+
+### Netlify & Vercel Compatibility
+
+This project also maintains full compatibility with Netlify and Vercel:
+
+- **Netlify:** Configured via `netlify.toml` (`publish = "dist"`, `command = "npm run build"`, and `/* /index.html 200`).
+- **Vercel:** Configured via `vercel.json` (`rewrites` and static asset exemptions).
 
 ---
 
