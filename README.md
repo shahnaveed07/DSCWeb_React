@@ -45,19 +45,20 @@ npm run preview
 
 ## 3. Deployment Configuration
 
-### Cloudflare Pages (Primary Production Host)
+### Cloudflare Workers & Pages (Primary Production Host)
 
-This repository is connected to **Cloudflare Pages** via native GitHub Git Integration:
+This repository is configured for deployment on **Cloudflare Workers** (with Static Assets) and **Cloudflare Pages**:
 
+- **Configuration:** `wrangler.jsonc` (assets directory `./dist`, `not_found_handling: "single-page-application"`).
 - **Framework preset:** `Vite`
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
 - **Root directory:** *(leave blank / repository root)*
 - **Package Manager:** Automatically detected via `bun.lock` (`bun install --frozen-lockfile`)
-- **Deploy command:** **None / Leave Blank** *(Do not specify `npx wrangler pages deploy` — Cloudflare Pages automatically publishes the `dist` directory upon build completion without requiring an API token)*
 - **Single Page Application Routing & Redirects:**
   - Configured via `public/_redirects` (copied to `dist/_redirects`).
-  - Legacy `.html` aliases return HTTP 301 to their canonical routes, and non-file routes fall back via `/* /index.html 200`.
+  - Contains HTTP 301 rules redirecting legacy `.html` URLs to canonical clean routes.
+  - SPA not-found handling is governed natively by `assets.not_found_handling = "single-page-application"` in `wrangler.jsonc` (avoiding recursive redirect loops in Cloudflare asset handling).
 
 ### Netlify & Vercel Compatibility
 
