@@ -79,7 +79,7 @@ export function SiteHeader({ session, systemStatus, onLogout, compact = false, w
 
     const metaTheme = document.querySelector('meta[name="theme-color"]')
     if (metaTheme) {
-      metaTheme.setAttribute('content', validTheme === 'light' ? '#F8FAFC' : '#0B1220')
+      metaTheme.setAttribute('content', validTheme === 'light' ? '#F4F9F8' : '#080F10')
     }
   }, [theme])
 
